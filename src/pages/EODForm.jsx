@@ -197,6 +197,39 @@ function EODForm() {
         </Tooltip>
     );
 
+
+    const InputFieldHelp = ({inputText, popupVar, inputRef, ...props}) =>
+        <InputGroup className="mb-3">
+            <InputGroup.Prepend>
+                <InputGroup.Text>{inputText}</InputGroup.Text>
+                <InputGroup.Text>$</InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl {...props} inputRef={inputRef} />
+            <InputGroup.Append>
+                <OverlayTrigger
+                    placement="left"
+                    delay={{ show: 250, hide: 400 }}
+                    overlay={popupVar}
+                >
+                    <Button variant="outline-secondary">?</Button>
+                </OverlayTrigger>
+            </InputGroup.Append>
+        </InputGroup>
+
+    const InputFieldNoHelp = ({inputText, inputRef, ...props}) =>
+        <InputGroup className="mb-3">
+            <InputGroup.Prepend>
+                <InputGroup.Text>{inputText}</InputGroup.Text>
+                <InputGroup.Text>$</InputGroup.Text>
+            </InputGroup.Prepend>
+            <FormControl {...props} inputRef={inputRef} />
+        </InputGroup>
+
+    function testFunction() {
+        console.log('button worked')
+        console.log(this.inputTest.value)
+    }
+
     return (
         <div>
             <div className='fixed-top'>
@@ -206,6 +239,16 @@ function EODForm() {
             <div className='main-content'>
                 <Form>
                     <Form.Group controlId="basicDetails">
+                        <InputFieldHelp
+                            inputText='Test Field'
+                            popupVar={eft1}
+                            inputRef={(input) => {this.inputTest = input}}
+                        />
+
+                        <form>
+                        <Button onClick={testFunction} >Test Button</Button>
+                        </form>
+
                         <InputGroup className="mb-3">
                             <InputGroup.Prepend>
                                 <InputGroup.Text id="basic-addon1">Store</InputGroup.Text>
@@ -324,7 +367,7 @@ function EODForm() {
                                         <InputGroup.Text>Total</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl disabled />
+                                    <FormControl readOnly />
                                     <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
@@ -358,7 +401,7 @@ function EODForm() {
                                         <InputGroup.Text>Difference</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl disabled />
+                                    <FormControl readOnly />
                                     <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
@@ -449,7 +492,7 @@ function EODForm() {
                                         <InputGroup.Text>Total</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl disabled />
+                                    <FormControl readOnly />
                                     <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
@@ -483,7 +526,7 @@ function EODForm() {
                                         <InputGroup.Text>Difference</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl disabled />
+                                    <FormControl readOnly />
                                     <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
@@ -544,7 +587,7 @@ function EODForm() {
                                         <InputGroup.Text>Difference</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl disabled />
+                                    <FormControl readOnly />
                                     <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
@@ -619,7 +662,7 @@ function EODForm() {
                                         <InputGroup.Text>Total</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl disabled />
+                                    <FormControl readOnly />
                                     <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
@@ -653,7 +696,7 @@ function EODForm() {
                                         <InputGroup.Text>Difference</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl disabled />
+                                    <FormControl readOnly />
                                     <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
@@ -739,7 +782,7 @@ function EODForm() {
                                         <InputGroup.Text>Total</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl disabled />
+                                    <FormControl readOnly />
                                     <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
@@ -773,7 +816,7 @@ function EODForm() {
                                         <InputGroup.Text>Difference</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl disabled />
+                                    <FormControl readOnly />
                                     <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
@@ -832,7 +875,7 @@ function EODForm() {
                                         <InputGroup.Text>Total</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
-                                    <FormControl disabled />
+                                    <FormControl readOnly />
                                     <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
