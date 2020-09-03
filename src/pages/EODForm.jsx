@@ -1,10 +1,40 @@
 import React from 'react';
-import { Accordion, Card, Form, FormGroup, InputGroup, FormControl, Button, OverlayTrigger, Tooltip, CardColumns } from 'react-bootstrap';
+import { Accordion, Card, Form, InputGroup, FormControl, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import Navigation from '../components/Navigation.jsx'
 import './EODForm.css'
 
 function EODForm() {
+    const cash1 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Payout money used (if any)
+        </Tooltip>
+    );
+
+    const cash2 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Money put aside for payouts / money put in safe (if any)
+        </Tooltip>
+    );
+
+    const cash3 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Total of all cash less payotus used (automatically calculated)
+        </Tooltip>
+    );
+
+    const cash4 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Cash in drawer figure from register
+        </Tooltip>
+    );
+
+    const cash5 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Difference between total cash and register (automatically calculated)
+        </Tooltip>
+    );
+
     const eft1 = (props) => (
         <Tooltip id="button-tooltip" {...props}>
             Total of the first eftpos terminal
@@ -65,9 +95,113 @@ function EODForm() {
         </Tooltip>
     );
 
+    const lotto1 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Gross sales figure from lotto report
+        </Tooltip>
+    );
+
+    const lotto2 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Instants commission figure from lotto report
+        </Tooltip>
+    );
+
+    const lotto3 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Instants net sales figure from lotto report
+        </Tooltip>
+    );
+
+    const lotto4 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Gross sales less instants commission and instants net sales (automatically generated)
+        </Tooltip>
+    );
+
+    const lotto5 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Lotto sales register figure
+        </Tooltip>
+    );
+
+    const lotto6 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Difference between total and register (automatically generated)
+        </Tooltip>
+    );
+
+    const isi = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Difference between ISI c/o less sales, and ISI count
+        </Tooltip>
+    );
+
+    const lpay1 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Total prizes paid figure from lotto report
+        </Tooltip>
+    );
+
+    const lpay2 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Instants cash figure from lotto report
+        </Tooltip>
+    );
+
+    const lpay3 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Total prizes paid less instants cash (automatically generated)
+        </Tooltip>
+    );
+
+    const lpay4 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Register figure for lotto payouts
+        </Tooltip>
+    );
+
+    const lpay5 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Difference between total and register (automatically calculated)
+        </Tooltip>
+    );
+
+    const spay1 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Instants cash figure from lotto report
+        </Tooltip>
+    );
+
+    const spay2 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Total free instants figure from lotto report
+        </Tooltip>
+    );
+
+    const spay3 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Total of instants cash and total free instants (automatically generated)
+        </Tooltip>
+    );
+
+    const spay4 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Register figure for scratchie payouts
+        </Tooltip>
+    );
+
+    const spay5 = (props) => (
+        <Tooltip id="button-tooltip" {...props}>
+            Difference between total and register (automatically calculated)
+        </Tooltip>
+    );
+
     return (
         <div>
-            <Navigation />
+            <div className='fixed-top'>
+                <Navigation />
+            </div>
 
             <div className='main-content'>
                 <Form>
@@ -117,6 +251,15 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={cash1}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                                 <InputGroup className="mb-3">
                                     <InputGroup.Prepend>
@@ -124,6 +267,15 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={cash2}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                                 <InputGroup className="mb-3">
                                     <InputGroup.Prepend>
@@ -173,6 +325,15 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl disabled />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={cash3}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                                 <hr />
                                 <InputGroup className="mb-3">
@@ -181,6 +342,15 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={cash4}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                                 <hr />
                                 <InputGroup className="mb-3">
@@ -189,6 +359,15 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl disabled />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={cash5}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                             </Card.Body>
                         </Accordion.Collapse>
@@ -332,13 +511,15 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl />
-                                    <OverlayTrigger
-                                        placement="left"
-                                        delay={{ show: 250, hide: 400 }}
-                                        overlay={epay1}
-                                    >
-                                        <Button variant="outline-secondary">?</Button>
-                                    </OverlayTrigger>
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={epay1}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                                 <hr />
                                 <InputGroup className="mb-3">
@@ -347,13 +528,15 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl />
-                                    <OverlayTrigger
-                                        placement="left"
-                                        delay={{ show: 250, hide: 400 }}
-                                        overlay={epay2}
-                                    >
-                                        <Button variant="outline-secondary">?</Button>
-                                    </OverlayTrigger>
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={epay2}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                                 <hr />
                                 <InputGroup className="mb-3">
@@ -362,13 +545,15 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl disabled />
-                                    <OverlayTrigger
-                                        placement="left"
-                                        delay={{ show: 250, hide: 400 }}
-                                        overlay={epay3}
-                                    >
-                                        <Button variant="outline-secondary">?</Button>
-                                    </OverlayTrigger>
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={epay3}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                             </Card.Body>
                         </Accordion.Collapse>
@@ -387,41 +572,63 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl />
-                                    <OverlayTrigger
-                                        placement="left"
-                                        delay={{ show: 250, hide: 400 }}
-                                        overlay={epay2}
-                                    >
-                                        <Button variant="outline-secondary">?</Button>
-                                    </OverlayTrigger>
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={lotto1}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                                 <InputGroup className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>Commission</InputGroup.Text>
+                                        <InputGroup.Text>ISI Commission</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl />
-                                    <OverlayTrigger
-                                        placement="left"
-                                        delay={{ show: 250, hide: 400 }}
-                                        overlay={epay2}
-                                    >
-                                        <Button variant="outline-secondary">?</Button>
-                                    </OverlayTrigger>
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={lotto2}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                                 <InputGroup className="mb-3">
                                     <InputGroup.Prepend>
-                                        <InputGroup.Text>Net Sales</InputGroup.Text>
+                                        <InputGroup.Text>ISI Net Sales</InputGroup.Text>
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl />
-                                    <OverlayTrigger
-                                        placement="left"
-                                        delay={{ show: 250, hide: 400 }}
-                                        overlay={epay2}
-                                    >
-                                        <Button variant="outline-secondary">?</Button>
-                                    </OverlayTrigger>
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={lotto3}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Total</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl disabled />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={lotto4}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                                 <hr />
                                 <InputGroup className="mb-3">
@@ -430,29 +637,33 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl />
-                                    <OverlayTrigger
-                                        placement="left"
-                                        delay={{ show: 250, hide: 400 }}
-                                        overlay={epay2}
-                                    >
-                                        <Button variant="outline-secondary">?</Button>
-                                    </OverlayTrigger>
-                                </InputGroup>
-                                <hr />
-                                <InputGroup className="mb-3">
-                                        <InputGroup.Prepend>
-                                            <InputGroup.Text>Difference</InputGroup.Text>
-                                            <InputGroup.Text>$</InputGroup.Text>
-                                        </InputGroup.Prepend>
-                                        <FormControl disabled />
+                                    <InputGroup.Append>
                                         <OverlayTrigger
                                             placement="left"
                                             delay={{ show: 250, hide: 400 }}
-                                            overlay={epay2}
+                                            overlay={lotto5}
                                         >
                                             <Button variant="outline-secondary">?</Button>
                                         </OverlayTrigger>
-                                    </InputGroup>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <hr />
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Difference</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl disabled />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={lotto6}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
                             </Card.Body>
                         </Accordion.Collapse>
                     </Card>
@@ -470,6 +681,15 @@ function EODForm() {
                                         <InputGroup.Text>$</InputGroup.Text>
                                     </InputGroup.Prepend>
                                     <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={isi}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
                                 </InputGroup>
                             </Card.Body>
                         </Accordion.Collapse>
@@ -481,7 +701,90 @@ function EODForm() {
                             <b>LOTTO PAYOUTS</b>
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey="5">
-                            <Card.Body>Hello! I'm another body</Card.Body>
+                            <Card.Body>
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Total Prizes Paid</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={lpay1}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Instants Cash</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={lpay2}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Total</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl disabled />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={lpay3}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <hr />
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Register</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={lpay4}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <hr />
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Difference</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl disabled />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={lpay5}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                            </Card.Body>
                         </Accordion.Collapse>
                     </Card>
 
@@ -491,7 +794,90 @@ function EODForm() {
                             <b>SCRATCHIE PAYOUTS</b>
                         </Accordion.Toggle>
                         <Accordion.Collapse eventKey="6">
-                            <Card.Body>Hello! I'm another body</Card.Body>
+                            <Card.Body>
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Instants Cash</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={spay1}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Total Free Instants</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={spay2}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Total</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl disabled />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={spay3}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <hr />
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Register</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={spay4}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                                <hr />
+                                <InputGroup className="mb-3">
+                                    <InputGroup.Prepend>
+                                        <InputGroup.Text>Difference</InputGroup.Text>
+                                        <InputGroup.Text>$</InputGroup.Text>
+                                    </InputGroup.Prepend>
+                                    <FormControl />
+                                    <InputGroup.Append>
+                                        <OverlayTrigger
+                                            placement="left"
+                                            delay={{ show: 250, hide: 400 }}
+                                            overlay={spay5}
+                                        >
+                                            <Button variant="outline-secondary">?</Button>
+                                        </OverlayTrigger>
+                                    </InputGroup.Append>
+                                </InputGroup>
+                            </Card.Body>
                         </Accordion.Collapse>
                     </Card>
                 </Accordion>

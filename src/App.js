@@ -1,9 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-
 import Start from './pages/Start.jsx'
 import EODForm from './pages/EODForm.jsx'
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function App() {
     return (
