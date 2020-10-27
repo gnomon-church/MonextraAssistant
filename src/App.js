@@ -3,10 +3,15 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Start from './pages/Start.jsx'
 import EODForm from './pages/EODForm.jsx'
+import ReportView from './pages/ReportView.jsx'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default class App extends Component {
+    componentDidMount() {
+        document.title = 'Monextra Assistant'
+    }
+
     render() {
         return (
             <Router>
@@ -20,6 +25,11 @@ export default class App extends Component {
                         {/* Route for the eodform page */}
                         <Route exact path='/eodform'>
                             <EODForm />
+                        </Route>
+
+                        {/* Route for the pdfview page */}
+                        <Route exact path='/reportview'>
+                            <ReportView />
                         </Route>
                     </Switch>
                 </div>

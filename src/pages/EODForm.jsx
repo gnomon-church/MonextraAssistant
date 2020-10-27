@@ -1,176 +1,244 @@
 import React, { Component } from 'react';
-import { Accordion, Card, Form, InputGroup, FormControl, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Accordion, Card, Form, InputGroup, FormControl, Button, OverlayTrigger, Tooltip, Navbar } from 'react-bootstrap';
 
-import Navigation from '../components/Navigation.jsx'
 import './EODForm.css'
 
-let jsonData = '{"store": "",\
-        "date": "",\
-        "staff": "",\
-        "used payouts": "",\
-        "put aside": "",\
-        "100": "",\
-        "50": "",\
-        "20": "",\
-        "10": "",\
-        "5": "",\
-        "coins": "",\
-        "cash actual": "",\
-        "cash register": "",\
-        "cash diff": "",\
-        "eftpos 1": "",\
-        "eftpos 2": "",\
-        "eftpos 3": "",\
-        "eftpos prev": "",\
-        "eftpos actual": "",\
-        "eftpos diff": "",\
-        "epay actual": "",\
-        "epay register": "",\
-        "epay diff": "",\
-        "lotto gross": "",\
-        "isi commission": "",\
-        "isi net": "",\
-        "lotto actual": "",\
-        "lotto register": "",\
-        "lotto diff": "",\
-        "isi diff": "",\
-        "total prizes": "",\
-        "isi cash": "",\
-        "lotto pay actual": "",\
-        "lotto pay register": "",\
-        "lotto pay diff": "",\
-        "isi free": "",\
-        "isi pay actual": "",\
-        "isi pay register": "",\
-        "isi pay diff": ""}';
-let dataObj = JSON.parse(jsonData);
 
-function calculator() {
-    dataObj['cash actual'] = Number(dataObj['used payouts']) + 
-                                Number(dataObj['put aside']) + 
-                                Number(dataObj['100']) + 
-                                Number(dataObj['50']) + 
-                                Number(dataObj['20']) + 
-                                Number(dataObj['10']) + 
-                                Number(dataObj['5']) + 
-                                Number(dataObj['coins'])
-}
-
-function numberParse(event) {
-    let re = /^[0-9]*[\.]*[0-9]{0,2}$/;
-    let val = re.exec(event.target.value);
-
-    if (val !== null) {
-        event.target.value = val[0];
-        handleChange(event);
-    } else {
-        event.target.value = dataObj[event.target.name]
-    }
-}
-
-function handleChange(event) {
-    let fieldName = event.target.name;
-    let fieldVal = event.target.value;
-    dataObj[fieldName] = fieldVal
-    calculator()
-    console.log(dataObj['cash actual'])
-}
-
-
-const InputHelp = (props) => {
-    return (
-        <InputGroup className='mb-3'>
-            <InputGroup.Prepend>
-                <InputGroup.Text>{props.label}</InputGroup.Text>
-                <InputGroup.Text>$</InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl type='text'
-                name={props.fieldName}
-                onChange={numberParse.bind(this)}
-            />
-            <InputGroup.Append>
-                <OverlayTrigger
-                    placement='left'
-                    delay={{ show: 250, hide: 400 }}
-                    overlay={
-                        <Tooltip id='button-tooltip' {...props}>
-                            {props.tooltip}
-                        </Tooltip>
-                    }
-                >
-                    <Button variant='outline-secondary'>?</Button>
-                </OverlayTrigger>
-            </InputGroup.Append>
-        </InputGroup>
-    )
-}
-
-const InputHelpDisabled = (props) => {
-    return (
-        <InputGroup className='mb-3'>
-            <InputGroup.Prepend>
-                <InputGroup.Text>{props.label}</InputGroup.Text>
-                <InputGroup.Text>$</InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl disabled
-                placeholder='temp placeholder'
-            />
-            <InputGroup.Append>
-                <OverlayTrigger
-                    placement='left'
-                    delay={{ show: 250, hide: 400 }}
-                    overlay={
-                        <Tooltip id='button-tooltip' {...props}>
-                            {props.tooltip}
-                        </Tooltip>
-                    }
-                >
-                    <Button variant='outline-secondary'>?</Button>
-                </OverlayTrigger>
-            </InputGroup.Append>
-        </InputGroup>
-    )
-}
-
-const InputNoHelp = (props) => {
-    return (
-        <InputGroup className='mb-3'>
-            <InputGroup.Prepend>
-                <InputGroup.Text>{props.label}</InputGroup.Text>
-                <InputGroup.Text>$</InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl type='text'
-                name={props.fieldName}
-                onChange={numberParse.bind(this)}
-            />
-        </InputGroup>
-    )
-}
-
-const InputNoHelpDisabled = (props) => {
-    return (
-        <InputGroup className='mb-3'>
-            <InputGroup.Prepend>
-                <InputGroup.Text>{props.label}</InputGroup.Text>
-                <InputGroup.Text>$</InputGroup.Text>
-            </InputGroup.Prepend>
-            <FormControl disabled
-                placeholder={props.data}
-            />
-        </InputGroup>
-    )
-}
+let date = new Date()
+let today = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
 
 export default class EODForm extends Component {
     state = {
-        
+        store: "",
+        date: today,
+        staff: "",
+        usedPayouts: "",
+        putAside: "",
+        hundreds: "",
+        fifties: "",
+        twenties: "",
+        tens: "",
+        fives: "",
+        coins: "",
+        cashActual: "",
+        cashRegister: "",
+        cashDiff: "",
+        eftposOne: "",
+        eftposTwo: "",
+        eftposThree: "",
+        eftposPrev: "",
+        eftposActual: "",
+        eftposRegister: "",
+        eftposDiff: "",
+        epayActual: "",
+        epayRegister: "",
+        epayDiff: "",
+        lottoGross: "",
+        isiCommission: "",
+        isiNet: "",
+        lottoActual: "",
+        lottoRegister: "",
+        lottoDiff: "",
+        isiDiff: "",
+        totalPrizes: "",
+        isiCash: "",
+        lottoPayActual: "",
+        lottoPayRegister: "",
+        lottoPayDiff: "",
+        isiFree: "",
+        isiPayActual: "",
+        isiPayRegister: "",
+        isiPayDiff: "",
+        totalDiff: ""
+    }
+
+    calculator() {
+        let cashActual_var = (Number(this.state['putAside']) +
+            Number(this.state['hundreds']) +
+            Number(this.state['fifties']) +
+            Number(this.state['twenties']) +
+            Number(this.state['tens']) +
+            Number(this.state['fives']) +
+            Number(this.state['coins']) -
+            Number(this.state['usedPayouts'])).toFixed(2)
+        let eftposActual_var = ((Number(this.state['eftposOne']) +
+            Number(this.state['eftposTwo']) +
+            Number(this.state['eftposThree'])) -
+            Number(this.state['eftposPrev'])).toFixed(2)
+        let lottoActual_var = (Number(this.state['lottoGross']) -
+            Number(this.state['isiNet']) -
+            Number(this.state['isiCommission'])).toFixed(2)
+        let lottoPayActual_var = (Number(this.state['totalPrizes']) - Number(this.state['isiCash'])).toFixed(2)
+        let isiPayActual_var = (Number(this.state['isiFree']) + Number(this.state['isiCash'])).toFixed(2)
+
+        this.setState({
+            cashActual: cashActual_var,
+            eftposActual: eftposActual_var,
+            lottoActual: lottoActual_var,
+            lottoPayActual: lottoPayActual_var,
+            isiPayActual: isiPayActual_var,
+
+        }, () => {
+            let cashDiff_var = (Number(this.state['cashActual']) - Number(this.state['cashRegister'])).toFixed(2)
+            let eftposDiff_var = (Number(this.state['eftposActual']) - Number(this.state['eftposRegister'])).toFixed(2)
+            let epayDiff_var = (Number(this.state['epayRegister']) - Number(this.state['epayActual'])).toFixed(2)
+            let lottoDiff_var = (Number(this.state['lottoRegister']) - Number(this.state['lottoActual'])).toFixed(2)
+            let lottoPayDiff_var = (Number(this.state['lottoPayActual']) - Number(this.state['lottoPayRegister'])).toFixed(2)
+            let isiPayDiff_var = (Number(this.state['isiPayActual']) - Number(this.state['isiPayRegister'])).toFixed(2)
+
+            this.setState({
+                cashDiff: cashDiff_var,
+                eftposDiff: eftposDiff_var,
+                epayDiff: epayDiff_var,
+                lottoDiff: lottoDiff_var,
+                lottoPayDiff: lottoPayDiff_var,
+                isiPayDiff: isiPayDiff_var
+            }, () => {
+                let totalDiff_var = (((Number(this.state['cashActual']) + Number(this.state['eftposActual']) + Number(this.state['isiPayActual']) + Number(this.state['lottoPayActual'])) - (Number(this.state['cashRegister']) + Number(this.state['eftposRegister']) + Number(this.state['isiPayRegister']) + Number(this.state['lottoPayRegister']))) + Number(this.state['epayDiff']) + Number(this.state['isiDiff']) + Number(this.state['lottoDiff'])).toFixed(2)
+            
+                this.setState({
+                    totalDiff: totalDiff_var
+                })
+            })
+        })
+    }
+
+    numberParse(event) {
+        let re = /^-?[0-9]*[.]*[0-9]{0,2}$/;
+        let val = re.exec(event.target.value);
+
+        if (val !== null) {
+            event.target.value = val[0];
+            this.handleChange(event);
+        } else {
+            event.target.value = this.state[event.target.name]
+        }
+    }
+
+    handleChange(event) {
+        this.setState({ [event.target.name]: event.target.value }, () => {
+            this.calculator();
+        })
+    }
+
+    viewReport = () => {
+        console.log(this.state)
+        // localStorage.setItem('store', this.state.store)
+        localStorage.state = JSON.stringify(this.state);
+        window.open('/reportview')
+    }
+
+    Navigation = (props) => {
+        return (
+            <Navbar bg='danger' className='justify-content-between'>
+                <InputGroup className='mb-3'>
+                    <InputGroup.Prepend>
+                        <Button variant='dark' href='/'>Back</Button>
+                        <InputGroup.Text>Total Under / Over</InputGroup.Text>
+                        <InputGroup.Text>$</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <FormControl disabled
+                        placeholder={this.state.totalDiff}
+                    />
+                    <InputGroup.Append>
+                        <Button onClick={this.viewReport} variant='success'>Finish</Button>
+                    </InputGroup.Append>
+                </InputGroup>
+            </Navbar>
+        )
+    }
+
+    InputHelp = (props) => {
+        return (
+            <InputGroup className='mb-3'>
+                <InputGroup.Prepend>
+                    <InputGroup.Text>{props.label}</InputGroup.Text>
+                    <InputGroup.Text>$</InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl type='text'
+                    placeholder={props.data}
+                    name={props.fieldName}
+                    onChange={this.numberParse.bind(this)}
+                />
+                <InputGroup.Append>
+                    <OverlayTrigger
+                        placement='left'
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={
+                            <Tooltip id='button-tooltip' {...props}>
+                                {props.tooltip}
+                            </Tooltip>
+                        }
+                    >
+                        <Button variant='outline-secondary'>?</Button>
+                    </OverlayTrigger>
+                </InputGroup.Append>
+            </InputGroup>
+        )
+    }
+
+    InputHelpDisabled = (props) => {
+        return (
+            <InputGroup className='mb-3'>
+                <InputGroup.Prepend>
+                    <InputGroup.Text>{props.label}</InputGroup.Text>
+                    <InputGroup.Text>$</InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl disabled
+                    placeholder='temp placeholder'
+                />
+                <InputGroup.Append>
+                    <OverlayTrigger
+                        placement='left'
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={
+                            <Tooltip id='button-tooltip' {...props}>
+                                {props.tooltip}
+                            </Tooltip>
+                        }
+                    >
+                        <Button variant='outline-secondary'>?</Button>
+                    </OverlayTrigger>
+                </InputGroup.Append>
+            </InputGroup>
+        )
+    }
+
+    InputNoHelp = (props) => {
+        return (
+            <InputGroup className='mb-3'>
+                <InputGroup.Prepend>
+                    <InputGroup.Text>{props.label}</InputGroup.Text>
+                    <InputGroup.Text>$</InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl type='text'
+                    name={props.fieldName}
+                    onChange={this.numberParse.bind(this)}
+                />
+            </InputGroup>
+        )
+    }
+
+    InputNoHelpDisabled = (props) => {
+        return (
+            <InputGroup className='mb-3'>
+                <InputGroup.Prepend>
+                    <InputGroup.Text>{props.label}</InputGroup.Text>
+                    <InputGroup.Text>$</InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl disabled
+                    placeholder={props.data}
+                />
+            </InputGroup>
+        )
     }
 
     render() {
         return (
             <div>
                 <div className='fixed-top'>
-                    <Navigation />
+                    <this.Navigation />
                 </div>
 
                 <div className='main-content'>
@@ -181,13 +249,14 @@ export default class EODForm extends Component {
                                     <InputGroup.Text id='basic-addon1'>Store</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <Form.Control
-                                    name='staff'
-                                    onChange={handleChange.bind(this)}
+                                    name='store'
+                                    onChange={this.handleChange.bind(this)}
                                     as='select'
                                     className='mr-sm-2'
                                     id='inlineFormCustomSelect'
                                     custom
                                 >
+                                    <option>Select...</option>
                                     <option value='Nextra Morayfield Plaza News'>Nextra Morayfield Plaza News</option>
                                     <option value='Nextra Morayfield Village News'>Nextra Morayfield Village News</option>
                                 </Form.Control>
@@ -198,8 +267,9 @@ export default class EODForm extends Component {
                                     <InputGroup.Text id='basic-addon1'>Date</InputGroup.Text>
                                 </InputGroup.Prepend>
                                 <FormControl type='text'
+                                    placeholder={this.state['date']}
                                     name='date'
-                                    onChange={handleChange.bind(this)}
+                                    onChange={this.handleChange.bind(this)}
                                 />
                             </InputGroup>
 
@@ -209,21 +279,9 @@ export default class EODForm extends Component {
                                 </InputGroup.Prepend>
                                 <FormControl type='text'
                                     name='staff'
-                                    onChange={handleChange.bind(this)}
+                                    onChange={this.handleChange.bind(this)}
                                 />
                             </InputGroup>
-
-                            {/* <InputGroup className='mb-3'>
-                                <InputGroup.Prepend>
-                                    <InputGroup.Text id='basic-addon1'>Test Input Box</InputGroup.Text>
-                                </InputGroup.Prepend>
-                                <FormControl type='text'
-                                    name='username'
-                                    placeholder='enter'
-                                    defaultValue='Test'
-                                    onChange={this.handleChange.bind(this)} />
-                            </InputGroup>
-                            <Button onClick={this.anotherTestFunc}>Test</Button> */}
                         </Form.Group>
                     </Form>
 
@@ -235,19 +293,19 @@ export default class EODForm extends Component {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey='0'>
                                 <Card.Body>
-                                    <InputHelp label='Payouts Used' tooltip='Payout money used (if any)' fieldName='used payouts' />
-                                    <InputHelp label='Put Aside' tooltip='Money put aside for payouts / money put in safe (if any)' fieldName='put aside' />
-                                    <InputNoHelp label="$100's" fieldName='100' />
-                                    <InputNoHelp label="$50's" fieldName='50' />
-                                    <InputNoHelp label="$20's" fieldName='20' />
-                                    <InputNoHelp label="$10's" fieldName='10' />
-                                    <InputNoHelp label="$5's" fieldName='5' />
-                                    <InputNoHelp label='Coins' fieldName='coins' />
-                                    <InputNoHelpDisabled label='Total' fieldName='cash actual' />
+                                    <this.InputHelp label='Payouts Used' tooltip='Payout money used (if any)' fieldName='usedPayouts' />
+                                    <this.InputHelp label='Put Aside' tooltip='Money put aside for payouts / money put in safe (if any)' fieldName='putAside' />
+                                    <this.InputNoHelp label="$100's" fieldName='hundreds' />
+                                    <this.InputNoHelp label="$50's" fieldName='fifties' />
+                                    <this.InputNoHelp label="$20's" fieldName='twenties' />
+                                    <this.InputNoHelp label="$10's" fieldName='tens' />
+                                    <this.InputNoHelp label="$5's" fieldName='fives' />
+                                    <this.InputNoHelp label='Coins' fieldName='coins' />
+                                    <this.InputNoHelpDisabled label='Total' fieldName='cashActual' data={this.state.cashActual} />
                                     <hr />
-                                    <InputHelp label='Register' tooltip='Cash in drawer figure from register' fieldName='cash register' />
+                                    <this.InputHelp label='Register' tooltip='Cash in drawer figure from register' fieldName='cashRegister' />
                                     <hr />
-                                    <InputNoHelpDisabled label='Difference' fieldName='cash diff' data={dataObj['cash actual']} />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='cashDiff' data={this.state.cashDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -259,15 +317,15 @@ export default class EODForm extends Component {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey='1'>
                                 <Card.Body>
-                                    <InputHelp label='Terminal 1' tooltip='Total of the first eftpos terminal' fieldName='eftpos 1' />
-                                    <InputHelp label='Terminal 2' tooltip='Total of the second eftpos terminal' fieldName='eftpos 2' />
-                                    <InputHelp label='Terminal 3' tooltip='Total of the third eftpos terminal (if applicable)' fieldName='eftpos 3' />
-                                    <InputHelp label='Previous Day' tooltip='Total of any eftpos machines used after 6:30pm on the previous day' fieldName='eftpos prev' />
-                                    <InputNoHelpDisabled label='Total' fieldName='eftpos actual' />
+                                    <this.InputHelp label='Terminal 1' tooltip='Total of the first eftpos terminal' fieldName='eftposOne' />
+                                    <this.InputHelp label='Terminal 2' tooltip='Total of the second eftpos terminal' fieldName='eftposTwo' />
+                                    <this.InputHelp label='Terminal 3' tooltip='Total of the third eftpos terminal (if applicable)' fieldName='eftposThree' />
+                                    <this.InputHelp label='Previous Day' tooltip='Total of any eftpos machines used after 6:30pm on the previous day' fieldName='eftposPrev' />
+                                    <this.InputNoHelpDisabled label='Total' fieldName='eftposActual' data={this.state.eftposActual} />
                                     <hr />
-                                    <InputHelp label='Register' tooltip='Eftpos figure from the register' fieldName='eftpos register' />
+                                    <this.InputHelp label='Register' tooltip='Eftpos figure from the register' fieldName='eftposRegister' />
                                     <hr />
-                                    <InputNoHelpDisabled label='Difference' fieldName='eftpos diff' />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='eftposDiff' data={this.state.eftposDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -279,11 +337,11 @@ export default class EODForm extends Component {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey='2'>
                                 <Card.Body>
-                                    <InputHelp label='Actual' tooltip='Actual figure from epay terminal report' fieldName='epay actual' />
+                                    <this.InputHelp label='Actual' tooltip='Actual figure from epay terminal report' fieldName='epayActual' />
                                     <hr />
-                                    <InputHelp label='Register' tooltip='Epay figure from the register' fieldName='epay register' />
+                                    <this.InputHelp label='Register' tooltip='Epay figure from the register' fieldName='epayRegister' />
                                     <hr />
-                                    <InputNoHelpDisabled label='Difference' fieldName='epay diff' />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='epayDiff' data={this.state.epayDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -295,14 +353,14 @@ export default class EODForm extends Component {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey='3'>
                                 <Card.Body>
-                                    <InputHelp label='Gross Sales' tooltip='Gross sales figure from the lotto report' fieldName='lotto gross' />
-                                    <InputHelp label='ISI Commission' tooltip='Instants commission figure from the lotto report' fieldName='isi commission' />
-                                    <InputHelp label='ISI Net Sales' tooltip='Instants net sales figure from the lotto report' fieldName='isi net' />
-                                    <InputNoHelpDisabled label='Total' fieldName='lotto actual' />
+                                    <this.InputHelp label='Gross Sales' tooltip='Gross sales figure from the lotto report' fieldName='lottoGross' />
+                                    <this.InputHelp label='ISI Commission' tooltip='Instants commission figure from the lotto report' fieldName='isiCommission' />
+                                    <this.InputHelp label='ISI Net Sales' tooltip='Instants net sales figure from the lotto report' fieldName='isiNet' />
+                                    <this.InputNoHelpDisabled label='Total' fieldName='lottoActual' data={this.state.lottoActual} />
                                     <hr />
-                                    <InputHelp label='Register' tooltip='Lotto sales figure from the register' fieldName='lotto register' />
+                                    <this.InputHelp label='Register' tooltip='Lotto sales figure from the register' fieldName='lottoRegister' />
                                     <hr />
-                                    <InputNoHelpDisabled label='Difference' fieldName='lotto diff' />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='lottoDiff' data={this.state.lottoDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -314,7 +372,7 @@ export default class EODForm extends Component {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey='4'>
                                 <Card.Body>
-                                    <InputHelp label='Difference' tooltip='Difference between ISI c/o less sales, and ISI count' fieldName='isi diff' />
+                                    <this.InputHelp label='Difference' tooltip='Difference between ISI c/o less sales, and ISI count' fieldName='isiDiff' />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -326,13 +384,13 @@ export default class EODForm extends Component {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey='5'>
                                 <Card.Body>
-                                    <InputHelp label='Total Prizes Paid' tooltip='Total prizes paid figure from the lotto report' fieldName='total prizes' />
-                                    <InputHelp label='Instants Cash' tooltip='Instants cash figure from the lotto report' fieldName='isi cash' />
-                                    <InputNoHelpDisabled label='Total' fieldName='lotto pay actual' />
+                                    <this.InputHelp label='Total Prizes Paid' tooltip='Total prizes paid figure from the lotto report' fieldName='totalPrizes' />
+                                    <this.InputHelp label='Instants Cash' tooltip='Instants cash figure from the lotto report' fieldName='isiCash' data={this.state.isiCash} />
+                                    <this.InputNoHelpDisabled label='Total' fieldName='lottoPayActual' data={this.state.lottoPayActual} />
                                     <hr />
-                                    <InputHelp label='Register' tooltip='Lotto payouts figure from the register' fieldName='lotto pay register' />
+                                    <this.InputHelp label='Register' tooltip='Lotto payouts figure from the register' fieldName='lottoPayRegister' />
                                     <hr />
-                                    <InputNoHelpDisabled label='Difference' fieldName='lotto pay diff' />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='lottoPayDiff' data={this.state.lottoPayDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -344,13 +402,13 @@ export default class EODForm extends Component {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey='6'>
                                 <Card.Body>
-                                    <InputHelp label='Instants Cash' tooltip='Instants cash figure from the lotto report' fieldName='isi cash' />
-                                    <InputHelp label='Total Free Instants' tooltip='Total free instants figure from the lotto report' fieldName='isi free' />
-                                    <InputNoHelpDisabled label='Total' fieldName='isi pay actual' />
+                                    <this.InputHelp label='Instants Cash' tooltip='Instants cash figure from the lotto report' fieldName='isiCash' data={this.state.isiCash} />
+                                    <this.InputHelp label='Total Free Instants' tooltip='Total free instants figure from the lotto report' fieldName='isiFree' />
+                                    <this.InputNoHelpDisabled label='Total' fieldName='isiPayActual' data={this.state.isiPayActual} />
                                     <hr />
-                                    <InputHelp label='Register' tooltip='Instant Scratch-It figure from the register' fieldName='isi pay register' />
+                                    <this.InputHelp label='Register' tooltip='Instant Scratch-It figure from the register' fieldName='isiPayRegister' />
                                     <hr />
-                                    <InputNoHelpDisabled label='Difference' fieldName='isi pay diff' />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='isiPayDiff' data={this.state.isiPayDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
