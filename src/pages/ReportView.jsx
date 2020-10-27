@@ -4,8 +4,6 @@ import { Page, Text, View, Document, StyleSheet, PDFViewer, Font } from '@react-
 // import { Table, TableHeader, TableCell, TableBody, DataTableCell } from '@david.kucsai/react-pdf-table'
 
 import './ReportView.css'
-import EODForm from './EODForm';
-
 
 // Create styles
 const styles = StyleSheet.create({
