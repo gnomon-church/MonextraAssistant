@@ -1,8 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap');
+
+* {
+    font-family: 'Roboto Slab', sans-serif;
+}
+
 .viewer-div {
-    height: 100vh;
+    height: 94vh;
 }
 
 .viewer-window {
     width: 100vw;
-    height: 99vh;
+    height: 93vh;
+}
+
+.justify-content-between {
+    height: 6vh;
 }

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Accordion, Card, Form, InputGroup, FormControl, Button, OverlayTrigger, Tooltip, Navbar } from 'react-bootstrap';
+import { Redirect, useHistory } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
+import { Accordion, Card, Form, InputGroup, FormControl, Button, OverlayTrigger, Tooltip, Navbar, FormGroup } from 'react-bootstrap';
 
 import './EODForm.css'
 
-
 let date = new Date()
 let today = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+
 
 export default class EODForm extends Component {
     state = {
@@ -96,7 +97,7 @@ export default class EODForm extends Component {
                 isiPayDiff: isiPayDiff_var
             }, () => {
                 let totalDiff_var = (((Number(this.state['cashActual']) + Number(this.state['eftposActual']) + Number(this.state['isiPayActual']) + Number(this.state['lottoPayActual'])) - (Number(this.state['cashRegister']) + Number(this.state['eftposRegister']) + Number(this.state['isiPayRegister']) + Number(this.state['lottoPayRegister']))) + Number(this.state['epayDiff']) + Number(this.state['isiDiff']) + Number(this.state['lottoDiff'])).toFixed(2)
-            
+
                 this.setState({
                     totalDiff: totalDiff_var
                 })
@@ -124,27 +125,14 @@ export default class EODForm extends Component {
 
     viewReport = () => {
         console.log(this.state)
-        // localStorage.setItem('store', this.state.store)
         localStorage.state = JSON.stringify(this.state);
-        window.open('/reportview')
     }
 
     Navigation = (props) => {
         return (
             <Navbar bg='danger' className='justify-content-between'>
-                <InputGroup className='mb-3'>
-                    <InputGroup.Prepend>
-                        <Button variant='dark' href='/'>Back</Button>
-                        <InputGroup.Text>Total Under / Over</InputGroup.Text>
-                        <InputGroup.Text>$</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <FormControl disabled
-                        placeholder={this.state.totalDiff}
-                    />
-                    <InputGroup.Append>
-                        <Button onClick={this.viewReport} variant='success'>Finish</Button>
-                    </InputGroup.Append>
-                </InputGroup>
+                <Button variant='dark' href='/'>Back</Button>
+                <Button href='/reportview' onClick={this.viewReport} variant='success'>Finish</Button>
             </Navbar>
         )
     }
@@ -257,8 +245,8 @@ export default class EODForm extends Component {
                                     custom
                                 >
                                     <option>Select...</option>
-                                    <option value='Nextra Morayfield Plaza News'>Nextra Morayfield Plaza News</option>
-                                    <option value='Nextra Morayfield Village News'>Nextra Morayfield Village News</option>
+                                    <option value='Plaza'>Nextra Morayfield Plaza News</option>
+                                    <option value='Village'>Nextra Morayfield Village News</option>
                                 </Form.Control>
                             </InputGroup>
 
@@ -413,6 +401,18 @@ export default class EODForm extends Component {
                             </Accordion.Collapse>
                         </Card>
                     </Accordion>
+
+                    <hr />
+
+                    <InputGroup className='mb-3'>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>Total Under / Over</InputGroup.Text>
+                            <InputGroup.Text>$</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl disabled
+                            placeholder={this.state.totalDiff}
+                        />
+                    </InputGroup>
                 </div>
             </div>
         )

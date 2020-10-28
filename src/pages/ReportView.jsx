@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Navbar, Button } from 'react-bootstrap';
 import { Page, Text, View, Document, StyleSheet, PDFViewer, Font } from '@react-pdf/renderer';
-// import { Table, TableHeader, TableCell, TableBody, DataTableCell } from '@david.kucsai/react-pdf-table'
+import { Table, TableHeader, TableCell, TableBody, DataTableCell } from '@david.kucsai/react-pdf-table'
 
 import './ReportView.css'
 
@@ -54,22 +54,28 @@ export default class ReportView extends Component {
     }
 
     totalFormatter(props) {
-        let val = '$' + props
+        let val
 
-        return(val)
+        if (props !== '') {
+            val = '$' + props
+        }
+
+        return (val)
     }
 
     diffFormatter(props) {
-        let val = '$' + props
-        
+        let val
+
         if (props > 0) {
+            val = '$' + props
             val = '+' + val
         } else if (props < 0) {
+            val = '$' + props
             val = val.slice(0, 1) + val.slice(2);
             val = '-' + val
         }
 
-        return(val)
+        return (val)
     }
 
     dayFetcher(props) {
@@ -80,7 +86,7 @@ export default class ReportView extends Component {
         let dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
         let day = weekDays[dateObject.getDay() - 1];
 
-        return(day)
+        return (day)
     }
 
     render() {
@@ -89,14 +95,34 @@ export default class ReportView extends Component {
                 {/* <div className='fixed-top'>
                     <this.Navigation />
                 </div> */}
+                <this.Navigation />
                 <div className='viewer-div'>
                     <PDFViewer className='viewer-window'>
                         <Document>
                             <Page size="A4" style={styles.page}>
-                                <Text style={styles.store_name}>{this.state.store}</Text>
+                                <Text style={styles.store_name}>Nextra Morayfield {this.state.store} News</Text>
+
+
                                 <View style={styles.row}>
-                                    <Text style={styles.details_label}>Day: </Text>
-                                    <Text style={styles.details_content}>{this.dayFetcher(this.state.date)}</Text>
+                                    {/* <TableCell>
+                                        <Text style={styles.details_label}>Day: </Text>
+                                    </TableCell> */}
+                                    <Table data={[
+                                        { day: this.dayFetcher(this.state.date), lastName: "Smith", dob: new Date(2000, 1, 1), country: "Australia", phoneNumber: "xxx-0000-0000" }
+                                    ]}>
+                                        <TableHeader>
+                                            <TableCell style={styles.details_label}>Day</TableCell>
+                                        </TableHeader>
+                                        <TableBody>
+                                            <DataTableCell getContent={(r) => r.firstName}/>
+                                        </TableBody>
+                                    </Table>
+
+                                    {/* <TableBody>
+                                        <TableCell style={styles.details_label}>Day:</TableCell>
+                                    </TableBody> */}
+
+                                    {/* <Text style={styles.details_content}>{this.dayFetcher(this.state.date)}</Text> */}
                                 </View>
 
                                 <View style={styles.row}>
