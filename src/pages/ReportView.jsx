@@ -13,7 +13,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 35,
     },
     row: {
-        flexDirection: 'row',
+        // flexDirection: 'row',
+        // display: 'flex',
+        // flexWrap: 'nowrap',
+        marginBottom: 30,
     },
     store_name: {
         fontSize: 18,
@@ -21,22 +24,41 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: 'Times-Bold'
     },
-    details_header: {
-        fontSize: 12,
-        marginBottom: 10,
-        marginTop: 15,
-        textAlign: 'center',
-        fontFamily: 'Times-Bold'
-    },
     details_label: {
         fontSize: 12,
-        marginBottom: 5,
-        fontFamily: 'Times-Roman'
+        textAlign: 'center',
+        fontFamily: 'Times-Bold',
     },
     details_content: {
         fontSize: 12,
-        position: 'absolute',
-        left: 130,
+        textAlign: 'center',
+        fontFamily: 'Times-Italic',
+    },
+    figures_header: {
+        fontSize: 12,
+        textAlign: 'center',
+        fontFamily: 'Times-Bold'
+    },
+    figures_label: {
+        fontSize: 12,
+        textAlign: 'right',
+        fontFamily: 'Times-Roman',
+        borderBottom: true
+    },
+    figures_label_bottom: {
+        fontSize: 12,
+        textAlign: 'right',
+        fontFamily: 'Times-Roman',
+    },
+    figures_content: {
+        fontSize: 12,
+        textAlign: 'center',
+        fontFamily: 'Times-Italic',
+        borderBottom: true
+    },
+    figures_content_bottom: {
+        fontSize: 12,
+        textAlign: 'center',
         fontFamily: 'Times-Italic'
     }
 });
@@ -58,6 +80,8 @@ export default class ReportView extends Component {
 
         if (props !== '') {
             val = '$' + props
+        } else if (props === '') {
+            val = '-'
         }
 
         return (val)
@@ -73,6 +97,8 @@ export default class ReportView extends Component {
             val = '$' + props
             val = val.slice(0, 1) + val.slice(2);
             val = '-' + val
+        } else if (props === '0.00' || props === '') {
+            val = '-'
         }
 
         return (val)
@@ -92,9 +118,6 @@ export default class ReportView extends Component {
     render() {
         return (
             <div>
-                {/* <div className='fixed-top'>
-                    <this.Navigation />
-                </div> */}
                 <this.Navigation />
                 <div className='viewer-div'>
                     <PDFViewer className='viewer-window'>
@@ -104,124 +127,184 @@ export default class ReportView extends Component {
 
 
                                 <View style={styles.row}>
-                                    {/* <TableCell>
-                                        <Text style={styles.details_label}>Day: </Text>
-                                    </TableCell> */}
-                                    <Table data={[
-                                        { day: this.dayFetcher(this.state.date), lastName: "Smith", dob: new Date(2000, 1, 1), country: "Australia", phoneNumber: "xxx-0000-0000" }
-                                    ]}>
+                                    <Table data={[{}]}>
                                         <TableHeader>
                                             <TableCell style={styles.details_label}>Day</TableCell>
+                                            <TableCell style={styles.details_label}>Date</TableCell>
+                                            <TableCell style={styles.details_label}>Staff</TableCell>
                                         </TableHeader>
                                         <TableBody>
-                                            <DataTableCell getContent={(r) => r.firstName}/>
+                                            <TableCell style={styles.details_content}>{this.dayFetcher(this.state.date)}</TableCell>
+                                            <TableCell style={styles.details_content}>{this.state.date}</TableCell>
+                                            <TableCell style={styles.details_content}>{this.state.staff}</TableCell>
                                         </TableBody>
                                     </Table>
-
-                                    {/* <TableBody>
-                                        <TableCell style={styles.details_label}>Day:</TableCell>
-                                    </TableBody> */}
-
-                                    {/* <Text style={styles.details_content}>{this.dayFetcher(this.state.date)}</Text> */}
                                 </View>
 
+                                {/* Cash fields */}
                                 <View style={styles.row}>
-                                    <Text style={styles.details_label}>Date: </Text>
-                                    <Text style={styles.details_content}>{this.state.date}</Text>
+                                    <Table style={styles.table} data={[{}]}>
+                                        <TableHeader>
+                                            <TableCell style={styles.figures_header}>Cash</TableCell>
+                                        </TableHeader>
+                                        <TableBody style={styles.table_cell}>
+                                            <TableCell>
+                                                <Text style={styles.figures_label}>Actual:</Text>
+                                                <Text style={styles.figures_label}>Register:</Text>
+                                                <Text style={styles.figures_label_bottom}>Difference:</Text>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.cashActual)}</Text>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.cashRegister)}</Text>
+                                                <Text style={styles.figures_content_bottom}>{this.diffFormatter(this.state.cashDiff)}</Text>
+                                            </TableCell>
+                                        </TableBody>
+                                    </Table>
                                 </View>
 
+                                {/* Eftpos fields */}
                                 <View style={styles.row}>
-                                    <Text style={styles.details_label}>Staff: </Text>
-                                    <Text style={styles.details_content}>{this.state.staff}</Text>
+                                    <Table style={styles.table} data={[{}]}>
+                                        <TableHeader>
+                                            <TableCell style={styles.figures_header}>Eftpos</TableCell>
+                                        </TableHeader>
+                                        <TableBody style={styles.table_cell}>
+                                            <TableCell>
+                                                <Text style={styles.figures_label}>Actual:</Text>
+                                                <Text style={styles.figures_label}>Register:</Text>
+                                                <Text style={styles.figures_label_bottom}>Difference:</Text>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.eftposActual)}</Text>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.eftposRegister)}</Text>
+                                                <Text style={styles.figures_content_bottom}>{this.diffFormatter(this.state.eftposDiff)}</Text>
+                                            </TableCell>
+                                        </TableBody>
+                                    </Table>
                                 </View>
 
-                                <Text style={styles.details_header}>Cash: </Text>
+                                {/* Lotto fields */}
                                 <View style={styles.row}>
-                                    <Text style={styles.details_label}>Actual: </Text>
-                                    <Text style={styles.details_content}>{this.totalFormatter(this.state.cashActual)}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Register: </Text>
-                                    <Text style={styles.details_content}>{this.totalFormatter(this.state.cashRegister)}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Difference: </Text>
-                                    <Text style={styles.details_content}>{this.diffFormatter(this.state.cashDiff)}</Text>
-                                </View>
-
-                                <Text style={styles.details_header}>Eftpos: </Text>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Actual: </Text>
-                                    <Text style={styles.details_content}>{this.totalFormatter(this.state.eftposActual)}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Register: </Text>
-                                    <Text style={styles.details_content}>{this.totalFormatter(this.state.eftposRegister)}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Difference: </Text>
-                                    <Text style={styles.details_content}>{this.diffFormatter(this.state.eftposDiff)}</Text>
+                                    <Table style={styles.table} data={[{}]}>
+                                        <TableHeader>
+                                            <TableCell style={styles.figures_header}>Lotto</TableCell>
+                                        </TableHeader>
+                                        <TableBody style={styles.table_cell}>
+                                            <TableCell>
+                                                <Text style={styles.figures_label}>Lotto Report:</Text>
+                                                <Text style={styles.figures_label}>Register:</Text>
+                                                <Text style={styles.figures_label_bottom}>Difference:</Text>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.lottoActual)}</Text>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.lottoRegister)}</Text>
+                                                <Text style={styles.figures_content_bottom}>{this.diffFormatter(this.state.lottoDiff)}</Text>
+                                            </TableCell>
+                                        </TableBody>
+                                    </Table>
                                 </View>
 
-                                <Text style={styles.details_header}>ePay: </Text>
+                                {/* ISI fields */}
                                 <View style={styles.row}>
-                                    <Text style={styles.details_label}>Difference: </Text>
-                                    <Text style={styles.details_content}>{this.diffFormatter(this.state.epayDiff)}</Text>
+                                    <Table style={styles.table} data={[{}]}>
+                                        <TableHeader>
+                                            <TableCell style={styles.figures_header}>Instant Scratch-Its</TableCell>
+                                        </TableHeader>
+                                        <TableBody style={styles.table_cell}>
+                                            <TableCell>
+                                                <Text style={styles.figures_label_bottom}>Difference:</Text>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Text style={styles.figures_content_bottom}>{this.diffFormatter(this.state.isiDiff)}</Text>
+                                            </TableCell>
+                                        </TableBody>
+                                    </Table>
                                 </View>
 
-                                <Text style={styles.details_header}>Lotto: </Text>
+                                {/* ePay fields */}
                                 <View style={styles.row}>
-                                    <Text style={styles.details_label}>Terminal Report: </Text>
-                                    <Text style={styles.details_content}>{this.totalFormatter(this.state.lottoActual)}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Register: </Text>
-                                    <Text style={styles.details_content}>{this.totalFormatter(this.state.lottoRegister)}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Difference: </Text>
-                                    <Text style={styles.details_content}>{this.diffFormatter(this.state.lottoDiff)}</Text>
-                                </View>
-
-                                <Text style={styles.details_header}>Lotto Payouts: </Text>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Terminal Report: </Text>
-                                    <Text style={styles.details_content}>{this.totalFormatter(this.state.lottoPayActual)}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Register: </Text>
-                                    <Text style={styles.details_content}>{this.totalFormatter(this.state.lottoPayRegister)}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Difference: </Text>
-                                    <Text style={styles.details_content}>{this.diffFormatter(this.state.lottoPayDiff)}</Text>
+                                    <Table style={styles.table} data={[{}]}>
+                                        <TableHeader>
+                                            <TableCell style={styles.figures_header}>ePay</TableCell>
+                                        </TableHeader>
+                                        <TableBody style={styles.table_cell}>
+                                            <TableCell>
+                                                <Text style={styles.figures_label}>Actual:</Text>
+                                                <Text style={styles.figures_label}>Register:</Text>
+                                                <Text style={styles.figures_label_bottom}>Difference:</Text>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.epayActual)}</Text>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.epayRegister)}</Text>
+                                                <Text style={styles.figures_content_bottom}>{this.diffFormatter(this.state.epayDiff)}</Text>
+                                            </TableCell>
+                                        </TableBody>
+                                    </Table>
                                 </View>
 
-                                <Text style={styles.details_header}>Instants Payouts: </Text>
+                                {/* Lotto pay fields */}
                                 <View style={styles.row}>
-                                    <Text style={styles.details_label}>Terminal Report: </Text>
-                                    <Text style={styles.details_content}>{this.totalFormatter(this.state.isiPayActual)}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Register: </Text>
-                                    <Text style={styles.details_content}>{this.totalFormatter(this.state.isiPayRegister)}</Text>
-                                </View>
-                                <View style={styles.row}>
-                                    <Text style={styles.details_label}>Difference: </Text>
-                                    <Text style={styles.details_content}>{this.diffFormatter(this.state.isiPayDiff)}</Text>
+                                    <Table style={styles.table} data={[{}]}>
+                                        <TableHeader>
+                                            <TableCell style={styles.figures_header}>Lotto Payouts</TableCell>
+                                        </TableHeader>
+                                        <TableBody style={styles.table_cell}>
+                                            <TableCell>
+                                                <Text style={styles.figures_label}>Lotto Report:</Text>
+                                                <Text style={styles.figures_label}>Register:</Text>
+                                                <Text style={styles.figures_label_bottom}>Difference:</Text>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.lottoPayActual)}</Text>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.lottoPayRegister)}</Text>
+                                                <Text style={styles.figures_content_bottom}>{this.diffFormatter(this.state.lottoPayDiff)}</Text>
+                                            </TableCell>
+                                        </TableBody>
+                                    </Table>
                                 </View>
 
-                                <Text style={styles.details_header}>Instants: </Text>
+                                {/* ISI pay fields */}
                                 <View style={styles.row}>
-                                    <Text style={styles.details_label}>Difference: </Text>
-                                    <Text style={styles.details_content}>{this.diffFormatter(this.state.isiDiff)}</Text>
+                                    <Table style={styles.table} data={[{}]}>
+                                        <TableHeader>
+                                            <TableCell style={styles.figures_header}>Instant Scratch-Its Payouts</TableCell>
+                                        </TableHeader>
+                                        <TableBody style={styles.table_cell}>
+                                            <TableCell>
+                                                <Text style={styles.figures_label}>Lotto Report:</Text>
+                                                <Text style={styles.figures_label}>Register:</Text>
+                                                <Text style={styles.figures_label_bottom}>Difference:</Text>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.isiPayActual)}</Text>
+                                                <Text style={styles.figures_content}>{this.totalFormatter(this.state.isiPayRegister)}</Text>
+                                                <Text style={styles.figures_content_bottom}>{this.diffFormatter(this.state.isiPayDiff)}</Text>
+                                            </TableCell>
+                                        </TableBody>
+                                    </Table>
                                 </View>
 
-                                <Text style={styles.details_header}>Total Difference: </Text>
+                                {/* Total difference fields */}
                                 <View style={styles.row}>
-                                    <Text style={styles.details_label}>Difference: </Text>
-                                    <Text style={styles.details_content}>{this.diffFormatter(this.state.totalDiff)}</Text>
+                                    <Table style={styles.table} data={[{}]}>
+                                        <TableHeader>
+                                            <TableCell style={styles.figures_header}>Total Difference</TableCell>
+                                        </TableHeader>
+                                        <TableBody style={styles.table_cell}>
+                                            <TableCell>
+                                                <Text style={styles.figures_label_bottom}>Difference:</Text>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Text style={styles.figures_content_bottom}>{this.diffFormatter(this.state.totalDiff)}</Text>
+                                            </TableCell>
+                                        </TableBody>
+                                    </Table>
                                 </View>
+
+
+
+
+
                             </Page>
                         </Document>
                     </PDFViewer>
