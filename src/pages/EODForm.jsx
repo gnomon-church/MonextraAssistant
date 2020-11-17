@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
-import { withRouter } from "react-router-dom";
-import { Accordion, Card, Form, InputGroup, FormControl, Button, OverlayTrigger, Tooltip, Navbar, FormGroup } from 'react-bootstrap';
+import { Accordion, Card, Form, InputGroup, FormControl, Button, OverlayTrigger, Tooltip, Navbar } from 'react-bootstrap';
 
 import './EODForm.css'
 
@@ -117,6 +115,13 @@ export default class EODForm extends Component {
         }
     }
 
+    // componentDidMount() {
+    //     if (localStorage.getItem('state') !== 'undefined') {
+    //         this.state = JSON.parse(localStorage.getItem('state'));
+    //     }
+    //     console.log(this.state)
+    // }
+
     handleChange(event) {
         this.setState({ [event.target.name]: event.target.value }, () => {
             this.calculator();
@@ -159,7 +164,7 @@ export default class EODForm extends Component {
                             </Tooltip>
                         }
                     >
-                        <Button variant='outline-secondary'>?</Button>
+                        <Button variant='outline-secondary' tabIndex="-1">?</Button>
                     </OverlayTrigger>
                 </InputGroup.Append>
             </InputGroup>
@@ -174,7 +179,7 @@ export default class EODForm extends Component {
                     <InputGroup.Text>$</InputGroup.Text>
                 </InputGroup.Prepend>
                 <FormControl disabled
-                    placeholder='temp placeholder'
+                    placeholder={props.data}
                 />
                 <InputGroup.Append>
                     <OverlayTrigger
@@ -186,7 +191,7 @@ export default class EODForm extends Component {
                             </Tooltip>
                         }
                     >
-                        <Button variant='outline-secondary'>?</Button>
+                        <Button variant='outline-secondary' tabIndex="-1">?</Button>
                     </OverlayTrigger>
                 </InputGroup.Append>
             </InputGroup>
@@ -203,12 +208,14 @@ export default class EODForm extends Component {
                 <FormControl type='text'
                     name={props.fieldName}
                     onChange={this.numberParse.bind(this)}
+                    placeholder={props.data}
                 />
             </InputGroup>
         )
     }
 
     InputNoHelpDisabled = (props) => {
+        console.log(this.state)
         return (
             <InputGroup className='mb-3'>
                 <InputGroup.Prepend>
@@ -267,6 +274,7 @@ export default class EODForm extends Component {
                                 </InputGroup.Prepend>
                                 <FormControl type='text'
                                     name='staff'
+                                    placeholder={this.state.staff}
                                     onChange={this.handleChange.bind(this)}
                                 />
                             </InputGroup>
@@ -283,15 +291,15 @@ export default class EODForm extends Component {
                                 <Card.Body>
                                     <this.InputHelp label='Payouts Used' tooltip='Payout money used (if any)' fieldName='usedPayouts' />
                                     <this.InputHelp label='Put Aside' tooltip='Money put aside for payouts / money put in safe (if any)' fieldName='putAside' />
-                                    <this.InputNoHelp label="$100's" fieldName='hundreds' />
-                                    <this.InputNoHelp label="$50's" fieldName='fifties' />
-                                    <this.InputNoHelp label="$20's" fieldName='twenties' />
-                                    <this.InputNoHelp label="$10's" fieldName='tens' />
-                                    <this.InputNoHelp label="$5's" fieldName='fives' />
-                                    <this.InputNoHelp label='Coins' fieldName='coins' />
+                                    <this.InputNoHelp label="$100's" fieldName='hundreds' data={this.state.hundreds} />
+                                    <this.InputNoHelp label="$50's" fieldName='fifties' data={this.state.fifties} />
+                                    <this.InputNoHelp label="$20's" fieldName='twenties' data={this.state.twenties} />
+                                    <this.InputNoHelp label="$10's" fieldName='tens' data={this.state.tens} />
+                                    <this.InputNoHelp label="$5's" fieldName='fives' data={this.state.fives} />
+                                    <this.InputNoHelp label='Coins' fieldName='coins' data={this.state.coins} />
                                     <this.InputNoHelpDisabled label='Total' fieldName='cashActual' data={this.state.cashActual} />
                                     <hr />
-                                    <this.InputHelp label='Register' tooltip='Cash in drawer figure from register' fieldName='cashRegister' />
+                                    <this.InputHelp label='Register' tooltip='Cash in drawer figure from register' fieldName='cashRegister' data={this.state.cashRegister} />
                                     <hr />
                                     <this.InputNoHelpDisabled label='Difference' fieldName='cashDiff' data={this.state.cashDiff} />
                                 </Card.Body>

@@ -13,19 +13,19 @@ export default class Start extends Component {
                         <Card.Body>
                             <Card.Title>End of Day Form</Card.Title>
                             <Card.Text>
-                                Use this form the complete the End of Day
+                                Use this form the complete the End of Day report
                         </Card.Text>
-                            <Button href='/eodform' variant="danger">Begin!</Button>
+                            <Button href='/eodform' variant="danger">Start!</Button>
                         </Card.Body>
                     </Card>
 
                     <Card style={{ width: '18rem' }}>
                         <Card.Body>
-                            <Card.Title>ISI Reconciliation Form</Card.Title>
+                            <Card.Title>Access Previous EOD</Card.Title>
                             <Card.Text>
                                 This is not yet a working function, please do not try to use it!
                         </Card.Text>
-                            <Button variant="danger" disabled>Begin!</Button>
+                            <Button variant="danger" disabled>Start!</Button>
                         </Card.Body>
                     </Card>
                 </CardDeck>

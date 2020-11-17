@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Navbar, Button } from 'react-bootstrap';
-import { Page, Text, View, Document, StyleSheet, PDFViewer, Font } from '@react-pdf/renderer';
-import { Table, TableHeader, TableCell, TableBody, DataTableCell } from '@david.kucsai/react-pdf-table'
+import { Page, Text, View, Document, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { Table, TableHeader, TableCell, TableBody } from '@david.kucsai/react-pdf-table'
 
 import './ReportView.css'
 
@@ -80,7 +80,7 @@ export default class ReportView extends Component {
 
         if (props !== '') {
             val = '$' + props
-        } else if (props === '') {
+        } else if (props === '' || props === '0.00') {
             val = '-'
         }
 
