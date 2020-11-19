@@ -4,6 +4,7 @@ import { Page, Text, View, Document, StyleSheet, PDFViewer } from '@react-pdf/re
 import { Table, TableHeader, TableCell, TableBody } from '@david.kucsai/react-pdf-table'
 
 import './ReportView.css'
+import axios from 'axios';
 
 // Create styles
 const styles = StyleSheet.create({
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
 
 
 export default class ReportView extends Component {
-    state = JSON.parse(localStorage.getItem('state'))
+    // state = JSON.parse(localStorage.getItem('state'))
 
     Navigation = (props) => {
         return (
@@ -115,6 +116,10 @@ export default class ReportView extends Component {
         return (day)
     }
 
+    componentDidMount() {
+        axios.get()
+    }
+
     render() {
         return (
             <div>
@@ -123,7 +128,7 @@ export default class ReportView extends Component {
                     <PDFViewer className='viewer-window'>
                         <Document>
                             <Page size="A4" style={styles.page}>
-                                <Text style={styles.store_name}>Nextra Morayfield {this.state.store} News</Text>
+                                <Text style={styles.store_name}>Nextra Morayfield {localStorage.getItem('store')} News</Text>
 
 
                                 <View style={styles.row}>
@@ -134,8 +139,8 @@ export default class ReportView extends Component {
                                             <TableCell style={styles.details_label}>Staff</TableCell>
                                         </TableHeader>
                                         <TableBody>
-                                            <TableCell style={styles.details_content}>{this.dayFetcher(this.state.date)}</TableCell>
-                                            <TableCell style={styles.details_content}>{this.state.date}</TableCell>
+                                            <TableCell style={styles.details_content}>{this.dayFetcher(localStorage.getItem('date'))}</TableCell>
+                                            <TableCell style={styles.details_content}>{localStorage.getItem('date')}</TableCell>
                                             <TableCell style={styles.details_content}>{this.state.staff}</TableCell>
                                         </TableBody>
                                     </Table>

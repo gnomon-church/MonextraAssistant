@@ -5,51 +5,51 @@ import axios from 'axios'
 import './EODForm.css'
 
 let date = new Date()
-let today = date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear();
+let today = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
 
 export default class EODForm extends Component {
     state = {
         store: "",
         date: today,
         staff: "",
-        usedPayouts: "",
-        putAside: "",
-        hundreds: "",
-        fifties: "",
-        twenties: "",
-        tens: "",
-        fives: "",
-        coins: "",
-        cashActual: "",
-        cashRegister: "",
-        cashDiff: "",
-        eftposOne: "",
-        eftposTwo: "",
-        eftposThree: "",
-        eftposPrev: "",
-        eftposActual: "",
-        eftposRegister: "",
-        eftposDiff: "",
-        epayActual: "",
-        epayRegister: "",
-        epayDiff: "",
-        lottoGross: "",
-        isiCommission: "",
-        isiNet: "",
-        lottoActual: "",
-        lottoRegister: "",
-        lottoDiff: "",
-        isiDiff: "",
-        totalPrizes: "",
-        isiCash: "",
-        lottoPayActual: "",
-        lottoPayRegister: "",
-        lottoPayDiff: "",
-        isiFree: "",
-        isiPayActual: "",
-        isiPayRegister: "",
-        isiPayDiff: "",
-        totalDiff: ""
+        usedPayouts: 0.00,
+        putAside: 0.00,
+        hundreds: 0.00,
+        fifties: 0.00,
+        twenties: 0.00,
+        tens: 0.00,
+        fives: 0.00,
+        coins: 0.00,
+        cashActual: 0.00,
+        cashRegister: 0.00,
+        cashDiff: 0.00,
+        eftposOne: 0.00,
+        eftposTwo: 0.00,
+        eftposThree: 0.00,
+        eftposPrev: 0.00,
+        eftposActual: 0.00,
+        eftposRegister: 0.00,
+        eftposDiff: 0.00,
+        epayActual: 0.00,
+        epayRegister: 0.00,
+        epayDiff: 0.00,
+        lottoGross: 0.00,
+        isiCommission: 0.00,
+        isiNet: 0.00,
+        lottoActual: 0.00,
+        lottoRegister: 0.00,
+        lottoDiff: 0.00,
+        isiDiff: 0.00,
+        totalPrizes: 0.00,
+        isiCash: 0.00,
+        lottoPayActual: 0.00,
+        lottoPayRegister: 0.00,
+        lottoPayDiff: 0.00,
+        isiFree: 0.00,
+        isiPayActual: 0.00,
+        isiPayRegister: 0.00,
+        isiPayDiff: 0.00,
+        totalDiff: 0.00
     }
 
     calculator() {
@@ -122,9 +122,24 @@ export default class EODForm extends Component {
     }
 
     viewReport = () => {
-        axios.post('/api/figures-upload', this.state)
+        // axios.post('/api/figures-upload', this.state)
         // console.log(this.state)
         // localStorage.state = JSON.stringify(this.state);
+        localStorage.date = this.state.date;
+        localStorage.store = this.state.store;
+
+        console.log('HERE');
+
+        // axios.get(`/api/figures-download/${this.state.store}/${this.state.date}`).then((res) =>
+        //     console.log(res.data));
+
+        axios.get(`http://localhost:5000/api/figures-download/Plaza/19-11-2020`).then((res) => {
+            console.log('THERE');
+            console.log(res);
+        });
+
+        console.log('EVERYWHERE')
+        
     }
 
     Navigation = (props) => {
@@ -209,7 +224,6 @@ export default class EODForm extends Component {
     }
 
     InputNoHelpDisabled = (props) => {
-        console.log(this.state)
         return (
             <InputGroup className='mb-3'>
                 <InputGroup.Prepend>
@@ -285,15 +299,15 @@ export default class EODForm extends Component {
                                 <Card.Body>
                                     <this.InputHelp label='Payouts Used' tooltip='Payout money used (if any)' fieldName='usedPayouts' />
                                     <this.InputHelp label='Put Aside' tooltip='Money put aside for payouts / money put in safe (if any)' fieldName='putAside' />
-                                    <this.InputNoHelp label="$100's" fieldName='hundreds' data={this.state.hundreds} />
-                                    <this.InputNoHelp label="$50's" fieldName='fifties' data={this.state.fifties} />
-                                    <this.InputNoHelp label="$20's" fieldName='twenties' data={this.state.twenties} />
-                                    <this.InputNoHelp label="$10's" fieldName='tens' data={this.state.tens} />
-                                    <this.InputNoHelp label="$5's" fieldName='fives' data={this.state.fives} />
-                                    <this.InputNoHelp label='Coins' fieldName='coins' data={this.state.coins} />
+                                    <this.InputNoHelp label="$100's" fieldName='hundreds' />
+                                    <this.InputNoHelp label="$50's" fieldName='fifties' />
+                                    <this.InputNoHelp label="$20's" fieldName='twenties' />
+                                    <this.InputNoHelp label="$10's" fieldName='tens' />
+                                    <this.InputNoHelp label="$5's" fieldName='fives' />
+                                    <this.InputNoHelp label='Coins' fieldName='coins' />
                                     <this.InputNoHelpDisabled label='Total' fieldName='cashActual' data={this.state.cashActual} />
                                     <hr />
-                                    <this.InputHelp label='Register' tooltip='Cash in drawer figure from register' fieldName='cashRegister' data={this.state.cashRegister} />
+                                    <this.InputHelp label='Register' tooltip='Cash in drawer figure from register' fieldName='cashRegister' />
                                     <hr />
                                     <this.InputNoHelpDisabled label='Difference' fieldName='cashDiff' data={this.state.cashDiff} />
                                 </Card.Body>
