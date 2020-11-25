@@ -14,11 +14,10 @@ const figuresDownload = (req, res, next) => {
     client.connect();
 
     client
-        // .query("SELECT * FROM eod_figures WHERE store = 'Plaza' AND date = '19-11-2020';", /* [req.params.Store, req.params.Date] */)
-        .query("SELECT * FROM eod_figures")
-        // .catch(e => console.error(e.stack))
-        .then(() => client.end())
-        .then(res.status(200))
+        .query("SELECT * FROM eod_figures WHERE store = $1 AND date = $2;", [req.params.Store, req.params.Date])
+        .then((rows) => {
+            res.json(rows)
+        })
 }
 
 const figuresUpload = (req, res, next) => {

@@ -128,18 +128,13 @@ export default class EODForm extends Component {
         localStorage.date = this.state.date;
         localStorage.store = this.state.store;
 
-        console.log('HERE');
+        let download_url = '/api/figures-download/' + this.state.store + '/' + this.state.date
 
-        // axios.get(`/api/figures-download/${this.state.store}/${this.state.date}`).then((res) =>
-        //     console.log(res.data));
+        axios.get(download_url)
+            .then((res) => console.log(res.data.rows)); 
 
-        axios.get(`http://localhost:5000/api/figures-download/Plaza/19-11-2020`).then((res) => {
-            console.log('THERE');
-            console.log(res);
-        });
-
-        console.log('EVERYWHERE')
-        
+        // axios.get(`http://localhost:5000/api/figures-download/Plaza/19-11-2020`)
+        //     .then((res) => console.log(res.data.rows)); 
     }
 
     Navigation = (props) => {
