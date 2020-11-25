@@ -122,9 +122,8 @@ export default class EODForm extends Component {
     }
 
     viewReport = () => {
-        // axios.post('/api/figures-upload', this.state)
-        // console.log(this.state)
-        // localStorage.state = JSON.stringify(this.state);
+        axios.post('/api/figures-upload', this.state)
+
         localStorage.date = this.state.date;
         localStorage.store = this.state.store;
 
@@ -132,9 +131,6 @@ export default class EODForm extends Component {
 
         axios.get(download_url)
             .then((res) => console.log(res.data.rows)); 
-
-        // axios.get(`http://localhost:5000/api/figures-download/Plaza/19-11-2020`)
-        //     .then((res) => console.log(res.data.rows)); 
     }
 
     Navigation = (props) => {
