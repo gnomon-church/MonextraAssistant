@@ -1,106 +1,119 @@
 import React, { Component } from 'react';
 import { Accordion, Card, Form, InputGroup, FormControl, Button, OverlayTrigger, Tooltip, Navbar } from 'react-bootstrap';
-import axios from 'axios'
+import axios from 'axios';
+import DatePicker from 'react-datepicker';
 
-import './EODForm.css'
+import "react-datepicker/dist/react-datepicker.css";
 
-let date = new Date()
+import './EODForm.css';
+
+let date = new Date();
 let today = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
 
+var figures = {
+    store: "",
+    date: today,
+    staff: "",
+    usedPayouts: 0.00,
+    putAside: 0.00,
+    hundreds: 0.00,
+    fifties: 0.00,
+    twenties: 0.00,
+    tens: 0.00,
+    fives: 0.00,
+    coins: 0.00,
+    cashActual: 0.00,
+    cashRegister: 0.00,
+    cashDiff: 0.00,
+    eftposOne: 0.00,
+    eftposTwo: 0.00,
+    eftposThree: 0.00,
+    eftposPrev: 0.00,
+    eftposActual: 0.00,
+    eftposRegister: 0.00,
+    eftposDiff: 0.00,
+    epayActual: 0.00,
+    epayRegister: 0.00,
+    epayDiff: 0.00,
+    lottoGross: 0.00,
+    isiCommission: 0.00,
+    isiNet: 0.00,
+    lottoActual: 0.00,
+    lottoRegister: 0.00,
+    lottoDiff: 0.00,
+    isiDiff: 0.00,
+    totalPrizes: 0.00,
+    isiCash: 0.00,
+    lottoPayActual: 0.00,
+    lottoPayRegister: 0.00,
+    lottoPayDiff: 0.00,
+    isiFree: 0.00,
+    isiPayActual: 0.00,
+    isiPayRegister: 0.00,
+    isiPayDiff: 0.00,
+    totalDiff: 0.00
+};
+
+
 export default class EODForm extends Component {
-    state = {
-        store: "",
-        date: today,
-        staff: "",
-        usedPayouts: 0.00,
-        putAside: 0.00,
-        hundreds: 0.00,
-        fifties: 0.00,
-        twenties: 0.00,
-        tens: 0.00,
-        fives: 0.00,
-        coins: 0.00,
-        cashActual: 0.00,
-        cashRegister: 0.00,
-        cashDiff: 0.00,
-        eftposOne: 0.00,
-        eftposTwo: 0.00,
-        eftposThree: 0.00,
-        eftposPrev: 0.00,
-        eftposActual: 0.00,
-        eftposRegister: 0.00,
-        eftposDiff: 0.00,
-        epayActual: 0.00,
-        epayRegister: 0.00,
-        epayDiff: 0.00,
-        lottoGross: 0.00,
-        isiCommission: 0.00,
-        isiNet: 0.00,
-        lottoActual: 0.00,
-        lottoRegister: 0.00,
-        lottoDiff: 0.00,
-        isiDiff: 0.00,
-        totalPrizes: 0.00,
-        isiCash: 0.00,
-        lottoPayActual: 0.00,
-        lottoPayRegister: 0.00,
-        lottoPayDiff: 0.00,
-        isiFree: 0.00,
-        isiPayActual: 0.00,
-        isiPayRegister: 0.00,
-        isiPayDiff: 0.00,
-        totalDiff: 0.00
+    constructor(props) {
+        super(props);
+        this.state = {
+            startDate: today,
+            datePickerIsOpen: false,
+        };
+        this.dateSet = this.dateSet.bind(this)
+        this.openDatePicker = this.openDatePicker.bind(this);
     }
 
+    
     calculator() {
-        let cashActual_var = (Number(this.state['putAside']) +
-            Number(this.state['hundreds']) +
-            Number(this.state['fifties']) +
-            Number(this.state['twenties']) +
-            Number(this.state['tens']) +
-            Number(this.state['fives']) +
-            Number(this.state['coins']) -
-            Number(this.state['usedPayouts'])).toFixed(2)
-        let eftposActual_var = ((Number(this.state['eftposOne']) +
-            Number(this.state['eftposTwo']) +
-            Number(this.state['eftposThree'])) -
-            Number(this.state['eftposPrev'])).toFixed(2)
-        let lottoActual_var = (Number(this.state['lottoGross']) -
-            Number(this.state['isiNet']) -
-            Number(this.state['isiCommission'])).toFixed(2)
-        let lottoPayActual_var = (Number(this.state['totalPrizes']) - Number(this.state['isiCash'])).toFixed(2)
-        let isiPayActual_var = (Number(this.state['isiFree']) + Number(this.state['isiCash'])).toFixed(2)
+        let cashActual_var = (Number(figures['putAside']) +
+            Number(figures['hundreds']) +
+            Number(figures['fifties']) +
+            Number(figures['twenties']) +
+            Number(figures['tens']) +
+            Number(figures['fives']) +
+            Number(figures['coins']) -
+            Number(figures['usedPayouts'])).toFixed(2)
+        let eftposActual_var = ((Number(figures['eftposOne']) +
+            Number(figures['eftposTwo']) +
+            Number(figures['eftposThree'])) -
+            Number(figures['eftposPrev'])).toFixed(2)
+        let lottoActual_var = (Number(figures['lottoGross']) -
+            Number(figures['isiNet']) -
+            Number(figures['isiCommission'])).toFixed(2)
+        let lottoPayActual_var = (Number(figures['totalPrizes']) - Number(figures['isiCash'])).toFixed(2)
+        let isiPayActual_var = (Number(figures['isiFree']) + Number(figures['isiCash'])).toFixed(2)
 
-        this.setState({
-            cashActual: cashActual_var,
-            eftposActual: eftposActual_var,
-            lottoActual: lottoActual_var,
-            lottoPayActual: lottoPayActual_var,
-            isiPayActual: isiPayActual_var,
 
-        }, () => {
-            let cashDiff_var = (Number(this.state['cashActual']) - Number(this.state['cashRegister'])).toFixed(2)
-            let eftposDiff_var = (Number(this.state['eftposActual']) - Number(this.state['eftposRegister'])).toFixed(2)
-            let epayDiff_var = (Number(this.state['epayRegister']) - Number(this.state['epayActual'])).toFixed(2)
-            let lottoDiff_var = (Number(this.state['lottoRegister']) - Number(this.state['lottoActual'])).toFixed(2)
-            let lottoPayDiff_var = (Number(this.state['lottoPayActual']) - Number(this.state['lottoPayRegister'])).toFixed(2)
-            let isiPayDiff_var = (Number(this.state['isiPayActual']) - Number(this.state['isiPayRegister'])).toFixed(2)
 
-            this.setState({
-                cashDiff: cashDiff_var,
-                eftposDiff: eftposDiff_var,
-                epayDiff: epayDiff_var,
-                lottoDiff: lottoDiff_var,
-                lottoPayDiff: lottoPayDiff_var,
-                isiPayDiff: isiPayDiff_var
-            }, () => {
-                let totalDiff_var = (((Number(this.state['cashActual']) + Number(this.state['eftposActual']) + Number(this.state['isiPayActual']) + Number(this.state['lottoPayActual'])) - (Number(this.state['cashRegister']) + Number(this.state['eftposRegister']) + Number(this.state['isiPayRegister']) + Number(this.state['lottoPayRegister']))) + Number(this.state['epayDiff']) + Number(this.state['isiDiff']) + Number(this.state['lottoDiff'])).toFixed(2)
+        let cashDiff_var = (Number(figures['cashActual']) - Number(figures['cashRegister'])).toFixed(2)
+        let eftposDiff_var = (Number(figures['eftposActual']) - Number(figures['eftposRegister'])).toFixed(2)
+        let epayDiff_var = (Number(figures['epayRegister']) - Number(figures['epayActual'])).toFixed(2)
+        let lottoDiff_var = (Number(figures['lottoRegister']) - Number(figures['lottoActual'])).toFixed(2)
+        let lottoPayDiff_var = (Number(figures['lottoPayActual']) - Number(figures['lottoPayRegister'])).toFixed(2)
+        let isiPayDiff_var = (Number(figures['isiPayActual']) - Number(figures['isiPayRegister'])).toFixed(2)
 
-                this.setState({
-                    totalDiff: totalDiff_var
-                })
-            })
-        })
+
+        let totalDiff_var = (((Number(figures['cashActual']) + Number(figures['eftposActual']) + Number(figures['isiPayActual']) + Number(figures['lottoPayActual'])) - (Number(figures['cashRegister']) + Number(figures['eftposRegister']) + Number(figures['isiPayRegister']) + Number(figures['lottoPayRegister']))) + Number(figures['epayDiff']) + Number(figures['isiDiff']) + Number(figures['lottoDiff'])).toFixed(2)
+
+
+        figures.cashActual = cashActual_var;
+        figures.eftposActual = eftposActual_var;
+        figures.lottoActual = lottoActual_var;
+        figures.lottoPayActual = lottoPayActual_var;
+        figures.isiPayActual = isiPayActual_var;
+
+        figures.cashDiff = cashDiff_var;
+        figures.eftposDiff = eftposDiff_var;
+        figures.epayDiff = epayDiff_var;
+        figures.lottoDiff = lottoDiff_var;
+        figures.lottoPayDiff = lottoPayDiff_var;
+        figures.isiPayDiff = isiPayDiff_var;
+
+        figures.totalDiff = totalDiff_var;
+
     }
 
     numberParse(event) {
@@ -111,7 +124,7 @@ export default class EODForm extends Component {
             event.target.value = val[0];
             this.handleChange(event);
         } else {
-            event.target.value = this.state[event.target.name]
+            event.target.value = figures[event.target.name]
         }
     }
 
@@ -122,15 +135,15 @@ export default class EODForm extends Component {
     }
 
     viewReport = () => {
-        axios.post('/api/figures-upload', this.state)
+        axios.post('/api/figures-upload', figures)
 
-        localStorage.date = this.state.date;
-        localStorage.store = this.state.store;
+        localStorage.date = figures.date;
+        localStorage.store = figures.store;
 
-        let download_url = '/api/figures-download/' + this.state.store + '/' + this.state.date
+        let download_url = '/api/figures-download/' + figures.store + '/' + figures.date
 
-        axios.get(download_url)
-            .then((res) => console.log(res.data.rows)); 
+        // axios.get(download_url)
+        //     .then((res) => console.log(res.data.rows)); 
     }
 
     Navigation = (props) => {
@@ -226,7 +239,19 @@ export default class EODForm extends Component {
                 />
             </InputGroup>
         )
-    }
+    };
+
+    dateSet = (date) => {
+        this.setState({
+            startDate: date
+        });
+    };
+
+    openDatePicker = () => {
+        this.setState({
+            datePickerIsOpen: !this.state.datePickerIsOpen
+        });
+    };
 
     render() {
         return (
@@ -258,14 +283,29 @@ export default class EODForm extends Component {
 
                             <InputGroup className='mb-3'>
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text id='basic-addon1'>Date</InputGroup.Text>
+                                    {/* <InputGroup.Text id='basic-addon1'>Date</InputGroup.Text> */}
+                                    <Button variant='danger' onClick={this.openDatePicker}>Select Date</Button>
+
                                 </InputGroup.Prepend>
-                                <FormControl type='text'
-                                    placeholder={this.state['date']}
-                                    name='date'
-                                    onChange={this.handleChange.bind(this)}
+                                <DatePicker
+                                    onChange={(date) => this.dateSet(date)}
+                                    onClickOutside={this.openDatePicker}
+                                    onSelect={this.openDatePicker}
+                                    open={this.state.datePickerIsOpen}
+                                    selected={this.startDate}
+                                    customInput={
+                                        <FormControl type='text'
+                                            placeholder={this.startDate}
+                                            name='date'
+                                            onClick={this.openDatePicker}
+                                        // onChange={this.handleChange.bind(this)}
+                                        />
+                                    }
                                 />
+
                             </InputGroup>
+
+
 
                             <InputGroup className='mb-3'>
                                 <InputGroup.Prepend>
@@ -273,7 +313,7 @@ export default class EODForm extends Component {
                                 </InputGroup.Prepend>
                                 <FormControl type='text'
                                     name='staff'
-                                    placeholder={this.state.staff}
+                                    placeholder={figures.staff}
                                     onChange={this.handleChange.bind(this)}
                                 />
                             </InputGroup>
@@ -296,11 +336,11 @@ export default class EODForm extends Component {
                                     <this.InputNoHelp label="$10's" fieldName='tens' />
                                     <this.InputNoHelp label="$5's" fieldName='fives' />
                                     <this.InputNoHelp label='Coins' fieldName='coins' />
-                                    <this.InputNoHelpDisabled label='Total' fieldName='cashActual' data={this.state.cashActual} />
+                                    <this.InputNoHelpDisabled label='Total' fieldName='cashActual' data={figures.cashActual} />
                                     <hr />
                                     <this.InputHelp label='Register' tooltip='Cash in drawer figure from register' fieldName='cashRegister' />
                                     <hr />
-                                    <this.InputNoHelpDisabled label='Difference' fieldName='cashDiff' data={this.state.cashDiff} />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='cashDiff' data={figures.cashDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -316,11 +356,11 @@ export default class EODForm extends Component {
                                     <this.InputHelp label='Terminal 2' tooltip='Total of the second eftpos terminal' fieldName='eftposTwo' />
                                     <this.InputHelp label='Terminal 3' tooltip='Total of the third eftpos terminal (if applicable)' fieldName='eftposThree' />
                                     <this.InputHelp label='Previous Day' tooltip='Total of any eftpos machines used after 6:30pm on the previous day' fieldName='eftposPrev' />
-                                    <this.InputNoHelpDisabled label='Total' fieldName='eftposActual' data={this.state.eftposActual} />
+                                    <this.InputNoHelpDisabled label='Total' fieldName='eftposActual' data={figures.eftposActual} />
                                     <hr />
                                     <this.InputHelp label='Register' tooltip='Eftpos figure from the register' fieldName='eftposRegister' />
                                     <hr />
-                                    <this.InputNoHelpDisabled label='Difference' fieldName='eftposDiff' data={this.state.eftposDiff} />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='eftposDiff' data={figures.eftposDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -336,7 +376,7 @@ export default class EODForm extends Component {
                                     <hr />
                                     <this.InputHelp label='Register' tooltip='Epay figure from the register' fieldName='epayRegister' />
                                     <hr />
-                                    <this.InputNoHelpDisabled label='Difference' fieldName='epayDiff' data={this.state.epayDiff} />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='epayDiff' data={figures.epayDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -351,11 +391,11 @@ export default class EODForm extends Component {
                                     <this.InputHelp label='Gross Sales' tooltip='Gross sales figure from the lotto report' fieldName='lottoGross' />
                                     <this.InputHelp label='ISI Commission' tooltip='Instants commission figure from the lotto report' fieldName='isiCommission' />
                                     <this.InputHelp label='ISI Net Sales' tooltip='Instants net sales figure from the lotto report' fieldName='isiNet' />
-                                    <this.InputNoHelpDisabled label='Total' fieldName='lottoActual' data={this.state.lottoActual} />
+                                    <this.InputNoHelpDisabled label='Total' fieldName='lottoActual' data={figures.lottoActual} />
                                     <hr />
                                     <this.InputHelp label='Register' tooltip='Lotto sales figure from the register' fieldName='lottoRegister' />
                                     <hr />
-                                    <this.InputNoHelpDisabled label='Difference' fieldName='lottoDiff' data={this.state.lottoDiff} />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='lottoDiff' data={figures.lottoDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -380,12 +420,12 @@ export default class EODForm extends Component {
                             <Accordion.Collapse eventKey='5'>
                                 <Card.Body>
                                     <this.InputHelp label='Total Prizes Paid' tooltip='Total prizes paid figure from the lotto report' fieldName='totalPrizes' />
-                                    <this.InputHelp label='Instants Cash' tooltip='Instants cash figure from the lotto report' fieldName='isiCash' data={this.state.isiCash} />
-                                    <this.InputNoHelpDisabled label='Total' fieldName='lottoPayActual' data={this.state.lottoPayActual} />
+                                    <this.InputHelp label='Instants Cash' tooltip='Instants cash figure from the lotto report' fieldName='isiCash' data={figures.isiCash} />
+                                    <this.InputNoHelpDisabled label='Total' fieldName='lottoPayActual' data={figures.lottoPayActual} />
                                     <hr />
                                     <this.InputHelp label='Register' tooltip='Lotto payouts figure from the register' fieldName='lottoPayRegister' />
                                     <hr />
-                                    <this.InputNoHelpDisabled label='Difference' fieldName='lottoPayDiff' data={this.state.lottoPayDiff} />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='lottoPayDiff' data={figures.lottoPayDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -397,13 +437,13 @@ export default class EODForm extends Component {
                             </Accordion.Toggle>
                             <Accordion.Collapse eventKey='6'>
                                 <Card.Body>
-                                    <this.InputHelp label='Instants Cash' tooltip='Instants cash figure from the lotto report' fieldName='isiCash' data={this.state.isiCash} />
+                                    <this.InputHelp label='Instants Cash' tooltip='Instants cash figure from the lotto report' fieldName='isiCash' data={figures.isiCash} />
                                     <this.InputHelp label='Total Free Instants' tooltip='Total free instants figure from the lotto report' fieldName='isiFree' />
-                                    <this.InputNoHelpDisabled label='Total' fieldName='isiPayActual' data={this.state.isiPayActual} />
+                                    <this.InputNoHelpDisabled label='Total' fieldName='isiPayActual' data={figures.isiPayActual} />
                                     <hr />
                                     <this.InputHelp label='Register' tooltip='Instant Scratch-It figure from the register' fieldName='isiPayRegister' />
                                     <hr />
-                                    <this.InputNoHelpDisabled label='Difference' fieldName='isiPayDiff' data={this.state.isiPayDiff} />
+                                    <this.InputNoHelpDisabled label='Difference' fieldName='isiPayDiff' data={figures.isiPayDiff} />
                                 </Card.Body>
                             </Accordion.Collapse>
                         </Card>
@@ -417,7 +457,7 @@ export default class EODForm extends Component {
                             <InputGroup.Text>$</InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl disabled
-                            placeholder={this.state.totalDiff}
+                            placeholder={figures.totalDiff}
                         />
                     </InputGroup>
                 </div>

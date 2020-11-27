@@ -18,6 +18,7 @@ const figuresDownload = (req, res, next) => {
         .then((rows) => {
             res.json(rows)
         })
+        .then(() => client.end())
 }
 
 const figuresUpload = (req, res, next) => {
