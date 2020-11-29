@@ -13,9 +13,9 @@ export default class Start extends Component {
                         <Card.Body>
                             <Card.Title>End of Day Form</Card.Title>
                             <Card.Text>
-                                Use this form the complete the End of Day report
+                                Complete the End of Day report.
                         </Card.Text>
-                            <Button href='/eodform' variant="danger">Start!</Button>
+                            <Button href='/eodform' variant="danger" disabled>Start!</Button>
                         </Card.Body>
                     </Card>
 
@@ -26,6 +26,30 @@ export default class Start extends Component {
                                 This is not yet a working function, please do not try to use it!
                         </Card.Text>
                             <Button variant="danger" disabled>Start!</Button>
+                        </Card.Body>
+                    </Card>
+                </CardDeck>
+
+                    <br />
+
+                <CardDeck>
+                    <Card style={{ width: '18rem' }}>
+                        <Card.Body>
+                            <Card.Title>Receive ISI Shipment</Card.Title>
+                            <Card.Text>
+                                Enter in new ISI stock when a shipment arrives.
+                        </Card.Text>
+                            <Button variant="danger">Start!</Button>
+                        </Card.Body>
+                    </Card>
+
+                    <Card style={{ width: '18rem' }}>
+                        <Card.Body>
+                            <Card.Title>Sign Out ISI Stock</Card.Title>
+                            <Card.Text>
+                                Sign out ISI stock when it is needed.
+                        </Card.Text>
+                            <Button variant="danger">Start!</Button>
                         </Card.Body>
                     </Card>
                 </CardDeck>
