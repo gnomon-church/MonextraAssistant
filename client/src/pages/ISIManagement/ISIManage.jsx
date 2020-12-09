@@ -1,11 +1,9 @@
-import { Component } from "react";
+import React from "react";
 
-export default class ISIManage extends Component {
-    render() {
-        return (
-            <div>
-                
-            </div>
-        )
-    }
+export default function ISIManage() {
+    return (
+        <div>
+
+        </div>
+    )
 }

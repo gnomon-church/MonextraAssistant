@@ -1,11 +1,9 @@
-import { Component } from "react";
+import React from "react";
 
-export default class ISIReceive extends Component {
-    render() {
-        return (
-            <div>
-                
-            </div>
-        )
-    }
+export default function ISIReceive() {
+    return (
+        <div>
+
+        </div>
+    )
 }

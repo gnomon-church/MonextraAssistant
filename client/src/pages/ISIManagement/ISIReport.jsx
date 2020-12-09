@@ -1,11 +1,9 @@
-import { Component } from "react";
+import React from "react";
 
-export default class ISIReport extends Component {
-    render() {
-        return (
-            <div>
-                
-            </div>
-        )
-    }
+export default function ISIReport() {
+    return (
+        <div>
+
+        </div>
+    )
 }
