@@ -1,14 +1,13 @@
-import React, { Component } from 'react';
-import { Card, CardDeck, Button } from 'react-bootstrap';
+import React from 'react';
+import { Card, CardDeck } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/style.css';
 
-export default class Start extends Component {
-    render() {
-        return (
-            <div id='card-deck-set'>
-                <CardDeck>
+export default function Start() {
+    return (
+        <div id='card-deck-set'>
+            {/* <CardDeck>
                     <Card as='a' href='/eodform' className='card-list' style={{ width: '18rem' }}>
                         <Card.Body>
                             <Card.Title>End of Day Form</Card.Title>
@@ -28,21 +27,20 @@ export default class Start extends Component {
                     </Card>
                 </CardDeck>
 
-                <br />
+                <br /> */}
 
-                <CardDeck>
-                    <Card as='a' href='/isimanagement' className='card-list' style={{ width: '18rem' }}>
-                        <Card.Body>
-                            <Card.Title>ISI Management</Card.Title>
-                            <Card.Text>
-                                Manage the ISI stock.
+            <CardDeck>
+                <Card as='a' href='/isimanagement' className='card-list' style={{ width: '18rem' }}>
+                    <Card.Body>
+                        <Card.Title>ISI Management</Card.Title>
+                        <Card.Text>
+                            Manage the ISI stock.
                         </Card.Text>
-                        </Card.Body>
-                    </Card>
-                </CardDeck>
+                    </Card.Body>
+                </Card>
+            </CardDeck>
 
 
-            </div>
-        );
-    }
+        </div>
+    );
 }
