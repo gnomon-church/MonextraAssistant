@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { Navbar, Button } from 'react-bootstrap';
 import { Page, Text, View, Document, StyleSheet, PDFViewer } from '@react-pdf/renderer';
-import { Table, TableHeader, TableCell, TableBody } from '@david.kucsai/react-pdf-table'
-
-import './ReportView.css'
+import { Table, TableHeader, TableCell, TableBody } from '@david.kucsai/react-pdf-table';
 import axios from 'axios';
+
+import '../styles/central_styles.css';
+import '../styles/ReportView.css';
 
 // Create styles
 const styles = StyleSheet.create({

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card, CardDeck, Button } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Start.css'
+import '../styles/central_styles.css';
 
 export default class Start extends Component {
     render() {
