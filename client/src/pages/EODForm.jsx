@@ -5,8 +5,7 @@ import DatePicker from 'react-datepicker';
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import '../styles/central_styles.css';
-import '../styles/EODForm.css';
+import '../styles/style.css';
 
 let date = new Date();
 let today = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();

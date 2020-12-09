@@ -3,8 +3,7 @@ import { Card, CardDeck } from "react-bootstrap";
 
 import Navigation from '../components/Navigation'
 
-import '../styles/central_styles.css';
-import '../styles/ISIManagement.css';
+import '../styles/style.css';
 
 export default class ISIManagement extends Component {
 

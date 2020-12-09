@@ -4,8 +4,7 @@ import { Page, Text, View, Document, StyleSheet, PDFViewer } from '@react-pdf/re
 import { Table, TableHeader, TableCell, TableBody } from '@david.kucsai/react-pdf-table';
 import axios from 'axios';
 
-import '../styles/central_styles.css';
-import '../styles/ReportView.css';
+import '../styles/style.css';
 
 // Create styles
 const styles = StyleSheet.create({

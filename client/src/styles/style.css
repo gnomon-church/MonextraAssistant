@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap');
+
+* {
+    font-family: 'Roboto Slab', sans-serif;
+}
+
+#card-deck-set {
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 10%;
+}
+
+.main-content {
+    margin-left: 3vw;
+    margin-right: 3vw;
+    margin-top: 10vh;
+}
+
+.justify-content-between {
+    height: 6vh;
+}
+
+.card-list, .card-list:link, .card-list:visited {
+    transition: transform .2s;
+    text-decoration: none;
+    color: black;
+}
+
+.card-list:hover {
+    transform: scale(1.01);
+    text-decoration: none;
+    color: black;
+    border-color: #DC3545;
+}
+
+.viewer-div {
+    height: 94vh;
+}
+
+.viewer-window {
+    width: 100vw;
+    height: 93vh;
+}
+
+.justify-content-between {
+    height: 6vh;
+}
