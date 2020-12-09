@@ -6,7 +6,7 @@ export default class Navigation extends Component {
         return (
             <Navbar bg='danger' className='justify-content-between'>
                 <Button variant='dark' href='/'>Back</Button>
-                <Button variant='success'>Finish</Button>
+                <Button variant='success' href={this.props.href}>Finish</Button>
             </Navbar>
         )
     }

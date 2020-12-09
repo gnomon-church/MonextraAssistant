@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-// import axios from 'axios'
 
-import Start from './pages/Start.jsx'
-import EODForm from './pages/EODForm.jsx'
-import ReportView from './pages/ReportView.jsx'
+import Start from './pages/Start';
+import EODForm from './pages/EODForm';
+import ReportView from './pages/ReportView';
+import ISIManagement from './pages/ISIManagement'
 
 class App extends Component {
   state = {
@@ -36,9 +36,15 @@ class App extends Component {
                     </Route>
 
                     {/* Route for the pdfview page */}
-                    <Route exact path='/reportview' component={ReportView} />
-                    {/* <ReportView />
-                    </Route> */}
+                    <Route exact path='/reportview'>
+                        <ReportView />
+                    </Route>
+
+                    {/* Route for the isimanagement page */}
+                    <Route exact path='/isimanagement'>
+                        <ISIManagement />
+                    </Route>
+
                 </Switch>
             </div>
         </Router>

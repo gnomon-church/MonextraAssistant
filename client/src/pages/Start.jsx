@@ -35,24 +35,16 @@ export default class Start extends Component {
                 <CardDeck>
                     <Card style={{ width: '18rem' }}>
                         <Card.Body>
-                            <Card.Title>Receive ISI Shipment</Card.Title>
+                            <Card.Title>ISI Management</Card.Title>
                             <Card.Text>
-                                Enter in new ISI stock when a shipment arrives.
+                                Manage the ISI stock.
                         </Card.Text>
-                            <Button variant="danger">Start!</Button>
-                        </Card.Body>
-                    </Card>
-
-                    <Card style={{ width: '18rem' }}>
-                        <Card.Body>
-                            <Card.Title>Sign Out ISI Stock</Card.Title>
-                            <Card.Text>
-                                Sign out ISI stock when it is needed.
-                        </Card.Text>
-                            <Button variant="danger">Start!</Button>
+                            <Button href='/isimanagement' variant="danger">Start!</Button>
                         </Card.Body>
                     </Card>
                 </CardDeck>
+
+                
             </div>
         );
     }
