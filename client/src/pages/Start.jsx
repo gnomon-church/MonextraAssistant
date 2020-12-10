@@ -1,10 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import {useHistory} from 'react-router-dom'
 import { Card, CardDeck } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/style.css';
 
 export default function Start() {
+    useEffect(() => {
+        document.title = 'Home - Mona';
+    }, []);
+
+    let history = useHistory();
+
     return (
         <div id='card-deck-set'>
             {/* <CardDeck>
@@ -30,7 +37,7 @@ export default function Start() {
                 <br /> */}
 
             <CardDeck>
-                <Card as='a' href='/isimanagement' className='card-list' style={{ width: '18rem' }}>
+                <Card onClick={() => {history.push('/isimenu')}} className='card-list' style={{ width: '18rem' }}>
                     <Card.Body>
                         <Card.Title>ISI Management</Card.Title>
                         <Card.Text>
