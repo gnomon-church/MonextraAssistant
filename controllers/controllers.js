@@ -41,5 +41,24 @@ const figuresUpload = (req, res, next) => {
         .then(res.status(200))
 }
 
+const bookTypeDownload = (req, res, next) => {
+    const client = new Client({
+        connectionString: connectionURL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+
+    client.connect();
+
+    client
+        .query("SELECT * FROM book_types")
+        .then((rows) => {
+            res.json(rows)
+        })
+        .then(() => client.end())
+}
+
 module.exports.figuresDownload = figuresDownload;
 module.exports.figuresUpload = figuresUpload;
+module.exports.bookTypeDownload = bookTypeDownload;
