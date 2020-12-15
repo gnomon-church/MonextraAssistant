@@ -44,6 +44,8 @@ export default function ISIManage() {
             .then((books) => setRowData(books))
     }, []);
 
+
+
     const columnDefs = [
         {
             headerName: "Game Number",
@@ -68,13 +70,31 @@ export default function ISIManage() {
                 return `<input type='checkbox' disabled ${params.value ? 'checked' : ''} />`;
             }
         },
+        {
+            headerName: "",
+            cellRenderer: 'cellDeleteButton'
+        }
         // {
         //     headerName: "",
         //     cellRenderer: params => {
-        //         return `<Button>Edit</Button>`;
+        //         return `<Button onClick={cellDeleteButton}>Delete</Button>`;
         //     }
         // }
     ];
+
+    const frameworkComponents = {
+            cellDeleteButton: cellDeleteButton,
+        }
+    
+
+    function cellDeleteButton() {
+        return (
+            <span>
+                <Button variant='outline-secondary' size='sm' onClick={() => alert('edited!')}>Edit</Button>{' '}
+                <Button variant='outline-secondary' size='sm' onClick={() => alert('deleted!')}>Delete</Button>
+            </span>
+        );
+    }
 
     const onGridReady = (params) => {
         setGridApi(params.api);
@@ -110,7 +130,7 @@ export default function ISIManage() {
         <div>
             <Navigation proceed='false' from='/isimenu' />
 
-            <Button variant="danger" onClick={handleShow}>Add ISI Game</Button>
+            <Button variant="outline-danger" onClick={handleShow}>Add ISI Game</Button>
 
             <div
                 className="ag-theme-alpine"
@@ -127,6 +147,7 @@ export default function ISIManage() {
                     rowData={rowData}
                     animateRows={true}
                     onGridReady={onGridReady}
+                    frameworkComponents={frameworkComponents}
                 ></AgGridReact>
 
                 <Modal
@@ -144,9 +165,9 @@ export default function ISIManage() {
                             <InputGroup.Prepend>
                                 <InputGroup.Text>Game Number</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl 
+                            <FormControl
                                 type='text'
-                                onChange={numberValidator} 
+                                onChange={numberValidator}
                                 name='game_id'
                             />
                         </InputGroup>
@@ -156,7 +177,7 @@ export default function ISIManage() {
                                 <InputGroup.Text>Ticket Value</InputGroup.Text>
                                 <InputGroup.Text>$</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl 
+                            <FormControl
                                 type='text'
                                 onChange={numberValidator}
                                 name='ticket_value'
@@ -167,10 +188,10 @@ export default function ISIManage() {
                             <InputGroup.Prepend>
                                 <InputGroup.Text>Ticket Name</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl 
+                            <FormControl
                                 type='text'
                                 onChange={valueUpdater}
-                                name='ticket_name' 
+                                name='ticket_name'
                             />
                         </InputGroup>
 
@@ -178,9 +199,9 @@ export default function ISIManage() {
                             <InputGroup.Prepend>
                                 <InputGroup.Text>Tickets per Book</InputGroup.Text>
                             </InputGroup.Prepend>
-                            <FormControl 
+                            <FormControl
                                 type='text'
-                                onChange={numberValidator} 
+                                onChange={numberValidator}
                                 name='ticket_qty'
                             />
                         </InputGroup>
@@ -190,9 +211,9 @@ export default function ISIManage() {
                                 <InputGroup.Text>Current Game?</InputGroup.Text>
                             </InputGroup.Prepend>
                             <InputGroup.Append>
-                                <InputGroup.Checkbox defaultChecked='true'></InputGroup.Checkbox>     
+                                <InputGroup.Checkbox defaultChecked='true'></InputGroup.Checkbox>
                             </InputGroup.Append>
-                            
+
                         </InputGroup>
 
                     </Modal.Body>

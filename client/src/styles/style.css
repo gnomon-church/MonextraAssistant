@@ -29,7 +29,7 @@
 .card-list:hover {
     transform: scale(1.01);
     text-decoration: none;
-    color: black;
+    color: #DC3545;
     border-color: #DC3545;
 }
 
