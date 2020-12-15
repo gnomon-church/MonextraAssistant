@@ -41,7 +41,7 @@ const figuresUpload = (req, res, next) => {
         .then(res.status(200))
 }
 
-const bookTypeDownload = (req, res, next) => {
+const gameTypeDownload = (req, res, next) => {
     const client = new Client({
         connectionString: connectionURL,
         ssl: {
@@ -52,13 +52,36 @@ const bookTypeDownload = (req, res, next) => {
     client.connect();
 
     client
-        .query("SELECT * FROM book_types")
+        .query("SELECT * FROM game_types")
         .then((rows) => {
             res.json(rows)
         })
         .then(() => client.end())
 }
 
+const gameTypeUpload = (req, res, next) => {
+    const b = req.body
+    const values = [b.game_id, b.ticket_value, b.ticket_name, b.book_value, b.current_game]
+
+    const client = new Client({
+        connectionString: connectionURL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+
+    console.log('HERE!!')
+
+    client.connect();
+
+    client
+        .query("INSERT INTO game_types VALUES ($1,$2,$3,$4,$5);", values)
+        .catch(e => console.error(e.stack))
+        .then(() => client.end())
+        .then(res.status(200))
+}
+
 module.exports.figuresDownload = figuresDownload;
 module.exports.figuresUpload = figuresUpload;
-module.exports.bookTypeDownload = bookTypeDownload;
+module.exports.gameTypeDownload = gameTypeDownload;
+module.exports.gameTypeUpload = gameTypeUpload;

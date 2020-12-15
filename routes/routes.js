@@ -8,8 +8,11 @@ router.get('/figures-download/:Store/:Date', controllers.figuresDownload)
 // Router for sending eod figures to the api
 router.post('/figures-upload', controllers.figuresUpload)
 
-// Router for sending isi book types to the api
-router.get('/isi-book-types-download', controllers.bookTypeDownload)
+// Router for getting isi game types from the api
+router.get('/isi-game-types-download', controllers.gameTypeDownload)
+
+// Router for sending new isi game types to the api
+router.post('/isi-game-types-upload', controllers.gameTypeUpload)
 
 
 module.exports = router;

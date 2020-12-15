@@ -22,14 +22,14 @@ export default function App() {
                     </Route>
 
                     {/* Route for the EOD Form page */}
-                    <Route exact path='/eodform'>
+                    {/* <Route exact path='/eodform'>
                         <EODForm />
-                    </Route>
+                    </Route> */}
 
                     {/* Route for the EOD Report Page page */}
-                    <Route exact path='/reportview'>
+                    {/* <Route exact path='/reportview'>
                         <ReportView />
-                    </Route>
+                    </Route> */}
 
                     {/* Route for the ISI Management page */}
                     <Route exact path='/isimenu'>

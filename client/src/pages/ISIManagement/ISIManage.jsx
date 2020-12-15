@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap'
 import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios'
 
@@ -10,16 +11,29 @@ import Navigation from '../../components/Navigation'
 export default function ISIManage() {
     const [rowData, setRowData] = useState([]);
     const [gridApi, setGridApi] = useState(null);
+    const [show, setShow] = useState(false);
+
+    let new_book_data = {
+        game_id: '',
+        ticket_value: '',
+        ticket_name: '',
+        ticket_qty: '',
+        current_game: true,
+        book_value: ''
+    }
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
     useEffect(() => {
         document.title = 'Manage ISI Types - Mona';
 
-        axios.get('/api/isi-book-types-download')
+        axios.get('/api/isi-game-types-download')
             .then((res) => (res.data.rows))
             .then((rows) =>
                 rows.map((book) => {
                     return {
-                        book_id: book.book_id,
+                        game_id: book.game_id,
                         ticket_value: book.ticket_value,
                         ticket_name: book.ticket_name,
                         book_value: book.book_value,
@@ -32,8 +46,8 @@ export default function ISIManage() {
 
     const columnDefs = [
         {
-            headerName: "Book Number",
-            field: "book_id",
+            headerName: "Game Number",
+            field: "game_id",
         },
         {
             headerName: "Ticket Value",
@@ -50,7 +64,16 @@ export default function ISIManage() {
         {
             headerName: "Current Game?",
             field: "current_game",
+            cellRenderer: params => {
+                return `<input type='checkbox' disabled ${params.value ? 'checked' : ''} />`;
+            }
         },
+        // {
+        //     headerName: "",
+        //     cellRenderer: params => {
+        //         return `<Button>Edit</Button>`;
+        //     }
+        // }
     ];
 
     const onGridReady = (params) => {
@@ -58,11 +81,36 @@ export default function ISIManage() {
         params.api.sizeColumnsToFit();
     };
 
+    function calculateBookValue() {
+        new_book_data['book_value'] = new_book_data['ticket_value'] * new_book_data['ticket_qty']
+    }
 
+    function numberValidator(event) {
+        let re = /^[0-9]*$/;
+        let val = re.exec(event.target.value);
+
+        if (val !== null) {
+            event.target.value = val[0]
+            new_book_data[event.target.name] = event.target.value
+            calculateBookValue()
+        } else {
+            event.target.value = new_book_data[event.target.name]
+        }
+    }
+
+    function valueUpdater(event) {
+        new_book_data[event.target.name] = event.target.value;
+    }
+
+    function gameAdd() {
+        axios.post('/api/isi-game-types-upload', new_book_data)
+    }
 
     return (
         <div>
             <Navigation proceed='false' from='/isimenu' />
+
+            <Button variant="danger" onClick={handleShow}>Add ISI Game</Button>
 
             <div
                 className="ag-theme-alpine"
@@ -75,11 +123,85 @@ export default function ISIManage() {
                     columnDefs={columnDefs}
                     defaultColDef={{
                         sortable: true,
-                      }}
+                    }}
                     rowData={rowData}
                     animateRows={true}
                     onGridReady={onGridReady}
                 ></AgGridReact>
+
+                <Modal
+                    show={show}
+                    onHide={handleClose}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header>
+                        <Modal.Title>Add ISI Game Type</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>
+                        <InputGroup className='mb-3'>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text>Game Number</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl 
+                                type='text'
+                                onChange={numberValidator} 
+                                name='game_id'
+                            />
+                        </InputGroup>
+
+                        <InputGroup className='mb-3'>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text>Ticket Value</InputGroup.Text>
+                                <InputGroup.Text>$</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl 
+                                type='text'
+                                onChange={numberValidator}
+                                name='ticket_value'
+                            />
+                        </InputGroup>
+
+                        <InputGroup className='mb-3'>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text>Ticket Name</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl 
+                                type='text'
+                                onChange={valueUpdater}
+                                name='ticket_name' 
+                            />
+                        </InputGroup>
+
+                        <InputGroup className='mb-3'>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text>Tickets per Book</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <FormControl 
+                                type='text'
+                                onChange={numberValidator} 
+                                name='ticket_qty'
+                            />
+                        </InputGroup>
+
+                        <InputGroup className='mb-3'>
+                            <InputGroup.Prepend>
+                                <InputGroup.Text>Current Game?</InputGroup.Text>
+                            </InputGroup.Prepend>
+                            <InputGroup.Append>
+                                <InputGroup.Checkbox defaultChecked='true'></InputGroup.Checkbox>     
+                            </InputGroup.Append>
+                            
+                        </InputGroup>
+
+                    </Modal.Body>
+
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>Close</Button>
+                        <Button variant="success" onClick={gameAdd}>Add</Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </div>
     )
