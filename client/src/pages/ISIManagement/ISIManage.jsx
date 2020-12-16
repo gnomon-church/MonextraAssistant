@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap'
 import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios'
@@ -10,8 +10,9 @@ import Navigation from '../../components/Navigation'
 
 export default function ISIManage() {
     const [rowData, setRowData] = useState([]);
-    const [gridApi, setGridApi] = useState('initial value');
     const [showAddDialog, setShowAddDialog] = useState(false);
+
+    const gridApi = useRef()
 
     let new_book_data = {
         game_id: '',
@@ -85,19 +86,27 @@ export default function ISIManage() {
         cellControlButtons: cellControlButtons,
     }
 
+    // function getRowNodeId(rowData) {
+    //     return rowData.game_id
+    // }
+
 
     function cellControlButtons(props) {
         return (
             <span>
-                <Button variant='outline-secondary' size='sm' onClick={() => editGame()}>Edit</Button>{' '}
-                <Button variant='outline-secondary' size='sm' onClick={() => alert('deleted ' + props.node.rowIndex + ' !')}>Delete</Button>
+                <Button variant='outline-secondary' size='sm' onClick={() => editGame(props.node.rowIndex)}>Edit</Button>{' '}
+                <Button variant='outline-secondary' size='sm' onClick={() => deleteGame(props.node.rowIndex)}>Delete</Button>
             </span>
         );
     }
 
-    function editGame() {
-        let testVar = gridApi.getDisplayedRowAtIndex(1);
-        console.log(testVar)
+    function deleteGame(rowIndex) {
+        let rowValues = gridApi.current.getDisplayedRowAtIndex(rowIndex)
+    }
+
+    function editGame(rowIndex) {
+        let rowValues = gridApi.current.getDisplayedRowAtIndex(rowIndex);
+        console.log(rowValues.data)
     }
 
     function calculateBookValue() {
@@ -136,9 +145,9 @@ export default function ISIManage() {
     }
 
     const onGridReady = (params) => {
-        setGridApi(params.api);
-        params.api.sizeColumnsToFit();
-        console.log('onGridReady ' + gridApi)
+        gridApi.current = params.api
+        gridApi.current.sizeColumnsToFit();
+
     };
 
     return (
