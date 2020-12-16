@@ -10,8 +10,8 @@ import Navigation from '../../components/Navigation'
 
 export default function ISIManage() {
     const [rowData, setRowData] = useState([]);
-    const [gridApi, setGridApi] = useState(null);
-    const [show, setShow] = useState(false);
+    const [gridApi, setGridApi] = useState('initial value');
+    const [showAddDialog, setShowAddDialog] = useState(false);
 
     let new_book_data = {
         game_id: '',
@@ -22,12 +22,16 @@ export default function ISIManage() {
         book_value: ''
     }
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleCloseAddDialog = () => setShowAddDialog(false);
+    const handleShowAddDialog = () => setShowAddDialog(true);
 
     useEffect(() => {
         document.title = 'Manage ISI Types - Mona';
+        fetchData()
+    }, []);
 
+    function fetchData() {
+        setRowData([])
         axios.get('/api/isi-game-types-download')
             .then((res) => (res.data.rows))
             .then((rows) =>
@@ -42,8 +46,7 @@ export default function ISIManage() {
                 })
             )
             .then((books) => setRowData(books))
-    }, []);
-
+    }
 
 
     const columnDefs = [
@@ -66,40 +69,36 @@ export default function ISIManage() {
         {
             headerName: "Current Game?",
             field: "current_game",
+            colId: 'params',
             cellRenderer: params => {
                 return `<input type='checkbox' disabled ${params.value ? 'checked' : ''} />`;
             }
         },
         {
             headerName: "",
-            cellRenderer: 'cellDeleteButton'
+            field: "test_field",
+            cellRenderer: 'cellControlButtons',
         }
-        // {
-        //     headerName: "",
-        //     cellRenderer: params => {
-        //         return `<Button onClick={cellDeleteButton}>Delete</Button>`;
-        //     }
-        // }
     ];
 
     const frameworkComponents = {
-            cellDeleteButton: cellDeleteButton,
-        }
-    
+        cellControlButtons: cellControlButtons,
+    }
 
-    function cellDeleteButton() {
+
+    function cellControlButtons(props) {
         return (
             <span>
-                <Button variant='outline-secondary' size='sm' onClick={() => alert('edited!')}>Edit</Button>{' '}
-                <Button variant='outline-secondary' size='sm' onClick={() => alert('deleted!')}>Delete</Button>
+                <Button variant='outline-secondary' size='sm' onClick={() => editGame()}>Edit</Button>{' '}
+                <Button variant='outline-secondary' size='sm' onClick={() => alert('deleted ' + props.node.rowIndex + ' !')}>Delete</Button>
             </span>
         );
     }
 
-    const onGridReady = (params) => {
-        setGridApi(params.api);
-        params.api.sizeColumnsToFit();
-    };
+    function editGame() {
+        let testVar = gridApi.getDisplayedRowAtIndex(1);
+        console.log(testVar)
+    }
 
     function calculateBookValue() {
         new_book_data['book_value'] = new_book_data['ticket_value'] * new_book_data['ticket_qty']
@@ -123,14 +122,126 @@ export default function ISIManage() {
     }
 
     function gameAdd() {
+        // let params = {
+        //     force: false,
+        //     suppressFlash: false,
+        // }
+
         axios.post('/api/isi-game-types-upload', new_book_data)
+            .then(() => fetchData())
+            // .then(() => handleCloseAddDialog())
+        handleCloseAddDialog();
+        // fetchData();
+        
     }
+
+    const onGridReady = (params) => {
+        setGridApi(params.api);
+        params.api.sizeColumnsToFit();
+        console.log('onGridReady ' + gridApi)
+    };
 
     return (
         <div>
             <Navigation proceed='false' from='/isimenu' />
+            <Button variant="outline-danger" onClick={handleShowAddDialog}>Add ISI Game</Button>
+            <Button variant="outline-danger" onClick={fetchData}>Refresh Grid</Button>
 
-            <Button variant="outline-danger" onClick={handleShow}>Add ISI Game</Button>
+            {/* Modal for adding ISI books */}
+            <Modal
+                show={showAddDialog}
+                onHide={handleCloseAddDialog}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header>
+                    <Modal.Title>Add ISI Game Type</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <InputGroup className='mb-3'>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>Game Number</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            type='text'
+                            onChange={numberValidator}
+                            name='game_id'
+                        />
+                    </InputGroup>
+
+                    <InputGroup className='mb-3'>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>Ticket Value</InputGroup.Text>
+                            <InputGroup.Text>$</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            type='text'
+                            onChange={numberValidator}
+                            name='ticket_value'
+                        />
+                    </InputGroup>
+
+                    <InputGroup className='mb-3'>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>Ticket Name</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            type='text'
+                            onChange={valueUpdater}
+                            name='ticket_name'
+                        />
+                    </InputGroup>
+
+                    <InputGroup className='mb-3'>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>Tickets per Book</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            type='text'
+                            onChange={numberValidator}
+                            name='ticket_qty'
+                        />
+                    </InputGroup>
+
+                    <InputGroup className='mb-3'>
+                        <InputGroup.Prepend>
+                            <InputGroup.Text>Current Game?</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <InputGroup.Append>
+                            <InputGroup.Checkbox defaultChecked='true'></InputGroup.Checkbox>
+                        </InputGroup.Append>
+
+                    </InputGroup>
+
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseAddDialog}>Close</Button>
+                    <Button variant="success" onClick={gameAdd}>Add</Button>
+                </Modal.Footer>
+            </Modal>
+
+            {/* Modal for adding ISI books */}
+            {/* <Modal
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header>
+                    <Modal.Title>Add ISI Game Type</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleClose}>Cancel</Button>
+                    <Button variant="danger" onClick={gameAdd}>Delete</Button>
+                </Modal.Footer>
+            </Modal> */}
 
             <div
                 className="ag-theme-alpine"
@@ -149,80 +260,6 @@ export default function ISIManage() {
                     onGridReady={onGridReady}
                     frameworkComponents={frameworkComponents}
                 ></AgGridReact>
-
-                <Modal
-                    show={show}
-                    onHide={handleClose}
-                    backdrop="static"
-                    keyboard={false}
-                >
-                    <Modal.Header>
-                        <Modal.Title>Add ISI Game Type</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>
-                        <InputGroup className='mb-3'>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text>Game Number</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                                type='text'
-                                onChange={numberValidator}
-                                name='game_id'
-                            />
-                        </InputGroup>
-
-                        <InputGroup className='mb-3'>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text>Ticket Value</InputGroup.Text>
-                                <InputGroup.Text>$</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                                type='text'
-                                onChange={numberValidator}
-                                name='ticket_value'
-                            />
-                        </InputGroup>
-
-                        <InputGroup className='mb-3'>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text>Ticket Name</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                                type='text'
-                                onChange={valueUpdater}
-                                name='ticket_name'
-                            />
-                        </InputGroup>
-
-                        <InputGroup className='mb-3'>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text>Tickets per Book</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <FormControl
-                                type='text'
-                                onChange={numberValidator}
-                                name='ticket_qty'
-                            />
-                        </InputGroup>
-
-                        <InputGroup className='mb-3'>
-                            <InputGroup.Prepend>
-                                <InputGroup.Text>Current Game?</InputGroup.Text>
-                            </InputGroup.Prepend>
-                            <InputGroup.Append>
-                                <InputGroup.Checkbox defaultChecked='true'></InputGroup.Checkbox>
-                            </InputGroup.Append>
-
-                        </InputGroup>
-
-                    </Modal.Body>
-
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>Close</Button>
-                        <Button variant="success" onClick={gameAdd}>Add</Button>
-                    </Modal.Footer>
-                </Modal>
             </div>
         </div>
     )
