@@ -12,9 +12,8 @@ let new_book_data = {
     game_id: '',
     ticket_value: '',
     ticket_name: '',
-    ticket_qty: '',
+    book_value: '',
     current_game: true,
-    book_value: ''
 }
 
 export default function ISIManage() {
@@ -104,10 +103,9 @@ export default function ISIManage() {
             <span>
                 <Button variant='outline-secondary' size='sm' onClick={() => {
                     let data = gridApi.current.getDisplayedRowAtIndex(props.node.rowIndex).data
-                    let ticket_qty = Number(data.book_value.replace(/[^0-9.-]+/g,"")) / Number(data.ticket_value.replace(/[^0-9.-]+/g,""));
                     new_book_data['game_id'] = data.game_id                           
                     new_book_data['ticket_value'] = data.ticket_value                        
-                    new_book_data['ticket_qty'] = ticket_qty                        
+                    new_book_data['book_value'] = data.book_value                        
                     new_book_data['ticket_name'] = data.ticket_name
                     new_book_data['current_game'] = data.current_game    
                     openAddDialog()
@@ -146,14 +144,9 @@ export default function ISIManage() {
                 game_id: '',
                 ticket_value: '',
                 ticket_name: '',
-                ticket_qty: '',
+                book_value: '',
                 current_game: true,
-                book_value: ''
             })
-    }
-
-    function calculateBookValue() {
-        new_book_data['book_value'] = new_book_data['ticket_value'] * new_book_data['ticket_qty']
     }
 
     function numberValidator(event) {
@@ -163,7 +156,6 @@ export default function ISIManage() {
         if (val !== null) {
             event.target.value = val[0]
             new_book_data[event.target.name] = event.target.value
-            calculateBookValue()
         } else {
             event.target.value = new_book_data[event.target.name]
         }
@@ -220,7 +212,7 @@ export default function ISIManage() {
                             type='text'
                             onChange={numberValidator}
                             name='game_id'
-                            defaultValue={new_book_data.game_id}
+                            placeholder={new_book_data.game_id}
                         />
                     </InputGroup>
 
@@ -239,13 +231,14 @@ export default function ISIManage() {
 
                     <InputGroup className='mb-3'>
                         <InputGroup.Prepend>
-                            <InputGroup.Text>Tickets per Book</InputGroup.Text>
+                            <InputGroup.Text>Book Value</InputGroup.Text>
+                            <InputGroup.Text>$</InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl
                             type='text'
                             onChange={numberValidator}
-                            name='ticket_qty'
-                            defaultValue={new_book_data.ticket_qty}
+                            name='book_value'
+                            defaultValue={new_book_data.book_value}
                         />
                     </InputGroup>
 
@@ -279,9 +272,8 @@ export default function ISIManage() {
                             game_id: '',
                             ticket_value: '',
                             ticket_name: '',
-                            ticket_qty: '',
+                            book_value: '',
                             current_game: true,
-                            book_value: ''
                         }
                         closeAddDialog()
                     }}>Close</Button>
