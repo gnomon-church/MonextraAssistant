@@ -81,6 +81,8 @@ const gameTypeUpload = (req, res, next) => {
     const b = req.body
     const values = [b.game_id, b.ticket_value, b.ticket_name, b.book_value, b.current_game]
 
+    console.log(b.current_game)
+
     const client = new Client({
         connectionString: connectionURL,
         ssl: {

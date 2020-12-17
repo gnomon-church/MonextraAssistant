@@ -10,13 +10,17 @@ import Navigation from '../../components/Navigation'
 
 export default function ISIManage() {
     const [rowData, setRowData] = useState([]);
+    const [currentGameChecked, setCurrentGameChecked] = useState(true)
     const [rowIndexToUse, setRowIndexToUse] = useState(null);
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [showDelDialog, setShowDelDialog] = useState(false);
     const gridApi = useRef()
 
     const closeAddDialog = () => setShowAddDialog(false);
-    const openAddDialog = () => setShowAddDialog(true);
+    const openAddDialog = () => {
+        setCurrentGameChecked(true);
+        setShowAddDialog(true);
+    }
 
     const closeDelDialog = () => setShowDelDialog(false);
     const openDelDialog = () => setShowDelDialog(true);
@@ -151,6 +155,20 @@ export default function ISIManage() {
             .then(() => fetchData())
     }
 
+    function toggleCurrentGame(event) {
+        // if (currentGameChecked === true) {
+        //     setCurrentGameChecked(false);
+        //     new_book_data['current_game'] = false;
+        //     console.log('true --> false');
+        // } else if (currentGameChecked === false) {
+        //     setCurrentGameChecked(true);
+        //     new_book_data['current_game'] = true;
+        //     console.log('false --> true');
+        // }
+        new_book_data['current_game'] = event.target.checked
+        console.log(event.target.checked)
+    }
+
     const GameData = () => {
         if (rowIndexToUse !== null) {
             return (
@@ -170,7 +188,7 @@ export default function ISIManage() {
     return (
         <div>
             <Navigation proceed='false' from='/isimenu' />
-            <Button variant="outline-danger" onClick={openAddDialog}>Add ISI Game</Button>
+            <Button variantruet="outline-danger" onClick={openAddDialog}>Add ISI Game</Button>
             <Button variant="outline-danger" onClick={fetchData}>Refresh Grid</Button>
 
             {/* Modal for adding ISI books */}
@@ -210,17 +228,6 @@ export default function ISIManage() {
 
                     <InputGroup className='mb-3'>
                         <InputGroup.Prepend>
-                            <InputGroup.Text>Ticket Name</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                            type='text'
-                            onChange={valueUpdater}
-                            name='ticket_name'
-                        />
-                    </InputGroup>
-
-                    <InputGroup className='mb-3'>
-                        <InputGroup.Prepend>
                             <InputGroup.Text>Tickets per Book</InputGroup.Text>
                         </InputGroup.Prepend>
                         <FormControl
@@ -232,10 +239,21 @@ export default function ISIManage() {
 
                     <InputGroup className='mb-3'>
                         <InputGroup.Prepend>
+                            <InputGroup.Text>Ticket Name</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                            type='text'
+                            onChange={valueUpdater}
+                            name='ticket_name'
+                        />
+                    </InputGroup>
+
+                    <InputGroup className='mb-3'>
+                        <InputGroup.Prepend>
                             <InputGroup.Text>Current Game?</InputGroup.Text>
                         </InputGroup.Prepend>
                         <InputGroup.Append>
-                            <InputGroup.Checkbox defaultChecked='true'></InputGroup.Checkbox>
+                            <InputGroup.Checkbox defaultChecked={true} onChange={(event) => toggleCurrentGame(event)}></InputGroup.Checkbox>
                         </InputGroup.Append>
 
                     </InputGroup>
