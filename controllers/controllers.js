@@ -28,7 +28,7 @@ const figuresUpload = (req, res, next) => {
     const client = new Client({
         connectionString: connectionURL,
         ssl: {
-            rejectUnauthorized: false
+            rejectUnauthorized: falseget
         }
     });
 
@@ -41,5 +41,73 @@ const figuresUpload = (req, res, next) => {
         .then(res.status(200))
 }
 
+const gameDelete = (req, res, next) => {
+    const client = new Client({
+        connectionString: connectionURL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+
+    client.connect();
+
+    client
+        .query("DELETE FROM game_types WHERE game_id = $1", [req.params.GAMEID])
+        .then((rows) => {
+            res.json(rows)
+        })
+        .then(() => client.end())
+}
+
+const gameTypeDownload = (req, res, next) => {
+    const client = new Client({
+        connectionString: connectionURL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+
+    client.connect();
+
+    client
+        .query("SELECT * FROM game_types")
+        .then((rows) => {
+            res.json(rows)
+        })
+        .then(() => client.end())
+}
+
+const gameTypeUpload = (req, res, next) => {
+    const b = req.body
+    const values = [b.game_id, b.ticket_value, b.ticket_name, b.book_value, b.current_game]
+
+    console.log(b.current_game)
+
+    const client = new Client({
+        connectionString: connectionURL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+
+
+    client.connect();
+
+    client
+        .query("INSERT INTO game_types VALUES ($1,$2,$3,$4,$5) ON CONFLICT (game_id) DO UPDATE SET ticket_value = $2, ticket_name = $3, book_value = $4, current_game = $5;", values)
+        .then((rows) => {
+            res.json(rows)
+        })
+        .catch(e => console.error(e.stack))
+        .then(() => client.end())
+        .then(res.status(200))
+}
+
+
+
 module.exports.figuresDownload = figuresDownload;
 module.exports.figuresUpload = figuresUpload;
+module.exports.gameDelete = gameDelete;
+
+module.exports.gameTypeDownload = gameTypeDownload;
+module.exports.gameTypeUpload = gameTypeUpload;

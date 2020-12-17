@@ -1,35 +1,53 @@
-import React, { Component } from 'react';
-import { Card, CardDeck, Button } from 'react-bootstrap';
+import React, { useEffect } from 'react';
+import {useHistory} from 'react-router-dom'
+import { Card, CardDeck } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Start.css'
+import '../styles/style.css';
 
-export default class Start extends Component {
-    render() {
-        return (
-            <div id='card-deck-set'>
-                <CardDeck>
-                    <Card style={{ width: '18rem' }}>
+export default function Start() {
+    useEffect(() => {
+        document.title = 'Home - Mona';
+    }, []);
+
+    let history = useHistory();
+
+    return (
+        <div id='card-deck-set'>
+            {/* <CardDeck>
+                    <Card as='a' href='/eodform' className='card-list' style={{ width: '18rem' }}>
                         <Card.Body>
                             <Card.Title>End of Day Form</Card.Title>
                             <Card.Text>
-                                Use this form the complete the End of Day report
+                                Complete the End of Day report.
                         </Card.Text>
-                            <Button href='/eodform' variant="danger">Start!</Button>
                         </Card.Body>
                     </Card>
 
-                    <Card style={{ width: '18rem' }}>
+                    <Card as='a' href='' className='card-list' style={{ width: '18rem' }}>
                         <Card.Body>
                             <Card.Title>Access Previous EOD</Card.Title>
                             <Card.Text>
                                 This is not yet a working function, please do not try to use it!
                         </Card.Text>
-                            <Button variant="danger" disabled>Start!</Button>
                         </Card.Body>
                     </Card>
                 </CardDeck>
-            </div>
-        );
-    }
+
+                <br /> */}
+
+            <CardDeck>
+                <Card onClick={() => {history.push('/isimenu')}} className='card-list' style={{ width: '18rem' }}>
+                    <Card.Body>
+                        <Card.Title>ISI Management</Card.Title>
+                        <Card.Text>
+                            Manage the ISI stock.
+                        </Card.Text>
+                    </Card.Body>
+                </Card>
+            </CardDeck>
+
+
+        </div>
+    );
 }
