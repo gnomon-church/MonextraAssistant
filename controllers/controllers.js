@@ -28,7 +28,7 @@ const figuresUpload = (req, res, next) => {
     const client = new Client({
         connectionString: connectionURL,
         ssl: {
-            rejectUnauthorized: false
+            rejectUnauthorized: falseget
         }
     });
 
@@ -39,6 +39,24 @@ const figuresUpload = (req, res, next) => {
         .catch(e => console.error(e.stack))
         .then(() => client.end())
         .then(res.status(200))
+}
+
+const gameDelete = (req, res, next) => {
+    const client = new Client({
+        connectionString: connectionURL,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+
+    client.connect();
+
+    client
+        .query("DELETE FROM game_types WHERE game_id = $1", [req.params.GAMEID])
+        .then((rows) => {
+            res.json(rows)
+        })
+        .then(() => client.end())
 }
 
 const gameTypeDownload = (req, res, next) => {
@@ -70,18 +88,24 @@ const gameTypeUpload = (req, res, next) => {
         }
     });
 
-    console.log('HERE!!')
 
     client.connect();
 
     client
         .query("INSERT INTO game_types VALUES ($1,$2,$3,$4,$5);", values)
+        .then((rows) => {
+            res.json(rows)
+        })
         .catch(e => console.error(e.stack))
         .then(() => client.end())
         .then(res.status(200))
 }
 
+
+
 module.exports.figuresDownload = figuresDownload;
 module.exports.figuresUpload = figuresUpload;
+module.exports.gameDelete = gameDelete;
+
 module.exports.gameTypeDownload = gameTypeDownload;
 module.exports.gameTypeUpload = gameTypeUpload;

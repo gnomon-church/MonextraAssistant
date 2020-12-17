@@ -10,45 +10,22 @@ import Navigation from '../../components/Navigation'
 
 export default function ISIManage() {
     const [rowData, setRowData] = useState([]);
+    const [rowIndexToUse, setRowIndexToUse] = useState(null);
     const [showAddDialog, setShowAddDialog] = useState(false);
-
+    const [showDelDialog, setShowDelDialog] = useState(false);
     const gridApi = useRef()
 
-    let new_book_data = {
-        game_id: '',
-        ticket_value: '',
-        ticket_name: '',
-        ticket_qty: '',
-        current_game: true,
-        book_value: ''
-    }
+    const closeAddDialog = () => setShowAddDialog(false);
+    const openAddDialog = () => setShowAddDialog(true);
 
-    const handleCloseAddDialog = () => setShowAddDialog(false);
-    const handleShowAddDialog = () => setShowAddDialog(true);
+    const closeDelDialog = () => setShowDelDialog(false);
+    const openDelDialog = () => setShowDelDialog(true);
 
-    useEffect(() => {
-        document.title = 'Manage ISI Types - Mona';
-        fetchData()
-    }, []);
+    const onGridReady = (params) => {
+        gridApi.current = params.api
+        gridApi.current.sizeColumnsToFit();
 
-    function fetchData() {
-        setRowData([])
-        axios.get('/api/isi-game-types-download')
-            .then((res) => (res.data.rows))
-            .then((rows) =>
-                rows.map((book) => {
-                    return {
-                        game_id: book.game_id,
-                        ticket_value: book.ticket_value,
-                        ticket_name: book.ticket_name,
-                        book_value: book.book_value,
-                        current_game: book.current_game,
-                    };
-                })
-            )
-            .then((books) => setRowData(books))
-    }
-
+    };
 
     const columnDefs = [
         {
@@ -86,27 +63,64 @@ export default function ISIManage() {
         cellControlButtons: cellControlButtons,
     }
 
-    // function getRowNodeId(rowData) {
-    //     return rowData.game_id
-    // }
+    let new_book_data = {
+        game_id: '',
+        ticket_value: '',
+        ticket_name: '',
+        ticket_qty: '',
+        current_game: true,
+        book_value: ''
+    }
 
+    useEffect(() => {
+        document.title = 'Manage ISI Types - Mona';
+        fetchData()
+    }, []);
 
+    // Get data from the API and set it
+    function fetchData() {
+        axios.get('/api/isi-game-types-download')
+            .then((res) => (res.data.rows))
+            .then((rows) =>
+                rows.map((book) => {
+                    return {
+                        game_id: book.game_id,
+                        ticket_value: book.ticket_value,
+                        ticket_name: book.ticket_name,
+                        book_value: book.book_value,
+                        current_game: book.current_game,
+                    };
+                })
+            )
+            .then((books) => setRowData(books))
+            .then(() => gridApi.current.hideOverlay())
+    }
+
+    // Render the edit and delete buttons in each cell
     function cellControlButtons(props) {
         return (
             <span>
-                <Button variant='outline-secondary' size='sm' onClick={() => editGame(props.node.rowIndex)}>Edit</Button>{' '}
-                <Button variant='outline-secondary' size='sm' onClick={() => deleteGame(props.node.rowIndex)}>Delete</Button>
+                <Button variant='outline-secondary' size='sm' onClick={() => gameEdit(props.node.rowIndex)}>Edit</Button>{' '}
+                <Button variant='outline-secondary' size='sm' onClick={() => {
+                    setRowIndexToUse(props.node.rowIndex)
+                    openDelDialog()
+                }}
+                >Delete</Button>
             </span>
         );
     }
 
-    function deleteGame(rowIndex) {
-        let rowValues = gridApi.current.getDisplayedRowAtIndex(rowIndex)
+    function gameDelete() {
+        closeDelDialog();
+        gridApi.current.showLoadingOverlay();
+        axios.get('/api/isi-game-delete/' + gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data.game_id)
+            .then(() => fetchData())
+            .then(() => setRowIndexToUse(null));
     }
 
-    function editGame(rowIndex) {
+    function gameEdit(rowIndex) {
         let rowValues = gridApi.current.getDisplayedRowAtIndex(rowIndex);
-        console.log(rowValues.data)
+        console.log(rowValues)
     }
 
     function calculateBookValue() {
@@ -131,35 +145,38 @@ export default function ISIManage() {
     }
 
     function gameAdd() {
-        // let params = {
-        //     force: false,
-        //     suppressFlash: false,
-        // }
-
+        closeAddDialog();
+        gridApi.current.showLoadingOverlay()
         axios.post('/api/isi-game-types-upload', new_book_data)
             .then(() => fetchData())
-            // .then(() => handleCloseAddDialog())
-        handleCloseAddDialog();
-        // fetchData();
-        
     }
 
-    const onGridReady = (params) => {
-        gridApi.current = params.api
-        gridApi.current.sizeColumnsToFit();
-
-    };
+    const GameData = () => {
+        if (rowIndexToUse !== null) {
+            return (
+                <span><i>
+                    {gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data.ticket_value}{' '}
+                    {gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data.ticket_name}{' '}
+                    ({gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data.game_id})
+                </i></span>
+            )
+        } else {
+            return (
+                <span>UNKOWN</span>
+            )
+        }
+    }
 
     return (
         <div>
             <Navigation proceed='false' from='/isimenu' />
-            <Button variant="outline-danger" onClick={handleShowAddDialog}>Add ISI Game</Button>
+            <Button variant="outline-danger" onClick={openAddDialog}>Add ISI Game</Button>
             <Button variant="outline-danger" onClick={fetchData}>Refresh Grid</Button>
 
             {/* Modal for adding ISI books */}
             <Modal
                 show={showAddDialog}
-                onHide={handleCloseAddDialog}
+                onHide={closeAddDialog}
                 backdrop="static"
                 keyboard={false}
             >
@@ -226,31 +243,31 @@ export default function ISIManage() {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseAddDialog}>Close</Button>
+                    <Button variant="secondary" onClick={closeAddDialog}>Close</Button>
                     <Button variant="success" onClick={gameAdd}>Add</Button>
                 </Modal.Footer>
             </Modal>
 
-            {/* Modal for adding ISI books */}
-            {/* <Modal
-                show={show}
-                onHide={handleClose}
+            {/* Modal for deleting ISI books */}
+            <Modal
+                show={showDelDialog}
+                onHide={closeDelDialog}
                 backdrop="static"
                 keyboard={false}
             >
                 <Modal.Header>
-                    <Modal.Title>Add ISI Game Type</Modal.Title>
+                    <Modal.Title>Delete Game?</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-
+                    Are you sure you want to delete the <GameData /> game?
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>Cancel</Button>
-                    <Button variant="danger" onClick={gameAdd}>Delete</Button>
+                    <Button variant="secondary" onClick={closeDelDialog}>Cancel</Button>
+                    <Button variant="danger" onClick={gameDelete}>Delete</Button>
                 </Modal.Footer>
-            </Modal> */}
+            </Modal>
 
             <div
                 className="ag-theme-alpine"
@@ -263,6 +280,9 @@ export default function ISIManage() {
                     columnDefs={columnDefs}
                     defaultColDef={{
                         sortable: true,
+                    }}
+                    gridOptions={{
+                        suppressNoRowsOverlay: true,
                     }}
                     rowData={rowData}
                     animateRows={true}
