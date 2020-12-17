@@ -45,3 +45,10 @@
 .justify-content-between {
     height: 6vh;
 }
+
+.add-isi-button {
+    display: flex;
+    justify-content: center;
+    padding-top: 2vh;
+    padding-bottom: 2vh;
+}

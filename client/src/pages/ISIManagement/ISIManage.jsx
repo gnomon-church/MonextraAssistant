@@ -10,17 +10,14 @@ import Navigation from '../../components/Navigation'
 
 export default function ISIManage() {
     const [rowData, setRowData] = useState([]);
-    const [currentGameChecked, setCurrentGameChecked] = useState(true)
+    const [addIsLoading, setAddIsLoading] = useState(true);
     const [rowIndexToUse, setRowIndexToUse] = useState(null);
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [showDelDialog, setShowDelDialog] = useState(false);
     const gridApi = useRef()
 
     const closeAddDialog = () => setShowAddDialog(false);
-    const openAddDialog = () => {
-        setCurrentGameChecked(true);
-        setShowAddDialog(true);
-    }
+    const openAddDialog = () => setShowAddDialog(true);
 
     const closeDelDialog = () => setShowDelDialog(false);
     const openDelDialog = () => setShowDelDialog(true);
@@ -98,6 +95,7 @@ export default function ISIManage() {
             )
             .then((books) => setRowData(books))
             .then(() => gridApi.current.hideOverlay())
+            .then(() => setAddIsLoading(false));
     }
 
     // Render the edit and delete buttons in each cell
@@ -116,15 +114,24 @@ export default function ISIManage() {
 
     function gameDelete() {
         closeDelDialog();
+        setAddIsLoading(true);
         gridApi.current.showLoadingOverlay();
         axios.get('/api/isi-game-delete/' + gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data.game_id)
             .then(() => fetchData())
-            .then(() => setRowIndexToUse(null));
+            .then(() => setRowIndexToUse(null))
     }
 
     function gameEdit(rowIndex) {
         let rowValues = gridApi.current.getDisplayedRowAtIndex(rowIndex);
         console.log(rowValues)
+    }
+
+    function gameAdd() {
+        closeAddDialog();
+        setAddIsLoading(true);
+        gridApi.current.showLoadingOverlay()
+        axios.post('/api/isi-game-types-upload', new_book_data)
+            .then(() => fetchData())
     }
 
     function calculateBookValue() {
@@ -148,25 +155,8 @@ export default function ISIManage() {
         new_book_data[event.target.name] = event.target.value;
     }
 
-    function gameAdd() {
-        closeAddDialog();
-        gridApi.current.showLoadingOverlay()
-        axios.post('/api/isi-game-types-upload', new_book_data)
-            .then(() => fetchData())
-    }
-
     function toggleCurrentGame(event) {
-        // if (currentGameChecked === true) {
-        //     setCurrentGameChecked(false);
-        //     new_book_data['current_game'] = false;
-        //     console.log('true --> false');
-        // } else if (currentGameChecked === false) {
-        //     setCurrentGameChecked(true);
-        //     new_book_data['current_game'] = true;
-        //     console.log('false --> true');
-        // }
         new_book_data['current_game'] = event.target.checked
-        console.log(event.target.checked)
     }
 
     const GameData = () => {
@@ -188,8 +178,9 @@ export default function ISIManage() {
     return (
         <div>
             <Navigation proceed='false' from='/isimenu' />
-            <Button variantruet="outline-danger" onClick={openAddDialog}>Add ISI Game</Button>
-            <Button variant="outline-danger" onClick={fetchData}>Refresh Grid</Button>
+            <div class='add-isi-button'>
+            <Button variant="outline-danger" onClick={!addIsLoading ? openAddDialog : null}>{addIsLoading ? 'Loading...' : 'Add ISI Game'}</Button>
+            </div>
 
             {/* Modal for adding ISI books */}
             <Modal
