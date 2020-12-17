@@ -8,6 +8,15 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 import Navigation from '../../components/Navigation'
 
+let new_book_data = {
+    game_id: '',
+    ticket_value: '',
+    ticket_name: '',
+    ticket_qty: '',
+    current_game: true,
+    book_value: ''
+}
+
 export default function ISIManage() {
     const [rowData, setRowData] = useState([]);
     const [addIsLoading, setAddIsLoading] = useState(true);
@@ -64,15 +73,6 @@ export default function ISIManage() {
         cellControlButtons: cellControlButtons,
     }
 
-    let new_book_data = {
-        game_id: '',
-        ticket_value: '',
-        ticket_name: '',
-        ticket_qty: '',
-        current_game: true,
-        book_value: ''
-    }
-
     useEffect(() => {
         document.title = 'Manage ISI Types - Mona';
         fetchData()
@@ -102,7 +102,17 @@ export default function ISIManage() {
     function cellControlButtons(props) {
         return (
             <span>
-                <Button variant='outline-secondary' size='sm' onClick={() => gameEdit(props.node.rowIndex)}>Edit</Button>{' '}
+                <Button variant='outline-secondary' size='sm' onClick={() => {
+                    let data = gridApi.current.getDisplayedRowAtIndex(props.node.rowIndex).data
+                    let ticket_qty = Number(data.book_value.replace(/[^0-9.-]+/g,"")) / Number(data.ticket_value.replace(/[^0-9.-]+/g,""));
+                    new_book_data['game_id'] = data.game_id                           
+                    new_book_data['ticket_value'] = data.ticket_value                        
+                    new_book_data['ticket_qty'] = ticket_qty                        
+                    new_book_data['ticket_name'] = data.ticket_name
+                    new_book_data['current_game'] = data.current_game    
+                    openAddDialog()
+                    }}>Edit</Button>{' '}
+
                 <Button variant='outline-secondary' size='sm' onClick={() => {
                     setRowIndexToUse(props.node.rowIndex)
                     openDelDialog()
@@ -123,7 +133,7 @@ export default function ISIManage() {
 
     function gameEdit(rowIndex) {
         let rowValues = gridApi.current.getDisplayedRowAtIndex(rowIndex);
-        console.log(rowValues)
+        // console.log(rowValues)
     }
 
     function gameAdd() {
@@ -132,6 +142,14 @@ export default function ISIManage() {
         gridApi.current.showLoadingOverlay()
         axios.post('/api/isi-game-types-upload', new_book_data)
             .then(() => fetchData())
+            .then(new_book_data = {
+                game_id: '',
+                ticket_value: '',
+                ticket_name: '',
+                ticket_qty: '',
+                current_game: true,
+                book_value: ''
+            })
     }
 
     function calculateBookValue() {
@@ -202,6 +220,7 @@ export default function ISIManage() {
                             type='text'
                             onChange={numberValidator}
                             name='game_id'
+                            defaultValue={new_book_data.game_id}
                         />
                     </InputGroup>
 
@@ -214,6 +233,7 @@ export default function ISIManage() {
                             type='text'
                             onChange={numberValidator}
                             name='ticket_value'
+                            defaultValue={new_book_data.ticket_value}
                         />
                     </InputGroup>
 
@@ -225,6 +245,7 @@ export default function ISIManage() {
                             type='text'
                             onChange={numberValidator}
                             name='ticket_qty'
+                            defaultValue={new_book_data.ticket_qty}
                         />
                     </InputGroup>
 
@@ -236,6 +257,7 @@ export default function ISIManage() {
                             type='text'
                             onChange={valueUpdater}
                             name='ticket_name'
+                            defaultValue={new_book_data.ticket_name}
                         />
                     </InputGroup>
 
@@ -244,7 +266,7 @@ export default function ISIManage() {
                             <InputGroup.Text>Current Game?</InputGroup.Text>
                         </InputGroup.Prepend>
                         <InputGroup.Append>
-                            <InputGroup.Checkbox defaultChecked={true} onChange={(event) => toggleCurrentGame(event)}></InputGroup.Checkbox>
+                            <InputGroup.Checkbox defaultChecked={new_book_data.current_game} onChange={(event) => toggleCurrentGame(event)}></InputGroup.Checkbox>
                         </InputGroup.Append>
 
                     </InputGroup>
@@ -252,8 +274,18 @@ export default function ISIManage() {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={closeAddDialog}>Close</Button>
-                    <Button variant="success" onClick={gameAdd}>Add</Button>
+                    <Button variant="secondary" onClick={() => {
+                        new_book_data = {
+                            game_id: '',
+                            ticket_value: '',
+                            ticket_name: '',
+                            ticket_qty: '',
+                            current_game: true,
+                            book_value: ''
+                        }
+                        closeAddDialog()
+                    }}>Close</Button>
+                    <Button variant="success" onClick={gameAdd}>Save</Button>
                 </Modal.Footer>
             </Modal>
 

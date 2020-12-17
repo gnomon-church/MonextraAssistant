@@ -94,7 +94,7 @@ const gameTypeUpload = (req, res, next) => {
     client.connect();
 
     client
-        .query("INSERT INTO game_types VALUES ($1,$2,$3,$4,$5);", values)
+        .query("INSERT INTO game_types VALUES ($1,$2,$3,$4,$5) ON CONFLICT (game_id) DO UPDATE SET ticket_value = $2, ticket_name = $3, book_value = $4, current_game = $5;", values)
         .then((rows) => {
             res.json(rows)
         })
