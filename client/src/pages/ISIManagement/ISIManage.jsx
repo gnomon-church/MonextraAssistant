@@ -129,15 +129,11 @@ export default function ISIManage() {
             .then(() => setRowIndexToUse(null))
     }
 
-    function gameEdit(rowIndex) {
-        let rowValues = gridApi.current.getDisplayedRowAtIndex(rowIndex);
-        // console.log(rowValues)
-    }
-
     function gameAdd() {
         closeAddDialog();
         setAddIsLoading(true);
-        gridApi.current.showLoadingOverlay()
+        gridApi.current.showLoadingOverlay();
+        new_book_data['ticket_name'] = new_book_data['ticket_name'].toUpperCase();
         axios.post('/api/isi-game-types-upload', new_book_data)
             .then(() => fetchData())
             .then(new_book_data = {
@@ -146,7 +142,7 @@ export default function ISIManage() {
                 ticket_name: '',
                 book_value: '',
                 current_game: true,
-            })
+            });
     }
 
     function numberValidator(event) {

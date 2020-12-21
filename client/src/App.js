@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 import Start from './pages/Start';
-import EODForm from './pages/EODForm';
-import ReportView from './pages/ReportView';
+// import EODForm from './pages/EODForm';
+// import ReportView from './pages/ReportView';
 import ISIMenu from './pages/ISIMenu'
 import ISIManage from './pages/ISIManagement/ISIManage'
 import ISIReceive from './pages/ISIManagement/ISIReceive'
