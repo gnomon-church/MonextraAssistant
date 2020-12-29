@@ -52,3 +52,9 @@
     padding-top: 2vh;
     padding-bottom: 2vh;
 }
+
+.enter-isi-book {
+    display: flex;
+    justify-content: center;
+    padding: 2vh 2vh 2vh 2vh;
+}
