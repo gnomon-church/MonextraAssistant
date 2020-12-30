@@ -17,6 +17,8 @@ router.post('/figures-upload', EODPostControllers.figuresUpload)
 router.get('/isi-game-types-download', ISIGetControllers.gameTypeDownload)
 // Router for deleting an isi game
 router.get('/isi-game-delete/:GAMEID', ISIGetControllers.gameDelete)
+//Router for getting information on an isi game type
+router.get('/isi-game-details/:GAMEID', ISIGetControllers.gameDetails)
 
 // Router for sending new isi game types to the api
 router.post('/isi-game-types-upload', ISIPostControllers.gameTypeUpload)

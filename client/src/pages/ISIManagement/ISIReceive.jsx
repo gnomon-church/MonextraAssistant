@@ -16,6 +16,9 @@ let shipmentData = {
 
 let bookToAdd = '';
 
+let ticketName = '';
+let ticketValue = '';
+
 let shipmentBooks = [];
 
 export default function ISIReceive() {
@@ -47,8 +50,8 @@ export default function ISIReceive() {
 
     const columnDefs = [
         {
-            headerName: "Game Number",
-            field: "game_id",
+            headerName: "Book Number",
+            field: "book_number",
         },
         {
             headerName: "Ticket Value",
@@ -88,13 +91,27 @@ export default function ISIReceive() {
         }
     }
 
-    async function bookArrayPusher(bookNumber) {
-        shipmentBooks.push({ game_id: bookNumber })
-    }
-
     function gridSetter(bookNumber) {
-        bookArrayPusher(bookNumber)
-            .then(() => gridApi.current.setRowData(shipmentBooks))
+        let re = /^[0-9]{4}/;
+        let val = re.exec(bookNumber);
+
+        if (val !== null) {
+            axios.get('/api/isi-game-details/' + val[0])
+                .then((res) => (res.data.rows))
+                .then((rows) =>
+                    rows.map((game) => {
+                        return {
+                            ticket_value: game.ticket_value,
+                            ticket_name: game.ticket_name,
+                        };
+                    })
+                )
+                .then((games) => {
+                    console.log(games[0].ticket_name)
+                    shipmentBooks.push({ book_number: bookNumber, ticket_name: games[0].ticket_name, ticket_value: games[0].ticket_value })
+                    gridApi.current.setRowData(shipmentBooks)
+                })
+        }
     }
 
     return (
@@ -179,11 +196,14 @@ export default function ISIReceive() {
                             bookToAdd = event.target.value
                             if (event.key === 'Enter') {
                                 gridSetter(bookToAdd)
+                                event.target.value = ''
                             }
                         }}
                     />
                     <InputGroup.Append>
-                        <Button onClick={() => gridSetter(bookToAdd)} variant="outline-success">Add</Button>
+                        <Button onClick={() => {
+                            gridSetter(bookToAdd)
+                        }} variant="outline-success">Add</Button>
                     </InputGroup.Append>
                 </InputGroup>
             </div>
