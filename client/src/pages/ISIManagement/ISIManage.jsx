@@ -22,6 +22,7 @@ export default function ISIManage() {
     const [rowIndexToUse, setRowIndexToUse] = useState(null);
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [showDelDialog, setShowDelDialog] = useState(false);
+    
     const gridApi = useRef()
 
     const closeAddDialog = () => setShowAddDialog(false);
