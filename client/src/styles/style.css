@@ -52,3 +52,13 @@
     padding-top: 2vh;
     padding-bottom: 2vh;
 }
+
+.enter-isi-book {
+    display: flex;
+    justify-content: center;
+    padding: 2vh 2vh 2vh 2vh;
+}
+
+.ag-theme-alpine {
+    padding: 0vh 2vh 0vh 2vh;
+}

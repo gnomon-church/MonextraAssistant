@@ -22,6 +22,7 @@ export default function ISIManage() {
     const [rowIndexToUse, setRowIndexToUse] = useState(null);
     const [showAddDialog, setShowAddDialog] = useState(false);
     const [showDelDialog, setShowDelDialog] = useState(false);
+
     const gridApi = useRef()
 
     const closeAddDialog = () => setShowAddDialog(false);
@@ -184,7 +185,7 @@ export default function ISIManage() {
     return (
         <div>
             <Navigation proceed='false' from='/isimenu' />
-            <div class='add-isi-button'>
+            <div className='add-isi-button'>
             <Button variant="outline-danger" onClick={!addIsLoading ? openAddDialog : null}>{addIsLoading ? 'Loading...' : 'Add ISI Game'}</Button>
             </div>
 
@@ -196,7 +197,7 @@ export default function ISIManage() {
                 keyboard={false}
             >
                 <Modal.Header>
-                    <Modal.Title>Add ISI Game Type</Modal.Title>
+                    <Modal.Title>ISI Game Details</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>

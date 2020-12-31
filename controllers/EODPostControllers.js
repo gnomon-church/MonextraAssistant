@@ -1,32 +1,13 @@
 const { Client } = require('pg');
 
-// const connectionURL = process.env.DATABASE_URL;
-const connectionURL = 'postgres://szjzhfjgzxubrz:a91920638868ef1c941ef53fe55e6664afcbfcf196fca4dec630cf4cb4b11a90@ec2-54-161-150-170.compute-1.amazonaws.com:5432/ddhl6c9kg91vhh';
-
-const figuresDownload = (req, res, next) => {
-    const client = new Client({
-        connectionString: connectionURL,
-        ssl: {
-            rejectUnauthorized: false
-        }
-    });
-
-    client.connect();
-
-    client
-        .query("SELECT * FROM eod_figures WHERE store = $1 AND date = $2;", [req.params.Store, req.params.Date])
-        .then((rows) => {
-            res.json(rows)
-        })
-        .then(() => client.end())
-}
+const connectionConfig = require('./db_config');
 
 const figuresUpload = (req, res, next) => {
     const b = req.body;
     const values = [b.store, b.date, b.staff, b.usedPayouts, b.putAside, b.hundreds, b.fifties, b.twenties, b.tens, b.fives, b.coins, b.cashActual, b.cashRegister, b.cashDiff, b.eftposOne, b.eftposTwo, b.eftposThree, b.eftposPrev, b.eftposActual, b.eftposRegister, b.eftposDiff, b.epayActual, b.epayRegister, b.epayDiff, b.lottoGross, b.isiCommission, b.isiNet, b.lottoActual, b.lottoRegister, b.lottoDiff, b.isiDiff, b.totalPrizes, b.isiCash, b.lottoPayActual, b.lottoPayRegister, b.lottoPayDiff, b.isiFree, b.isiPayActual, b.isiPayRegister, b.isiPayDiff, b.totalDiff];
 
     const client = new Client({
-        connectionString: connectionURL,
+        connectionString: connectionConfig.db_url,
         ssl: {
             rejectUnauthorized: falseget
         }
@@ -41,5 +22,4 @@ const figuresUpload = (req, res, next) => {
         .then(res.status(200))
 }
 
-module.exports.figuresDownload = figuresDownload;
 module.exports.figuresUpload = figuresUpload;

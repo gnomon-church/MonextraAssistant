@@ -1,13 +1,10 @@
 const { Client } = require('pg');
 
-// const connectionURL = process.env.DATABASE_URL;
-const connectionURL = 'postgres://szjzhfjgzxubrz:a91920638868ef1c941ef53fe55e6664afcbfcf196fca4dec630cf4cb4b11a90@ec2-54-161-150-170.compute-1.amazonaws.com:5432/ddhl6c9kg91vhh';
-
-
+const connectionConfig = require('./db_config');
 
 const gameDelete = (req, res, next) => {
     const client = new Client({
-        connectionString: connectionURL,
+        connectionString: connectionConfig.db_url,
         ssl: {
             rejectUnauthorized: false
         }
@@ -25,7 +22,7 @@ const gameDelete = (req, res, next) => {
 
 const gameTypeDownload = (req, res, next) => {
     const client = new Client({
-        connectionString: connectionURL,
+        connectionString: connectionConfig.db_url,
         ssl: {
             rejectUnauthorized: false
         }
@@ -41,33 +38,30 @@ const gameTypeDownload = (req, res, next) => {
         .then(() => client.end())
 }
 
-const gameTypeUpload = (req, res, next) => {
-    const b = req.body
-    const values = [b.game_id, b.ticket_value, b.ticket_name, b.book_value, b.current_game]
-
-    console.log(b.current_game)
-
+const gameDetails = (req, res, next) => {
     const client = new Client({
-        connectionString: connectionURL,
+        connectionString: connectionConfig.db_url,
         ssl: {
             rejectUnauthorized: false
         }
     });
 
-
     client.connect();
 
     client
-        .query("INSERT INTO game_types VALUES ($1,$2,$3,$4,$5) ON CONFLICT (game_id) DO UPDATE SET ticket_value = $2, ticket_name = $3, book_value = $4, current_game = $5;", values)
-        .then((rows) => {
-            res.json(rows)
+        .query("SELECT * FROM game_types WHERE game_id = $1", [req.params.GAMEID])
+        .then((result) => {
+            if (result.rows.length > 0) {
+                res.status(200).json(result)
+            } else {
+                res.status(404).json({ err_type: 'not_exists' })
+            }
         })
-        .catch(e => console.error(e.stack))
         .then(() => client.end())
-        .then(res.status(200))
 }
+
 
 
 module.exports.gameDelete = gameDelete;
 module.exports.gameTypeDownload = gameTypeDownload;
-module.exports.gameTypeUpload = gameTypeUpload;
+module.exports.gameDetails = gameDetails;
