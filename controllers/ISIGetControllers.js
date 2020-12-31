@@ -50,9 +50,12 @@ const gameDetails = (req, res, next) => {
 
     client
         .query("SELECT * FROM game_types WHERE game_id = $1", [req.params.GAMEID])
-        .then((rows) => {
-            console.log(rows)
-            res.json(rows)
+        .then((result) => {
+            if (result.rows.length > 0) {
+                res.status(200).json(result)
+            } else {
+                res.status(404).json({ err_type: 'not_exists' })
+            }
         })
         .then(() => client.end())
 }

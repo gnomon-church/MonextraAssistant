@@ -197,7 +197,7 @@ export default function ISIManage() {
                 keyboard={false}
             >
                 <Modal.Header>
-                    <Modal.Title>Add ISI Game Type</Modal.Title>
+                    <Modal.Title>ISI Game Details</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>

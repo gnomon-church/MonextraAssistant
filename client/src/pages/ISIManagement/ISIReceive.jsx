@@ -9,34 +9,33 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import Navigation from '../../components/Navigation'
 
+let bookToAdd = '';
+let missingBook = ''
+let shipmentBooks = [];
 let shipmentData = {
     shipment_id: '',
     date_received: '',
 };
 
-let bookToAdd = '';
-
-let ticketName = '';
-let ticketValue = '';
-
-let shipmentBooks = [];
-
 export default function ISIReceive() {
     let history = useHistory()
 
     // CHANGE ME BACK TO TRUE FOR ACTUAL PRODUCTION
-    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(false);
+    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(true);
     const [showExistsDialog, setShowExistsDialog] = useState(false);
+    const [showNotExistsDialog, setShowNotExistsDialog] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [addIsLoading, setAddIsLoading] = useState(false);
     const [rowData, setRowData] = useState([]);
 
-    const gridApi = useRef()
+    const gridApi = useRef();
 
     const closeShipmentIdDialog = () => setShowShipmentIdDialog(false);
     const openShipmentIdDialog = () => setShowShipmentIdDialog(true);
     const closeExistsDialog = () => setShowExistsDialog(false);
     const openExistsDialog = () => setShowExistsDialog(true);
+    const closeNotExistsDialog = () => setShowNotExistsDialog(false);
+    const openNotExistsDialog = () => setShowNotExistsDialog(true);
 
     useEffect(() => {
         document.title = 'Receive ISI - Mona';
@@ -45,7 +44,7 @@ export default function ISIReceive() {
     const onGridReady = (params) => {
         gridApi.current = params.api
         gridApi.current.sizeColumnsToFit();
-        // gridApi.current.setHeaderHeight(0);
+        gridApi.current.setHeaderHeight(0);
     };
 
     const columnDefs = [
@@ -107,9 +106,14 @@ export default function ISIReceive() {
                     })
                 )
                 .then((games) => {
-                    console.log(games[0].ticket_name)
-                    shipmentBooks.push({ book_number: bookNumber, ticket_name: games[0].ticket_name, ticket_value: games[0].ticket_value })
-                    gridApi.current.setRowData(shipmentBooks)
+                    shipmentBooks.push({ book_number: bookNumber, ticket_name: games[0].ticket_name, ticket_value: games[0].ticket_value });
+                    gridApi.current.setRowData(shipmentBooks);
+                })
+                .catch((err) => {
+                    if (err.response.data.err_type === 'not_exists') {
+                        missingBook = val[0];
+                        openNotExistsDialog();
+                    }
                 })
         }
     }
@@ -185,6 +189,22 @@ export default function ISIReceive() {
                 </Modal.Footer>
             </Modal>
 
+            {/* Modal for game that does not exist */}
+            <Modal
+                show={showNotExistsDialog}
+                onHide={closeNotExistsDialog}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Body>
+                    Game number <i>{missingBook}</i> does not exist. Please add it into the system through the <b>Manage</b> page.
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="danger" onClick={closeNotExistsDialog}>Okay</Button>
+                </Modal.Footer>
+            </Modal>
+
             <div className='enter-isi-book'>
                 <InputGroup className='mb-3'>
                     <InputGroup.Prepend>
@@ -220,6 +240,9 @@ export default function ISIReceive() {
                     rowData={rowData}
                     animateRows={true}
                     onGridReady={onGridReady}
+                    gridOptions={{
+                        suppressNoRowsOverlay: true,
+                    }}
                 ></AgGridReact>
             </div>
         </div>
