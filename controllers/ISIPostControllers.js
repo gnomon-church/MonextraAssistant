@@ -23,11 +23,11 @@ const gameTypeUpload = (req, res, next) => {
         .catch(e => console.error(e.stack))
         .then(() => client.end())
         .then(res.status(200))
-}
+};
 
 const shipmentDetailsUpload = (req, res, next) => {
-    const b = req.body
-    const values = [b.shipment_id, b.date_received]
+    const b = req.body;
+    const values = [b.shipment_id, b.date_received];
 
     const client = new Client({
         connectionString: connectionConfig.db_url,
@@ -54,7 +54,38 @@ const shipmentDetailsUpload = (req, res, next) => {
         })
 
 
-}
+};
+
+const receiveShipment = (req, res, next) => {
+    const b = req.body
+
+
+
+    console.log(b)
+
+    const client = new Client({
+        connectionString: connectionConfig.db_url,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+
+    client.connect();
+
+    for (let i = 0; i < b.length; i++) {
+        b[i]['shipment_id'] = req.params.SHIPMENTID
+        client
+            .then(console.log('test'))
+            .query("INSERT INTO isi_books VALUES ($1, $2, $3, $4)", [b[i].game_id, b[i].book_number, b[i].signout_date, b[i].shipment_id])
+            .then((rows) => {
+                res.status(201).json(rows)
+            })
+            .then(() => client.end())
+    }
+
+
+};
 
 module.exports.gameTypeUpload = gameTypeUpload;
 module.exports.shipmentDetailsUpload = shipmentDetailsUpload;
+module.exports.receiveShipment = receiveShipment;

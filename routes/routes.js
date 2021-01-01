@@ -24,6 +24,8 @@ router.get('/isi-game-details/:GAMEID', ISIGetControllers.gameDetails)
 router.post('/isi-game-types-upload', ISIPostControllers.gameTypeUpload)
 // Router for sending new shipment details to the api
 router.post('/shipment-details-upload', ISIPostControllers.shipmentDetailsUpload)
+// Router for receiving an isi shipment 
+router.post('/receive-isi-shipment/:SHIPMENTID', ISIPostControllers.receiveShipment)
 
 
 module.exports = router;
