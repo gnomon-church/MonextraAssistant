@@ -62,3 +62,7 @@
 .ag-theme-alpine {
     padding: 0vh 2vh 0vh 2vh;
 }
+
+.ag-header-cell-label {
+    justify-content: center;
+}

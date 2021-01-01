@@ -41,18 +41,30 @@ export default function ISIManage() {
         {
             headerName: "Game Number",
             field: "game_id",
+            cellStyle: { 'text-align': 'center' },
+            suppressMovable: true,
+            floatingFilter: true,
+            filter: true,
         },
         {
             headerName: "Ticket Value",
             field: "ticket_value",
+            cellStyle: { 'text-align': 'center' },
+            suppressMovable: true,
         },
         {
             headerName: "Ticket Name",
             field: "ticket_name",
+            cellStyle: { 'text-align': 'center' },
+            suppressMovable: true,
+            floatingFilter: true,
+            filter: true,
         },
         {
             headerName: "Book Value",
             field: "book_value",
+            cellStyle: { 'text-align': 'center' },
+            suppressMovable: true,
         },
         {
             headerName: "Current Game?",
@@ -60,12 +72,16 @@ export default function ISIManage() {
             colId: 'params',
             cellRenderer: params => {
                 return `<input type='checkbox' disabled ${params.value ? 'checked' : ''} />`;
-            }
+            },
+            cellStyle: { 'text-align': 'center' },
+            suppressMovable: true,
         },
         {
             headerName: "",
-            field: "test_field",
+            field: "button_field",
             cellRenderer: 'cellControlButtons',
+            cellStyle: { 'text-align': 'right' },
+            suppressMovable: true,
         }
     ];
 
@@ -104,13 +120,13 @@ export default function ISIManage() {
             <span>
                 <Button variant='outline-secondary' size='sm' onClick={() => {
                     let data = gridApi.current.getDisplayedRowAtIndex(props.node.rowIndex).data
-                    new_book_data['game_id'] = data.game_id                           
-                    new_book_data['ticket_value'] = data.ticket_value                        
-                    new_book_data['book_value'] = data.book_value                        
+                    new_book_data['game_id'] = data.game_id
+                    new_book_data['ticket_value'] = data.ticket_value
+                    new_book_data['book_value'] = data.book_value
                     new_book_data['ticket_name'] = data.ticket_name
-                    new_book_data['current_game'] = data.current_game    
+                    new_book_data['current_game'] = data.current_game
                     openAddDialog()
-                    }}>Edit</Button>{' '}
+                }}>Edit</Button>{' '}
 
                 <Button variant='outline-secondary' size='sm' onClick={() => {
                     setRowIndexToUse(props.node.rowIndex)
@@ -186,7 +202,7 @@ export default function ISIManage() {
         <div>
             <Navigation proceed='false' from='/isimenu' />
             <div className='add-isi-button'>
-            <Button variant="outline-danger" onClick={!addIsLoading ? openAddDialog : null}>{addIsLoading ? 'Loading...' : 'Add ISI Game'}</Button>
+                <Button variant="outline-danger" onClick={!addIsLoading ? openAddDialog : null}>{addIsLoading ? 'Loading...' : 'Add ISI Game'}</Button>
             </div>
 
             {/* Modal for adding ISI books */}
