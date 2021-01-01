@@ -64,7 +64,7 @@ export default function ISIManage() {
         },
         {
             headerName: "",
-            field: "test_field",
+            field: "button_field",
             cellRenderer: 'cellControlButtons',
         }
     ];

@@ -21,7 +21,7 @@ export default function ISIReceive() {
     let history = useHistory()
 
     // CHANGE ME BACK TO TRUE FOR ACTUAL PRODUCTION
-    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(true);
+    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(false);
     const [showExistsDialog, setShowExistsDialog] = useState(false);
     const [showNotExistsDialog, setShowNotExistsDialog] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -59,8 +59,33 @@ export default function ISIReceive() {
         {
             headerName: "Ticket Name",
             field: "ticket_name",
+        },
+        {
+            headerName: "",
+            field: "button_field",
+            cellRenderer: 'cellControlButtons',
         }
     ];
+
+    const frameworkComponents = {
+        cellControlButtons: cellControlButtons,
+    };
+
+    function cellControlButtons(props) {
+        return (
+            <span>
+                <Button variant='outline-secondary' size='sm' onClick={() => {
+                    let bookNumber = gridApi.current.getDisplayedRowAtIndex(props.node.rowIndex).data.book_number;
+                    shipmentBooks = shipmentBooks.filter((item) => {
+                        return item.book_number !== bookNumber
+                    })
+                    console.log(shipmentBooks)
+                    gridApi.current.setRowData(shipmentBooks);
+                }}
+                >Remove</Button>
+            </span>
+        );
+    }
 
     function shipmentAdd() {
         setAddIsLoading(true);
@@ -243,6 +268,7 @@ export default function ISIReceive() {
                     gridOptions={{
                         suppressNoRowsOverlay: true,
                     }}
+                    frameworkComponents={frameworkComponents}
                 ></AgGridReact>
             </div>
         </div>
