@@ -51,6 +51,7 @@ export default function ISIReceive() {
         {
             headerName: "Book Number",
             field: "book_number",
+            valueFormatter: bookNumberFormatter,
         },
         {
             headerName: "Ticket Value",
@@ -64,6 +65,7 @@ export default function ISIReceive() {
             headerName: "",
             field: "button_field",
             cellRenderer: 'cellControlButtons',
+            cellStyle: {'text-align': 'right'}
         }
     ];
 
@@ -85,6 +87,10 @@ export default function ISIReceive() {
                 >Remove</Button>
             </span>
         );
+    }
+
+    function bookNumberFormatter(params) {
+        return params.value.replace(/(\d{4})(\d{6})(\d{3})(\d{1})/, "$1-$2-$3•$4")
     }
 
     function shipmentAdd() {
