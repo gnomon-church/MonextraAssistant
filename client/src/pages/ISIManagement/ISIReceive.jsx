@@ -65,7 +65,7 @@ export default function ISIReceive() {
             headerName: "",
             field: "button_field",
             cellRenderer: 'cellControlButtons',
-            cellStyle: {'text-align': 'right'}
+            cellStyle: { 'text-align': 'right' }
         }
     ];
 

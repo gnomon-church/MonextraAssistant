@@ -1,4 +1,5 @@
 const { Client } = require('pg');
+const pgFormat = require('pg-format');
 
 const connectionConfig = require('./db_config');
 
@@ -57,11 +58,13 @@ const shipmentDetailsUpload = (req, res, next) => {
 };
 
 const receiveShipment = (req, res, next) => {
-    const b = req.body
+    let dataArr = []
 
+    for (let i = 0; i < req.body.length; i++) {
+        dataArr[i] = [req.body[i].game_id, req.body[i].book_number, req.body[i].signout_date, req.params.SHIPMENTID] 
+    }
 
-
-    console.log(b)
+    let sqlQuery = pgFormat('INSERT INTO isi_books VALUES %L', dataArr)
 
     const client = new Client({
         connectionString: connectionConfig.db_url,
@@ -72,16 +75,12 @@ const receiveShipment = (req, res, next) => {
 
     client.connect();
 
-    for (let i = 0; i < b.length; i++) {
-        b[i]['shipment_id'] = req.params.SHIPMENTID
-        client
-            .then(console.log('test'))
-            .query("INSERT INTO isi_books VALUES ($1, $2, $3, $4)", [b[i].game_id, b[i].book_number, b[i].signout_date, b[i].shipment_id])
-            .then((rows) => {
-                res.status(201).json(rows)
-            })
-            .then(() => client.end())
-    }
+    client
+        .query(sqlQuery)
+        .then((rows) => {
+            res.status(201).json(rows)
+        })
+        .then(() => client.end())
 
 
 };
