@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useHistory } from 'react-router-dom';
-import { Modal, Button, InputGroup, FormControl } from 'react-bootstrap';
+import { Modal, Button, InputGroup, FormControl, Navbar } from 'react-bootstrap';
 import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios'
 import DatePicker from "react-datepicker";
@@ -21,7 +21,7 @@ export default function ISIReceive() {
     let history = useHistory()
 
     // CHANGE ME BACK TO TRUE FOR ACTUAL PRODUCTION
-    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(false);
+    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(true);
     const [showExistsDialog, setShowExistsDialog] = useState(false);
     const [showNotExistsDialog, setShowNotExistsDialog] = useState(false);
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -81,7 +81,6 @@ export default function ISIReceive() {
                     shipmentBooks = shipmentBooks.filter((item) => {
                         return item.book_number !== bookNumber
                     })
-                    console.log(shipmentBooks)
                     gridApi.current.setRowData(shipmentBooks);
                 }}
                 >Remove</Button>
@@ -91,6 +90,22 @@ export default function ISIReceive() {
 
     function bookNumberFormatter(params) {
         return params.value.replace(/(\d{4})(\d{6})(\d{3})(\d{1})/, "$1-$2-$3•$4")
+    }
+
+    function postShipmentContents() {
+        let idReg = /^[0-9]{4}/;
+        let bookReg = /^[0-9]{4}([0-9]{6})/;
+
+        let dataToPost = []
+
+        for (let i = 0; i < shipmentBooks.length; i++) {
+            let gameID = idReg.exec(shipmentBooks[i].book_number)[0]
+            let bookNumber = bookReg.exec(shipmentBooks[i].book_number)[1]
+
+            dataToPost[i] = { game_id: gameID, book_number: bookNumber }
+        }
+
+        axios.post('/api/receive-isi-shipment/?shipment_id=' + shipmentData.shipment_id, dataToPost)
     }
 
     function shipmentAdd() {
@@ -122,8 +137,8 @@ export default function ISIReceive() {
     }
 
     function gridSetter(bookNumber) {
-        let re = /^[0-9]{4}/;
-        let val = re.exec(bookNumber);
+        let reg = /^[0-9]{4}/;
+        let val = reg.exec(bookNumber);
 
         if (val !== null) {
             axios.get('/api/isi-game-details/' + val[0])
@@ -151,7 +166,10 @@ export default function ISIReceive() {
 
     return (
         <div>
-            <Navigation proceed='true' from='/isimenu' label='Receive Shipment' />
+            <Navbar bg='danger' className='justify-content-between'>
+                <Button variant='dark' onClick={() => { history.push('/isimenu') }}>Back</Button>
+                <Button variant='success' onClick={postShipmentContents}>Receive Shipment</Button>
+            </Navbar>
 
             {/* Modal for adding isi shipment */}
             <Modal

@@ -61,10 +61,11 @@ const receiveShipment = (req, res, next) => {
     let dataArr = []
 
     for (let i = 0; i < req.body.length; i++) {
-        dataArr[i] = [req.body[i].game_id, req.body[i].book_number, req.body[i].signout_date, req.params.SHIPMENTID] 
+        // dataArr[i] = [req.body[i].game_id, req.body[i].book_number, req.body[i].signout_date, req.params.SHIPMENTID]
+        dataArr[i] = [req.body[i].game_id, req.body[i].book_number, req.query.shipment_id] 
     }
 
-    let sqlQuery = pgFormat('INSERT INTO isi_books VALUES %L', dataArr)
+    let sqlQuery = pgFormat('INSERT INTO isi_books (game_id, book_number, shipment_id) VALUES %L', dataArr)
 
     const client = new Client({
         connectionString: connectionConfig.db_url,
