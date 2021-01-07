@@ -8,7 +8,6 @@ import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-let bookToAdd = '';
 let missingBook = ''
 let shipmentBooks = [];
 let shipmentData = {
@@ -176,7 +175,7 @@ export default function ISIReceive() {
 
     return (
         <div>
-            <Navbar bg='danger' className='justify-content-between'>
+            <Navbar bg='danger' className='justify-content-between' expand='lg'>
                 <Button variant='dark' onClick={() => { history.push('/isimenu') }}>Back</Button>
                 <Button variant='success' onClick={receiveShipment}>Receive Shipment</Button>
             </Navbar>
@@ -292,7 +291,6 @@ export default function ISIReceive() {
                         type='text'
                         ref={isiInput}
                         onKeyUp={(event) => {
-                            console.log(isiInput.current.value)
                             if (event.key === 'Enter') {
                                 gridSetter(isiInput.current.value)
                                 isiInput.current.value = ''

@@ -16,10 +16,6 @@
     margin-top: 10vh;
 }
 
-.justify-content-between {
-    height: 6vh;
-}
-
 .card-list, .card-list:link, .card-list:visited {
     transition: transform .2s;
     text-decoration: none;
@@ -40,10 +36,6 @@
 .viewer-window {
     width: 100vw;
     height: 93vh;
-}
-
-.justify-content-between {
-    height: 6vh;
 }
 
 .add-isi-button {

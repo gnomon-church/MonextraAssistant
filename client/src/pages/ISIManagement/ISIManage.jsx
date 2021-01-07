@@ -45,12 +45,14 @@ export default function ISIManage() {
             suppressMovable: true,
             floatingFilter: true,
             filter: true,
+            headerTooltip: 'ISI game Number',
         },
         {
             headerName: "Ticket Value",
             field: "ticket_value",
             cellStyle: { 'text-align': 'center' },
             suppressMovable: true,
+            headerTooltip: 'ISI ticket Value',
         },
         {
             headerName: "Ticket Name",
@@ -59,12 +61,14 @@ export default function ISIManage() {
             suppressMovable: true,
             floatingFilter: true,
             filter: true,
+            headerTooltip: 'ISI ticket name',
         },
         {
             headerName: "Book Value",
             field: "book_value",
             cellStyle: { 'text-align': 'center' },
             suppressMovable: true,
+            headerTooltip: 'ISI book value',
         },
         {
             headerName: "Current Game?",
@@ -75,6 +79,7 @@ export default function ISIManage() {
             },
             cellStyle: { 'text-align': 'center' },
             suppressMovable: true,
+            headerTooltip: 'Is this a current ISI game?',
         },
         {
             headerName: "",
