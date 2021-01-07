@@ -1,7 +1,2 @@
-/client/public
-/client/src
-/controllers
-/routes
 /.gitignore
 /README.md
-/server.js
