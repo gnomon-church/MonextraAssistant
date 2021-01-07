@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import { Modal, Button, InputGroup, FormControl, Navbar } from 'react-bootstrap';
 import { AgGridReact } from 'ag-grid-react';
@@ -6,8 +7,6 @@ import axios from 'axios'
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
-
-import Navigation from '../../components/Navigation'
 
 let bookToAdd = '';
 let missingBook = ''
@@ -21,14 +20,18 @@ export default function ISIReceive() {
     let history = useHistory()
 
     // CHANGE ME BACK TO TRUE FOR ACTUAL PRODUCTION
-    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(true);
+    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(false);
     const [showExistsDialog, setShowExistsDialog] = useState(false);
     const [showNotExistsDialog, setShowNotExistsDialog] = useState(false);
+    const [showSuccessDialog, setShowSuccessDialog] = useState(false)
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [addIsLoading, setAddIsLoading] = useState(false);
     const [rowData, setRowData] = useState([]);
 
+    // const [isiInput, setIsiInput] = useState();
+
     const gridApi = useRef();
+    const isiInput = useRef(null);
 
     const closeShipmentIdDialog = () => setShowShipmentIdDialog(false);
     const openShipmentIdDialog = () => setShowShipmentIdDialog(true);
@@ -36,6 +39,8 @@ export default function ISIReceive() {
     const openExistsDialog = () => setShowExistsDialog(true);
     const closeNotExistsDialog = () => setShowNotExistsDialog(false);
     const openNotExistsDialog = () => setShowNotExistsDialog(true);
+    const closeSuccessDialog = () => setShowSuccessDialog(false);
+    const openSuccessDialog = () => setShowSuccessDialog(true);
 
     useEffect(() => {
         document.title = 'Receive ISI - Mona';
@@ -92,7 +97,7 @@ export default function ISIReceive() {
         return params.value.replace(/(\d{4})(\d{6})(\d{3})(\d{1})/, "$1-$2-$3•$4")
     }
 
-    function postShipmentContents() {
+    function receiveShipment() {
         let idReg = /^[0-9]{4}/;
         let bookReg = /^[0-9]{4}([0-9]{6})/;
 
@@ -106,6 +111,11 @@ export default function ISIReceive() {
         }
 
         axios.post('/api/receive-isi-shipment/?shipment_id=' + shipmentData.shipment_id, dataToPost)
+            .then(() => openSuccessDialog())
+            .then(() => {
+                shipmentData = {};
+                shipmentBooks = [];
+            })
     }
 
     function shipmentAdd() {
@@ -114,7 +124,7 @@ export default function ISIReceive() {
         axios.post('/api/shipment-details-upload', shipmentData)
             .then(() => setShowShipmentIdDialog(false))
             .then(() => setAddIsLoading(false))
-            .then(shipmentData.shipment_id = '')
+            // .then(shipmentData.shipment_id = '')
             .catch((err) => {
                 if (err.response.data.err_type === 'already_exists') {
                     closeShipmentIdDialog()
@@ -168,7 +178,7 @@ export default function ISIReceive() {
         <div>
             <Navbar bg='danger' className='justify-content-between'>
                 <Button variant='dark' onClick={() => { history.push('/isimenu') }}>Back</Button>
-                <Button variant='success' onClick={postShipmentContents}>Receive Shipment</Button>
+                <Button variant='success' onClick={receiveShipment}>Receive Shipment</Button>
             </Navbar>
 
             {/* Modal for adding isi shipment */}
@@ -254,6 +264,25 @@ export default function ISIReceive() {
                 </Modal.Footer>
             </Modal>
 
+            {/* Modal for shipment received successfully */}
+            <Modal
+                show={showSuccessDialog}
+                onHide={closeSuccessDialog}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Body>
+                    Shipment <i>{shipmentData.shipment_id}</i> has been received successfully
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button variant="danger" onClick={() => {
+                        closeSuccessDialog();
+                        history.push('/isimenu')
+                    }}>Okay</Button>
+                </Modal.Footer>
+            </Modal>
+
             <div className='enter-isi-book'>
                 <InputGroup className='mb-3'>
                     <InputGroup.Prepend>
@@ -261,17 +290,19 @@ export default function ISIReceive() {
                     </InputGroup.Prepend>
                     <FormControl
                         type='text'
+                        ref={isiInput}
                         onKeyUp={(event) => {
-                            bookToAdd = event.target.value
+                            console.log(isiInput.current.value)
                             if (event.key === 'Enter') {
-                                gridSetter(bookToAdd)
-                                event.target.value = ''
+                                gridSetter(isiInput.current.value)
+                                isiInput.current.value = ''
                             }
                         }}
                     />
                     <InputGroup.Append>
                         <Button onClick={() => {
-                            gridSetter(bookToAdd)
+                            gridSetter(isiInput.current.value);
+                            isiInput.current.value = ''
                         }} variant="outline-success">Add</Button>
                     </InputGroup.Append>
                 </InputGroup>

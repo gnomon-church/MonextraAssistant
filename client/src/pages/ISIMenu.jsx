@@ -12,13 +12,13 @@ export default function ISIMenu() {
     }, []);
 
     let history = useHistory()
-    
+
     return (
         <div>
             <Navigation proceed='false' from='/' />
             <div id='card-deck-set'>
                 <CardDeck>
-                    <Card onClick={() => {history.push('/isireceive')}} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
+                    <Card onClick={() => { history.push('/isireceive') }} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
                         <Card.Body>
                             <Card.Title>Receive</Card.Title>
                             <Card.Text>
@@ -26,11 +26,8 @@ export default function ISIMenu() {
                                 </Card.Text>
                         </Card.Body>
                     </Card>
-                </CardDeck>
-                <br />
 
-                <CardDeck>
-                    <Card onClick={() => {history.push('isisignout')}} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
+                    <Card onClick={() => { history.push('isisignout') }} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
                         <Card.Body>
                             <Card.Title>Sign Out</Card.Title>
                             <Card.Text>
@@ -42,7 +39,7 @@ export default function ISIMenu() {
                 <br />
 
                 <CardDeck>
-                    <Card onClick={() => {history.push('isireport')}} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
+                    <Card onClick={() => { history.push('isireport') }} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
                         <Card.Body>
                             <Card.Title>Reports</Card.Title>
                             <Card.Text>
@@ -50,11 +47,8 @@ export default function ISIMenu() {
                                 </Card.Text>
                         </Card.Body>
                     </Card>
-                </CardDeck>
-                <br />
 
-                <CardDeck>
-                    <Card onClick={() => {history.push('isimanage')}} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
+                    <Card onClick={() => { history.push('isimanage') }} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
                         <Card.Body>
                             <Card.Title>Manage</Card.Title>
                             <Card.Text>
