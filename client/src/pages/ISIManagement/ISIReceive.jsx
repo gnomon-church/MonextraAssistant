@@ -19,7 +19,7 @@ export default function ISIReceive() {
     let history = useHistory()
 
     // CHANGE ME BACK TO TRUE FOR ACTUAL PRODUCTION
-    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(false);
+    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(true);
     const [showExistsDialog, setShowExistsDialog] = useState(false);
     const [showNotExistsDialog, setShowNotExistsDialog] = useState(false);
     const [showSuccessDialog, setShowSuccessDialog] = useState(false)
@@ -100,21 +100,49 @@ export default function ISIReceive() {
         let idReg = /^[0-9]{4}/;
         let bookReg = /^[0-9]{4}([0-9]{6})/;
 
-        let dataToPost = []
+        let dataToPost = [];
+        let dataToReport = [];
+
+        let gameCounts = {};
 
         for (let i = 0; i < shipmentBooks.length; i++) {
             let gameID = idReg.exec(shipmentBooks[i].book_number)[0]
             let bookNumber = bookReg.exec(shipmentBooks[i].book_number)[1]
 
+            
+
+            if (gameCounts[gameID] !== undefined) {
+                gameCounts[gameID] += 1;
+            } else {
+                gameCounts[gameID] = 1;
+            }
+
             dataToPost[i] = { game_id: gameID, book_number: bookNumber }
+            // dataToReport[i] = { game_id: gameID, ticket_name: bookValName }
         }
 
+        let initial = 0;
+        for (const [key, value] of Object.entries(gameCounts)) {
+            let bookValName = '$' + parseFloat(shipmentBooks[initial].ticket_value.replace(/\$|,/g, '')).toFixed() + ' ' + shipmentBooks[initial].ticket_name;
+            dataToReport[initial] = { game_id: key, ticket_name: bookValName, qty: value };
+            initial += 1;
+        }
+
+        console.log(gameCounts);
+
+
         axios.post('/api/receive-isi-shipment/?shipment_id=' + shipmentData.shipment_id, dataToPost)
-            .then(() => openSuccessDialog())
+            // .then(() => openSuccessDialog())
             .then(() => {
                 shipmentData = {};
                 shipmentBooks = [];
             })
+
+        localStorage.setItem('dataToReport', JSON.stringify(dataToReport));
+
+        history.push('/pdfreport')
+        
+        
     }
 
     function shipmentAdd() {

@@ -9,6 +9,7 @@ import ISIManage from './pages/ISIManagement/ISIManage'
 import ISIReceive from './pages/ISIManagement/ISIReceive'
 import ISIReport from './pages/ISIManagement/ISIReport'
 import ISISignOut from './pages/ISIManagement/ISISignOut'
+import PDFReport from './pages/PDFReport'
 
 export default function App() {
 
@@ -54,6 +55,10 @@ export default function App() {
                     {/* Route for the ISI Sign Out page */}
                     <Route exact path='/isisignout'>
                         <ISISignOut />
+                    </Route>
+
+                    <Route exact path='/pdfreport'>
+                        <PDFReport />
                     </Route>
 
 
