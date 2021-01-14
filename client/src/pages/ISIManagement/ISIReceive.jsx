@@ -93,7 +93,7 @@ export default function ISIReceive() {
     }
 
     function bookNumberFormatter(params) {
-        return params.value.replace(/(\d{4})(\d{6})(\d{3})(\d{1})/, "$1-$2-$3•$4")
+        return params.value.replace(/(\d{4})(\d{6})(\d{3})(\d{1})/, "$1-$2-$3•$4");
     }
 
     function receiveShipment() {
@@ -103,32 +103,29 @@ export default function ISIReceive() {
         let dataToPost = [];
         let dataToReport = [];
 
-        let gameCounts = {};
+        let totalCount = 0;
 
         for (let i = 0; i < shipmentBooks.length; i++) {
-            let gameID = idReg.exec(shipmentBooks[i].book_number)[0]
-            let bookNumber = bookReg.exec(shipmentBooks[i].book_number)[1]
+            let gameID = idReg.exec(shipmentBooks[i].book_number)[0];
+            let bookNumber = bookReg.exec(shipmentBooks[i].book_number)[1];
+            let ticketValName = '$' + parseFloat(shipmentBooks[i].ticket_value.replace(/\$|,/g, '')).toFixed() + ' ' + shipmentBooks[i].ticket_name;
 
-
-            if (gameCounts[gameID] !== undefined) {
-                gameCounts[gameID] += 1;
+            let arrIndex = dataToReport.findIndex((element) => element.game_id == gameID);
+            if (arrIndex === -1) {
+                let count = 1;
+                totalCount += 1;
+                dataToReport.push({ game_id: gameID, ticket_name: ticketValName, qty: count });
             } else {
-                gameCounts[gameID] = 1;
+                let count = dataToReport    [arrIndex].qty + 1;
+                totalCount += 1;
+                dataToReport[arrIndex].qty = count;
             }
 
-            dataToPost[i] = { game_id: gameID, book_number: bookNumber }
-            // dataToReport[i] = { game_id: gameID, ticket_name: bookValName }
+            dataToPost[i] = { game_id: gameID, book_number: bookNumber };
         }
 
-        let index = 0;
-        for (const [key, value] of Object.entries(gameCounts)) {
-            let bookValName = '$' + parseFloat(shipmentBooks[index].ticket_value.replace(/\$|,/g, '')).toFixed() + ' ' + shipmentBooks[index].ticket_name;
-            dataToReport[index] = { game_id: key, ticket_name: bookValName, qty: value };
-            index += 1;
-        }
-
-        console.log(gameCounts);
-
+        dataToReport.sort((a, b) => (a.game_id > b.game_id) ? 1 : -1);
+        dataToReport.push({ game_id: '', ticket_name: 'TOTAL', qty: totalCount });
 
         axios.post('/api/receive-isi-shipment/?shipment_id=' + shipmentData.shipment_id, dataToPost)
             // .then(() => openSuccessDialog())
@@ -138,11 +135,9 @@ export default function ISIReceive() {
             })
 
         localStorage.setItem('dataToReport', JSON.stringify(dataToReport));
-        localStorage.setItem('dataHeaders', JSON.stringify(['NO.', 'NAME', 'RECEIVED']))
+        localStorage.setItem('dataHeaders', JSON.stringify(['NO.', 'NAME', 'RECEIVED']));
 
-        history.push('/pdfreport')
-        
-        
+        history.push('/pdfreport');        
     }
 
     function shipmentAdd() {

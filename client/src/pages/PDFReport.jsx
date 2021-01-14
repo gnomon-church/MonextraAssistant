@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button, Navbar, ButtonGroup } from 'react-bootstrap';
 
 import PrintTable from '../components/PrintTable'
 
@@ -8,7 +9,16 @@ export default function PDFReport() {
 
     return (
         <div>
-            <div id='to-print'>
+            <Navbar bg='danger' className='justify-content-between' expand='lg'>
+                <Button variant='dark' onClick={null}>Back</Button>
+                <ButtonGroup className="mr-2">
+                    <Button variant='secondary' onClick={() => window.print()}>Print</Button>
+                    <Button variant='success' onClick={null}>Receive Shipment</Button>
+                </ButtonGroup>
+            </Navbar>
+
+            <div className="print-content">
+                <h3 className='section-heading'>INSTANT ORDER DETAIL</h3>
                 <PrintTable data={tableData} headers={tableHeaders} />
             </div>
         </div>

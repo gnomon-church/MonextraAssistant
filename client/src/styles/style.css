@@ -68,3 +68,12 @@ th {
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.print-content {
+    margin-left: 3vw;
+    margin-right: 3vw;
+}
+
+.section-heading {
+    padding-top: 5vh;
+}
