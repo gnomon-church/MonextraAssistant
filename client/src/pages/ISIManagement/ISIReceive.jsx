@@ -109,7 +109,6 @@ export default function ISIReceive() {
             let gameID = idReg.exec(shipmentBooks[i].book_number)[0]
             let bookNumber = bookReg.exec(shipmentBooks[i].book_number)[1]
 
-            
 
             if (gameCounts[gameID] !== undefined) {
                 gameCounts[gameID] += 1;
@@ -121,11 +120,11 @@ export default function ISIReceive() {
             // dataToReport[i] = { game_id: gameID, ticket_name: bookValName }
         }
 
-        let initial = 0;
+        let index = 0;
         for (const [key, value] of Object.entries(gameCounts)) {
-            let bookValName = '$' + parseFloat(shipmentBooks[initial].ticket_value.replace(/\$|,/g, '')).toFixed() + ' ' + shipmentBooks[initial].ticket_name;
-            dataToReport[initial] = { game_id: key, ticket_name: bookValName, qty: value };
-            initial += 1;
+            let bookValName = '$' + parseFloat(shipmentBooks[index].ticket_value.replace(/\$|,/g, '')).toFixed() + ' ' + shipmentBooks[index].ticket_name;
+            dataToReport[index] = { game_id: key, ticket_name: bookValName, qty: value };
+            index += 1;
         }
 
         console.log(gameCounts);
@@ -139,6 +138,7 @@ export default function ISIReceive() {
             })
 
         localStorage.setItem('dataToReport', JSON.stringify(dataToReport));
+        localStorage.setItem('dataHeaders', JSON.stringify(['NO.', 'NAME', 'RECEIVED']))
 
         history.push('/pdfreport')
         

@@ -4,11 +4,13 @@ import PrintTable from '../components/PrintTable'
 
 export default function PDFReport() {
     let tableData = JSON.parse(localStorage.getItem('dataToReport'));
+    let tableHeaders = JSON.parse(localStorage.getItem('dataHeaders'))
 
     return (
         <div>
-            {/* <h1>hello</h1> */}
-            <PrintTable data={tableData} />
+            <div id='to-print'>
+                <PrintTable data={tableData} headers={tableHeaders} />
+            </div>
         </div>
     )
 }

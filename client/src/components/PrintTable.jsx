@@ -6,9 +6,9 @@ export default function PrintTable(props) {
     }
 
     function getHeader() {
-        let keys = getKeys();
-        return keys.map((key, index) => {
-            return <th key={key}>{key.toUpperCase()}</th>
+        let headers = props.headers;
+        return headers.map((header) => {
+            return <th key={header}>{header.toUpperCase()}</th>
         });
     }
 
@@ -16,7 +16,7 @@ export default function PrintTable(props) {
         let items = props.data;
         let keys = getKeys();
         return items.map((row, index) => {
-            return <tr key={index}><RenderRow key={index} data={row} keys={keys} /></tr>
+            return <tr key={index}> <RenderRow key={index} data={row} keys={keys} /></tr>
         })
     }
 
@@ -27,8 +27,7 @@ export default function PrintTable(props) {
     }
 
     return (
-        <div>
-            <div>
+        <div className="report-table">
                 <table>
                     <thead>
                         <tr>{getHeader()}</tr>
@@ -37,7 +36,6 @@ export default function PrintTable(props) {
                         {getRowData()}
                     </tbody>
                 </table>
-            </div>
         </div>
     );
 }
