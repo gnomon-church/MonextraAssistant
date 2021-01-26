@@ -205,7 +205,7 @@ export default function ISIManage() {
 
     return (
         <div>
-            <Navigation proceed='false' from='/isimenu' />
+            <Navigation proceed='false' from='/isifunctions' />
             <div className='add-isi-button'>
                 <Button variant="outline-danger" onClick={!addIsLoading ? openAddDialog : null}>{addIsLoading ? 'Loading...' : 'Add ISI Game'}</Button>
             </div>

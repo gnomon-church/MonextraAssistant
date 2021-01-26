@@ -13,11 +13,11 @@ export default function ISIReport() {
 
     return (
         <div>
-            <Navigation proceed='false' from='/isimenu' />
+            <Navigation proceed='false' from='/isifunctions' />
 
             <div id='card-deck-set'>
                 <CardDeck>
-                    <Card onClick={() => { history.push('isireport') }} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
+                    <Card onClick={() => { history.push(null) }} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
                         <Card.Body>
                             <Card.Text>Stock In Safe</Card.Text>
                         </Card.Body>
@@ -27,7 +27,7 @@ export default function ISIReport() {
                 <br />
 
                 <CardDeck>
-                    <Card onClick={() => { history.push('isireport') }} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
+                    <Card onClick={() => { history.push(null) }} className='card-list' style={{ width: '18rem', cursor: "pointer" }}>
                         <Card.Body>
                         <Card.Text>Sales Data</Card.Text>
                         </Card.Body>

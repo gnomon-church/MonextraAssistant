@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import { Modal, Button, InputGroup, FormControl, Navbar } from 'react-bootstrap';
 import { AgGridReact } from 'ag-grid-react';
-import axios from 'axios'
+import axios from 'axios';
 import DatePicker from "react-datepicker";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -18,7 +18,6 @@ let shipmentData = {
 export default function ISIReceive() {
     let history = useHistory()
 
-    // CHANGE ME BACK TO TRUE FOR ACTUAL PRODUCTION
     const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(true);
     const [showExistsDialog, setShowExistsDialog] = useState(false);
     const [showNotExistsDialog, setShowNotExistsDialog] = useState(false);
@@ -96,63 +95,39 @@ export default function ISIReceive() {
         return params.value.replace(/(\d{4})(\d{6})(\d{3})(\d{1})/, "$1-$2-$3•$4");
     }
 
-    function receiveShipment() {
-        let idReg = /^[0-9]{4}/;
-        let bookReg = /^[0-9]{4}([0-9]{6})/;
+    function proceedToReport() {
+        localStorage.setItem('shipmentData', JSON.stringify(shipmentData));
+        localStorage.setItem('shipmentBooks', JSON.stringify(shipmentBooks));
 
-        let dataToPost = [];
-        let dataToReport = [];
-
-        let totalCount = 0;
-
-        for (let i = 0; i < shipmentBooks.length; i++) {
-            let gameID = idReg.exec(shipmentBooks[i].book_number)[0];
-            let bookNumber = bookReg.exec(shipmentBooks[i].book_number)[1];
-            let ticketValName = '$' + parseFloat(shipmentBooks[i].ticket_value.replace(/\$|,/g, '')).toFixed() + ' ' + shipmentBooks[i].ticket_name;
-
-            let arrIndex = dataToReport.findIndex((element) => element.game_id == gameID);
-            if (arrIndex === -1) {
-                let count = 1;
-                totalCount += 1;
-                dataToReport.push({ game_id: gameID, ticket_name: ticketValName, qty: count });
-            } else {
-                let count = dataToReport    [arrIndex].qty + 1;
-                totalCount += 1;
-                dataToReport[arrIndex].qty = count;
-            }
-
-            dataToPost[i] = { game_id: gameID, book_number: bookNumber };
-        }
-
-        dataToReport.sort((a, b) => (a.game_id > b.game_id) ? 1 : -1);
-        dataToReport.push({ game_id: '', ticket_name: 'TOTAL', qty: totalCount });
-
-        axios.post('/api/receive-isi-shipment/?shipment_id=' + shipmentData.shipment_id, dataToPost)
-            // .then(() => openSuccessDialog())
-            .then(() => {
-                shipmentData = {};
-                shipmentBooks = [];
-            })
-
-        localStorage.setItem('dataToReport', JSON.stringify(dataToReport));
+        // localStorage.setItem('dataToReport', JSON.stringify(dataToReport));
+        // localStorage.setItem('dataToPost', JSON.stringify(dataToPost));
         localStorage.setItem('dataHeaders', JSON.stringify(['NO.', 'NAME', 'RECEIVED']));
 
-        history.push('/pdfreport');        
+        history.push('/isifunctions/isisignout/isireceivereport');
     }
 
     function shipmentAdd() {
-        setAddIsLoading(true);
-        shipmentData['date_received'] = selectedDate.getFullYear() + '-' + (selectedDate.getMonth() + 1) + '-' + selectedDate.getDate();
-        axios.post('/api/shipment-details-upload', shipmentData)
-            .then(() => setShowShipmentIdDialog(false))
-            .then(() => setAddIsLoading(false))
-            // .then(shipmentData.shipment_id = '')
-            .catch((err) => {
-                if (err.response.data.err_type === 'already_exists') {
-                    closeShipmentIdDialog()
-                    openExistsDialog()
-                }
-            })
+        if (selectedDate !== null) {
+            alert('No date provided')
+        } else if (shipmentData.shipment_id !== '') {
+            alert('No shipment ID provided')
+        } else {
+            setAddIsLoading(true);
+            shipmentData.date_received = selectedDate.getFullYear() + '-' + (selectedDate.getMonth() + 1) + '-' + selectedDate.getDate();
+
+            axios.post('/api/shipment-details-upload', shipmentData)
+                .then(() => setShowShipmentIdDialog(false))
+                .then(() => setAddIsLoading(false))
+                // .then(shipmentData.shipment_id = '')
+                .catch((err) => {
+                    if (err.response.data.err_type === 'already_exists') {
+                        closeShipmentIdDialog()
+                        openExistsDialog()
+                    }
+                })
+        }
+
+       
     }
 
     // Ensure that only numbers are entered in corresponding input boxes
@@ -199,8 +174,8 @@ export default function ISIReceive() {
     return (
         <div>
             <Navbar bg='danger' className='justify-content-between' expand='lg'>
-                <Button variant='dark' onClick={() => { history.push('/isimenu') }}>Back</Button>
-                <Button variant='success' onClick={receiveShipment}>Receive Shipment</Button>
+                <Button variant='dark' onClick={() => { history.push('/isifunctions') }}>Back</Button>
+                <Button variant='success' onClick={proceedToReport}>Proceed</Button>
             </Navbar>
 
             {/* Modal for adding isi shipment */}
@@ -243,7 +218,7 @@ export default function ISIReceive() {
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => {
                         shipmentData.shipment_id = ''
-                        history.push('/isimenu')
+                        history.push('/isifunctions')
                     }}>Cancel</Button>
                     <Button variant="danger" onClick={!addIsLoading ? shipmentAdd : null}>{addIsLoading ? 'Adding...' : 'Add Shipment'}</Button>
                 </Modal.Footer>
@@ -300,7 +275,7 @@ export default function ISIReceive() {
                 <Modal.Footer>
                     <Button variant="danger" onClick={() => {
                         closeSuccessDialog();
-                        history.push('/isimenu')
+                        history.push('/isifunctions')
                     }}>Okay</Button>
                 </Modal.Footer>
             </Modal>

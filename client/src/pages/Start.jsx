@@ -37,7 +37,7 @@ export default function Start() {
                 <br /> */}
 
             <CardDeck>
-                <Card onClick={() => {history.push('/isimenu')}} className='card-list' style={{ width: '18rem' }}>
+                <Card onClick={() => {history.push('/isifunctions')}} className='card-list' style={{ width: '18rem' }}>
                     <Card.Body>
                         <Card.Title>ISI Management</Card.Title>
                         <Card.Text>

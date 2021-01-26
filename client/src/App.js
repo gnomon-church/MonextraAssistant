@@ -9,7 +9,7 @@ import ISIManage from './pages/ISIManagement/ISIManage'
 import ISIReceive from './pages/ISIManagement/ISIReceive'
 import ISIReport from './pages/ISIManagement/ISIReport'
 import ISISignOut from './pages/ISIManagement/ISISignOut'
-import PDFReport from './pages/PDFReport'
+import ISIReceiveReport from './pages/ISIManagement/reports/ISIReceiveReport.jsx'
 
 export default function App() {
 
@@ -33,32 +33,32 @@ export default function App() {
                     </Route> */}
 
                     {/* Route for the ISI Management page */}
-                    <Route exact path='/isimenu'>
+                    <Route exact path='/isifunctions'>
                         <ISIMenu />
                     </Route>
 
                     {/* Route for the ISI Manage page */}
-                    <Route exact path='/isimanage'>
+                    <Route exact path='/isifunctions/isimanage'>
                         <ISIManage />
                     </Route>
 
                     {/* Route for the ISI Receive page */}
-                    <Route exact path='/isireceive'>
+                    <Route exact path='/isifunctions/isireceive'>
                         <ISIReceive />
                     </Route>
 
                     {/* Route for the ISI Report page */}
-                    <Route exact path='/isireport'>
+                    <Route exact path='/isifunctions/isireport'>
                         <ISIReport />
                     </Route>
 
                     {/* Route for the ISI Sign Out page */}
-                    <Route exact path='/isisignout'>
+                    <Route exact path='/isifunctions/isisignout'>
                         <ISISignOut />
                     </Route>
 
-                    <Route exact path='/pdfreport'>
-                        <PDFReport />
+                    <Route exact path='/isifunctions/isisignout/isireceivereport'>
+                        <ISIReceiveReport />
                     </Route>
 
 

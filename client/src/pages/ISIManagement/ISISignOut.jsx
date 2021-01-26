@@ -111,7 +111,7 @@ export default function ISIReceive() {
     return (
         <div>
             <Navbar bg='danger' className='justify-content-between'>
-                <Button variant='dark' onClick={() => { history.push('/isimenu') }}>Back</Button>
+                <Button variant='dark' onClick={() => { history.push('/isifunctions') }}>Back</Button>
                 <Button variant='success' onClick={null}>Receive Shipment</Button>
             </Navbar>
 
