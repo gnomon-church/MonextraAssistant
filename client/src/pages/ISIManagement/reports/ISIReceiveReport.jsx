@@ -32,7 +32,7 @@ export default function PDFReport() {
         let bookNumber = bookReg.exec(shipmentBooks[i].book_number)[1];
         let ticketValName = '$' + parseFloat(shipmentBooks[i].ticket_value.replace(/\$|,/g, '')).toFixed() + ' ' + shipmentBooks[i].ticket_name;
 
-        let arrIndex = tableData.findIndex((element) => element.game_id == gameID);
+        let arrIndex = tableData.findIndex((element) => element.game_id === gameID);
         if (arrIndex === -1) {
             let count = 1;
             totalCount += 1;
