@@ -24,30 +24,27 @@ let shipmentData = {
 export default function ISIReceive() {
     let history = useHistory();
 
-    // Modal control states.
-    const [showShipmentIdDialog, setShowShipmentIdDialog] = useState(() => {
-        // Check if shipment data has been put into localStorage.
-        if (localStorage.getItem('shipmentData') === null) {
-            // If it his not, show the add shipment dialog.
-            return true;
-        } else {
-            // If it has, do not show the add shipment dialog.
-            return false;
-        }
-    });
-    const [showExistsDialog, setShowExistsDialog] = useState(false);
-    const [showNotExistsDialog, setShowNotExistsDialog] = useState(false);
-    const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+    // State for generic modal text
+    const [genericModalText, setGenericModalText] = useState('');
 
-    // Modal control functions.
-    const closeShipmentIdDialog = () => setShowShipmentIdDialog(false);
-    const openShipmentIdDialog = () => setShowShipmentIdDialog(true);
-    const closeExistsDialog = () => setShowExistsDialog(false);
-    const openExistsDialog = () => setShowExistsDialog(true);
-    const closeNotExistsDialog = () => setShowNotExistsDialog(false);
-    const openNotExistsDialog = () => setShowNotExistsDialog(true);
-    const closeSuccessDialog = () => setShowSuccessDialog(false);
-    const openSuccessDialog = () => setShowSuccessDialog(true);
+    // Modal states and control functions.
+    const [shipmentIdModal, setShipmentIdModal] = useState(false);
+    // const [shipmentIdModal, setShipmentIdModal] = useState(() => {
+    //     // Check if shipment data has been put into localStorage.
+    //     if (localStorage.getItem('shipmentData') === null) {
+    //         // If it his not, show the add shipment modal.
+    //         return true;
+    //     } else {
+    //         // If it has, do not show the add shipment modal.
+    //         return false;
+    //     }
+    // });
+    const closeShipmentIdModal = () => setShipmentIdModal(false);
+    const openShipmentIdModal = () => setShipmentIdModal(true);
+
+    const [genericModal, setGenericModal] = useState(false);
+    const closeGenericModal = () => setGenericModal(false);
+    const openGenericModal = () => setGenericModal(true);
 
     // Data picker state.
     const [selectedDate, setSelectedDate] = useState(new Date());
@@ -67,6 +64,7 @@ export default function ISIReceive() {
     useEffect(() => {
         // Set page title
         document.title = 'Receive ISI - Mona';
+        setRowData(shipmentBooks);
     }, []);
 
     const onGridReady = (params) => {
@@ -131,22 +129,33 @@ export default function ISIReceive() {
     }
 
     function proceedToReport() {
-        localStorage.setItem('shipmentData', JSON.stringify(shipmentData));
-        localStorage.setItem('shipmentBooks', JSON.stringify(shipmentBooks));
+        if (shipmentBooks.length === 0) {
+            setGenericModalText('No books have been entered.');
+            openGenericModal();
+        } else {
+            localStorage.setItem(
+                'shipmentBooks',
+                JSON.stringify(shipmentBooks)
+            );
 
-        localStorage.setItem(
-            'dataHeaders',
-            JSON.stringify(['NO.', 'NAME', 'RECEIVED'])
-        );
+            localStorage.setItem(
+                'dataHeaders',
+                JSON.stringify(['NO.', 'NAME', 'RECEIVED'])
+            );
 
-        history.push('/isifunctions/isisignout/isireceivereport');
+            history.push('/isifunctions/isisignout/isireceivereport');
+        }
     }
 
     function shipmentAdd() {
         if (selectedDate === null) {
-            alert('No date provided');
+            closeShipmentIdModal();
+            setGenericModalText('No date provided');
+            openGenericModal();
         } else if (shipmentData.shipment_id === '') {
-            alert('No shipment ID provided');
+            closeShipmentIdModal();
+            setGenericModalText('No shipment ID provided');
+            openGenericModal();
         } else {
             setAddIsLoading(true);
             shipmentData.date_received =
@@ -158,13 +167,24 @@ export default function ISIReceive() {
 
             axios
                 .post('/api/shipment-details-upload', shipmentData)
-                .then(() => setShowShipmentIdDialog(false))
-                .then(() => setAddIsLoading(false))
-                // .then(shipmentData.shipment_id = '')
+                .then(() => {
+                    setShipmentIdModal(false);
+                    setAddIsLoading(false);
+                    localStorage.setItem(
+                        'shipmentData',
+                        JSON.stringify(shipmentData)
+                    );
+                    console.log(shipmentData);
+                })
                 .catch((err) => {
                     if (err.response.data.err_type === 'already_exists') {
-                        closeShipmentIdDialog();
-                        openExistsDialog();
+                        closeShipmentIdModal();
+                        setGenericModalText(
+                            'Shipment ' +
+                                shipmentData.shipment_id +
+                                ' has already been added.'
+                        );
+                        openGenericModal();
                     }
                 });
         }
@@ -210,42 +230,16 @@ export default function ISIReceive() {
                 .catch((err) => {
                     if (err.response.data.err_type === 'not_exists') {
                         missingBook = val[0];
-                        openNotExistsDialog();
+                        setGenericModalText(
+                            'Game number ' +
+                                missingBook +
+                                ' does not exist. Please add it into the system through the Manage page.'
+                        );
+                        openGenericModal();
                     }
                 });
         }
     }
-
-    const messageDialog = (props) => {
-        return (
-            <div>
-                {/* Generic single button modal */}
-                <Modal
-                    show={showSuccessDialog}
-                    onHide={closeSuccessDialog}
-                    backdrop='static'
-                    keyboard={false}
-                >
-                    <Modal.Body>
-                        Shipment <i>{shipmentData.shipment_id}</i> has been
-                        received successfully
-                    </Modal.Body>
-
-                    <Modal.Footer>
-                        <Button
-                            variant='danger'
-                            onClick={() => {
-                                closeSuccessDialog();
-                                history.push('/isifunctions');
-                            }}
-                        >
-                            Okay
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            </div>
-        );
-    };
 
     return (
         <div>
@@ -253,7 +247,8 @@ export default function ISIReceive() {
                 <Button
                     variant='dark'
                     onClick={() => {
-                        shipmentData.shipment_id = '';
+                        shipmentData = {};
+                        shipmentBooks = [];
                         localStorage.clear();
                         history.push('/isifunctions');
                     }}
@@ -267,8 +262,8 @@ export default function ISIReceive() {
 
             {/* Modal for adding isi shipment */}
             <Modal
-                show={showShipmentIdDialog}
-                onHide={closeShipmentIdDialog}
+                show={shipmentIdModal}
+                onHide={closeShipmentIdModal}
                 backdrop='static'
                 keyboard={false}
             >
@@ -277,6 +272,11 @@ export default function ISIReceive() {
                 </Modal.Header>
 
                 <Modal.Body>
+                    <p>
+                        Please ensure that any new ISI games have been added
+                        into the system through the Manage page before receiving
+                        a shipment.
+                    </p>
                     <InputGroup className='mb-3'>
                         <InputGroup.Prepend>
                             <InputGroup.Text>Received Date</InputGroup.Text>
@@ -288,7 +288,6 @@ export default function ISIReceive() {
                             onChange={(date) => setSelectedDate(date)}
                         />
                     </InputGroup>
-
                     <InputGroup className='mb-3'>
                         <InputGroup.Prepend>
                             <InputGroup.Text>Shipment ID</InputGroup.Text>
@@ -298,6 +297,11 @@ export default function ISIReceive() {
                             onChange={numberValidator}
                             name='shipment_id'
                             defaultValue={shipmentData.shipment_id}
+                            onKeyUp={(event) => {
+                                if (event.key === 'Enter') {
+                                    shipmentAdd();
+                                }
+                            }}
                         />
                     </InputGroup>
                 </Modal.Body>
@@ -306,7 +310,8 @@ export default function ISIReceive() {
                     <Button
                         variant='secondary'
                         onClick={() => {
-                            shipmentData.shipment_id = '';
+                            shipmentData = {};
+                            shipmentBooks = [];
                             localStorage.clear();
                             history.push('/isifunctions');
                         }}
@@ -322,94 +327,23 @@ export default function ISIReceive() {
                 </Modal.Footer>
             </Modal>
 
-            {/* Modal for shipment that already exists */}
+            {/* Generic single button modal */}
             <Modal
-                show={showExistsDialog}
-                onHide={closeExistsDialog}
+                show={genericModal}
+                onHide={closeGenericModal}
                 backdrop='static'
                 keyboard={false}
             >
-                <Modal.Body>
-                    Shipment <i>{shipmentData.shipment_id}</i> has already been
-                    added.
-                </Modal.Body>
+                <Modal.Body>{genericModalText}</Modal.Body>
 
                 <Modal.Footer>
                     <Button
-                        variant='secondary'
+                        variant='danger'
                         onClick={() => {
-                            closeExistsDialog();
-                            openShipmentIdDialog();
+                            closeGenericModal();
+                            setGenericModalText('');
                             setAddIsLoading(false);
-                        }}
-                    >
-                        Okay
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-            {/* Modal for game that does not exist */}
-            <Modal
-                show={showNotExistsDialog}
-                onHide={closeNotExistsDialog}
-                backdrop='static'
-                keyboard={false}
-            >
-                <Modal.Body>
-                    Game number <i>{missingBook}</i> does not exist. Please add
-                    it into the system through the <b>Manage</b> page.
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <Button variant='danger' onClick={closeNotExistsDialog}>
-                        Okay
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-            {/* Modal for shipment received successfully */}
-            <Modal
-                show={showSuccessDialog}
-                onHide={closeSuccessDialog}
-                backdrop='static'
-                keyboard={false}
-            >
-                <Modal.Body>
-                    Shipment <i>{shipmentData.shipment_id}</i> has been received
-                    successfully
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <Button
-                        variant='danger'
-                        onClick={() => {
-                            closeSuccessDialog();
-                            history.push('/isifunctions');
-                        }}
-                    >
-                        Okay
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-            {/* Modal for shipment received successfully */}
-            <Modal
-                show={showSuccessDialog}
-                onHide={closeSuccessDialog}
-                backdrop='static'
-                keyboard={false}
-            >
-                <Modal.Body>
-                    Shipment <i>{shipmentData.shipment_id}</i> has been received
-                    successfully
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <Button
-                        variant='danger'
-                        onClick={() => {
-                            closeSuccessDialog();
-                            history.push('/isifunctions');
+                            openShipmentIdModal();
                         }}
                     >
                         Okay
