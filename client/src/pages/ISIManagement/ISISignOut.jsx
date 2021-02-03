@@ -9,7 +9,6 @@ import {
 } from 'react-bootstrap';
 import { AgGridReact } from 'ag-grid-react';
 import axios from 'axios';
-import DatePicker from 'react-datepicker';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -101,10 +100,7 @@ export default function ISIReceive() {
     }
 
     function bookNumberFormatter(params) {
-        return params.value.replace(
-            /(\d{4})(\d{6})(\d{3})(\d{1})/,
-            '$1-$2-$3•$4'
-        );
+        return params.value.replace(/(\d{4})(\d{6})(\d{3})(\d{1})/, '$1-$2');
     }
 
     function proceedToReport() {

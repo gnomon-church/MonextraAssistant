@@ -86,6 +86,12 @@ const receiveShipment = (req, res, next) => {
 
 };
 
+const signOutBooks = (req, res, next) => {
+    
+}
+
+
 module.exports.gameTypeUpload = gameTypeUpload;
 module.exports.shipmentDetailsUpload = shipmentDetailsUpload;
 module.exports.receiveShipment = receiveShipment;
+module.exports.signOutBooks = signOutBooks;
