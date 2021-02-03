@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import {
     Modal,
@@ -28,17 +27,17 @@ export default function ISIReceive() {
     const [genericModalText, setGenericModalText] = useState('');
 
     // Modal states and control functions.
-    const [shipmentIdModal, setShipmentIdModal] = useState(false);
-    // const [shipmentIdModal, setShipmentIdModal] = useState(() => {
-    //     // Check if shipment data has been put into localStorage.
-    //     if (localStorage.getItem('shipmentData') === null) {
-    //         // If it his not, show the add shipment modal.
-    //         return true;
-    //     } else {
-    //         // If it has, do not show the add shipment modal.
-    //         return false;
-    //     }
-    // });
+    // const [shipmentIdModal, setShipmentIdModal] = useState(true);
+    const [shipmentIdModal, setShipmentIdModal] = useState(() => {
+        // Check if shipment data has been put into localStorage.
+        if (localStorage.getItem('shipmentData') === null) {
+            // If it his not, show the add shipment modal.
+            return true;
+        } else {
+            // If it has, do not show the add shipment modal.
+            return false;
+        }
+    });
     const closeShipmentIdModal = () => setShipmentIdModal(false);
     const openShipmentIdModal = () => setShipmentIdModal(true);
 
@@ -54,6 +53,9 @@ export default function ISIReceive() {
 
     // Row data state.
     const [rowData, setRowData] = useState([]);
+
+    // Shipment modal needed state
+    const [shipmentModalNeeded, setShipmentModalNeeded] = useState(false);
 
     // Ref for grid
     const gridApi = useRef();
@@ -150,10 +152,12 @@ export default function ISIReceive() {
     function shipmentAdd() {
         if (selectedDate === null) {
             closeShipmentIdModal();
+            setShipmentModalNeeded(true);
             setGenericModalText('No date provided');
             openGenericModal();
         } else if (shipmentData.shipment_id === '') {
             closeShipmentIdModal();
+            setShipmentModalNeeded(true);
             setGenericModalText('No shipment ID provided');
             openGenericModal();
         } else {
@@ -179,6 +183,7 @@ export default function ISIReceive() {
                 .catch((err) => {
                     if (err.response.data.err_type === 'already_exists') {
                         closeShipmentIdModal();
+                        setShipmentModalNeeded(true);
                         setGenericModalText(
                             'Shipment ' +
                                 shipmentData.shipment_id +
@@ -343,7 +348,10 @@ export default function ISIReceive() {
                             closeGenericModal();
                             setGenericModalText('');
                             setAddIsLoading(false);
-                            openShipmentIdModal();
+                            if (shipmentModalNeeded === true) {
+                                openShipmentIdModal();
+                                setShipmentModalNeeded(false);
+                            }
                         }}
                     >
                         Okay
