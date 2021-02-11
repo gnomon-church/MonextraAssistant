@@ -61,7 +61,6 @@ const receiveShipment = (req, res, next) => {
     let dataArr = []
 
     for (let i = 0; i < req.body.length; i++) {
-        // dataArr[i] = [req.body[i].game_id, req.body[i].book_number, req.body[i].signout_date, req.params.SHIPMENTID]
         dataArr[i] = [req.body[i].game_id, req.body[i].book_number, req.query.shipment_id] 
     }
 
@@ -87,7 +86,34 @@ const receiveShipment = (req, res, next) => {
 };
 
 const signOutBooks = (req, res, next) => {
-    
+    let dataArr = [];
+    console.log(req.body)
+
+    let date = req.query.sign_out_date.replace(/-/g, '/'); 
+
+    for (let i = 0; i < req.body.length; i++) {
+        dataArr[i] = [req.body[i].game_id, req.body[i].book_number];
+    }
+
+    console.log(dataArr)
+
+    let sqlQuery = pgFormat("UPDATE isi_books SET sign_out_date = '%s' WHERE (game_id, book_number) IN (%L)", date, dataArr);
+
+    const client = new Client({
+        connectionString: connectionConfig.db_url,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+
+    client.connect();
+
+    client
+        .query(sqlQuery)
+        .then((rows) => {
+            res.status(418).json(rows)
+        })
+        .then(() => client.end())
 }
 
 
