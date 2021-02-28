@@ -124,7 +124,7 @@ export default function ISIReceive() {
 	}
 
 	function bookNumberFormatter(params) {
-		return params.value.replace(/(\d{4})(\d{6})(\d{3})(\d{1})/, '$1-$2');
+		return params.value.replace(/(\d{4})(\d{6})/, '$1-$2');
 	}
 
 	function proceedToReport() {
@@ -205,6 +205,16 @@ export default function ISIReceive() {
 		}
 	}
 
+	function booksArrChecker(bookNumber) {
+		for (let i = 0; i < shipmentBooks.length; i++) {
+			if (shipmentBooks[i].book_number === bookNumber) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	}
+
 	function gridSetter(bookNumber) {
 		let gameNumReg = /^[0-9]{4}/;
 		let gameNumVal = gameNumReg.exec(bookNumber);
@@ -214,37 +224,44 @@ export default function ISIReceive() {
 
 		console.log(shipmentBooks);
 
-		if (gameNumVal !== null) {
-			axios
-				.get('/api/isi-game-details/' + gameNumVal[0])
-				.then((res) => res.data.rows)
-				.then((rows) =>
-					rows.map((game) => {
-						return {
-							ticket_value: game.ticket_value,
-							ticket_name: game.ticket_name,
-						};
+		if (!booksArrChecker(bookNumber)) {
+			if (gameNumVal !== null) {
+				axios
+					.get('/api/isi-game-details/' + gameNumVal[0])
+					.then((res) => res.data.rows)
+					.then((rows) =>
+						rows.map((game) => {
+							return {
+								ticket_value: game.ticket_value,
+								ticket_name: game.ticket_name,
+							};
+						})
+					)
+					.then((games) => {
+						shipmentBooks.push({
+							book_number: bookNumVal[0],
+							ticket_name: games[0].ticket_name,
+							ticket_value: games[0].ticket_value,
+						});
+						gridApi.current.setRowData(shipmentBooks);
 					})
-				)
-				.then((games) => {
-					shipmentBooks.push({
-						book_number: bookNumber,
-						ticket_name: games[0].ticket_name,
-						ticket_value: games[0].ticket_value,
+					.catch((err) => {
+						if (err.response.data.err_type === 'not_exists') {
+							missingBook = gameNumVal[0];
+							setGenericModalText(
+								'Game number ' +
+									missingBook +
+									' does not exist. Please add it into the system through the Manage page.'
+							);
+							openGenericModal();
+						}
 					});
-					gridApi.current.setRowData(shipmentBooks);
-				})
-				.catch((err) => {
-					if (err.response.data.err_type === 'not_exists') {
-						missingBook = gameNumVal[0];
-						setGenericModalText(
-							'Game number ' +
-								missingBook +
-								' does not exist. Please add it into the system through the Manage page.'
-						);
-						openGenericModal();
-					}
-				});
+			}
+		} else {
+			setGenericModalText(
+				'Book ' + bookNumber + ' has already been entered.'
+			);
+			openGenericModal();
 		}
 	}
 
@@ -304,11 +321,6 @@ export default function ISIReceive() {
 							onChange={numberValidator}
 							name='shipment_id'
 							defaultValue={shipmentData.shipment_id}
-							onKeyUp={(event) => {
-								if (event.key === 'Enter') {
-									shipmentAdd();
-								}
-							}}
 						/>
 					</InputGroup>
 				</Modal.Body>
