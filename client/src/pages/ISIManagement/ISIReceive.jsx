@@ -136,13 +136,7 @@ export default function ISIReceive() {
 				'shipmentBooks',
 				JSON.stringify(shipmentBooks)
 			);
-
-			localStorage.setItem(
-				'dataHeaders',
-				JSON.stringify(['NO.', 'NAME', 'RECEIVED'])
-			);
-
-			history.push('/isifunctions/isisignout/isireceivereport');
+			history.push('/isifunctions/isireceive/isireceivereport');
 		}
 	}
 

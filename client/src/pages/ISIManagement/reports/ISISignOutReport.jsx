@@ -5,6 +5,10 @@ import axios from 'axios';
 
 import PrintTable from '../../../components/PrintTable';
 
+let today = new Date();
+let formattedDate =
+	today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+
 export default function PDFReport() {
 	let history = useHistory();
 
@@ -16,26 +20,25 @@ export default function PDFReport() {
 	let dataToPost = [];
 	let tableData = [];
 
-	let shipmentData = JSON.parse(localStorage.getItem('shipmentData'));
-	let shipmentBooks = JSON.parse(localStorage.getItem('shipmentBooks'));
+	let signOutBooks = JSON.parse(localStorage.getItem('signOutBooks'));
 
-	let dataHeaders = ['NO.', 'NAME', 'RECEIVED'];
+	let dataHeaders = ['NO.', 'NAME', 'SIGNED OUT'];
 
 	let idReg = /^[0-9]{4}/;
 	let bookReg = /^[0-9]{4}([0-9]{6})/;
 
 	let totalCount = 0;
 
-	for (let i = 0; i < shipmentBooks.length; i++) {
-		let gameID = idReg.exec(shipmentBooks[i].book_number)[0];
-		let bookNumber = bookReg.exec(shipmentBooks[i].book_number)[1];
+	for (let i = 0; i < signOutBooks.length; i++) {
+		let gameID = idReg.exec(signOutBooks[i].book_number)[0];
+		let bookNumber = bookReg.exec(signOutBooks[i].book_number)[1];
 		let ticketValName =
 			'$' +
 			parseFloat(
-				shipmentBooks[i].ticket_value.replace(/\$|,/g, '')
+				signOutBooks[i].ticket_value.replace(/\$|,/g, '')
 			).toFixed() +
 			' ' +
-			shipmentBooks[i].ticket_name;
+			signOutBooks[i].ticket_name;
 
 		let arrIndex = tableData.findIndex(
 			(element) => element.game_id === gameID
@@ -63,8 +66,7 @@ export default function PDFReport() {
 	function receiveShipment() {
 		axios
 			.post(
-				'/api/receive-isi-shipment/?shipment_id=' +
-					shipmentData.shipment_id,
+				'/api/sign-out-isi/?sign_out_date=' + formattedDate,
 				dataToPost
 			)
 			.then(() => {
@@ -78,7 +80,7 @@ export default function PDFReport() {
 			<Navbar bg='danger' className='justify-content-between' expand='lg'>
 				<Button
 					variant='dark'
-					onClick={() => history.push('/isifunctions/isireceive')}
+					onClick={() => history.push('/isifunctions/isisignout')}
 				>
 					Back
 				</Button>
@@ -87,7 +89,7 @@ export default function PDFReport() {
 						Print
 					</Button>
 					<Button variant='success' onClick={() => receiveShipment()}>
-						Receive Shipment
+						Sign Out Books
 					</Button>
 				</ButtonGroup>
 			</Navbar>
@@ -99,10 +101,7 @@ export default function PDFReport() {
 				backdrop='static'
 				keyboard={false}
 			>
-				<Modal.Body>
-					Shipment <i>{shipmentData.shipment_id}</i> has been
-					received.
-				</Modal.Body>
+				<Modal.Body>Books successfully signed out.</Modal.Body>
 
 				<Modal.Footer>
 					<Button
@@ -119,7 +118,7 @@ export default function PDFReport() {
 			</Modal>
 
 			<div className='print-content'>
-				<h3 className='section-heading'>INSTANT ORDER DETAIL</h3>
+				<h3 className='section-heading'>INSTANT SIGN OUT DETAIL</h3>
 				<PrintTable data={tableData} headers={dataHeaders} />
 			</div>
 		</div>
