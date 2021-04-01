@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import ReactDOM from 'react-dom';
 import { useHistory } from 'react-router-dom';
 import {
 	Modal,
@@ -26,6 +27,11 @@ export default function ISIReceive() {
 	const closeGenericModal = () => setGenericModal(false);
 	const openGenericModal = () => setGenericModal(true);
 
+	// Modal for exit confirmation.
+	const [exitModal, setExitModal] = useState(false);
+	const closeExitModal = () => setExitModal(false);
+	const openExitModal = () => setExitModal(true);
+
 	// Row data state.
 	const [rowData, setRowData] = useState([]);
 
@@ -39,6 +45,7 @@ export default function ISIReceive() {
 		// Set page title
 		document.title = 'Receive ISI - Mona';
 		setRowData(signOutBooks);
+		ReactDOM.findDOMNode(isiInput.current).focus();
 	}, []);
 
 	const onGridReady = (params) => {
@@ -126,9 +133,7 @@ export default function ISIReceive() {
 		let bookNumReg = /^[0-9]{4}[0-9]{6}/;
 		let bookNumVal = bookNumReg.exec(bookNumber);
 
-		console.log(signOutBooks);
-
-		if (!booksArrChecker(bookNumber)) {
+		if (!booksArrChecker(bookNumVal[0])) {
 			if (gameNumVal !== null) {
 				axios
 					.get('/api/isi-game-details/' + gameNumVal[0])
@@ -163,7 +168,7 @@ export default function ISIReceive() {
 			}
 		} else {
 			setGenericModalText(
-				'Book ' + bookNumber + ' has already been entered.'
+				'Book ' + bookNumVal[0] + ' has already been entered.'
 			);
 			openGenericModal();
 		}
@@ -177,7 +182,7 @@ export default function ISIReceive() {
 					onClick={() => {
 						signOutBooks = [];
 						localStorage.clear();
-						history.push('/isifunctions');
+						openExitModal();
 					}}
 				>
 					Back
@@ -205,6 +210,39 @@ export default function ISIReceive() {
 						}}
 					>
 						Okay
+					</Button>
+				</Modal.Footer>
+			</Modal>
+
+			{/* Exit confirmation dialog */}
+			<Modal
+				show={exitModal}
+				onHide={closeExitModal}
+				backdrop='static'
+				keyboard={false}
+			>
+				<Modal.Body>
+					Are you sure you want to exit? All data you have entered
+					will be lost.
+				</Modal.Body>
+
+				<Modal.Footer>
+					<Button
+						variant='secondary'
+						onClick={() => {
+							closeExitModal();
+						}}
+					>
+						Cancel
+					</Button>
+					<Button
+						variant='danger'
+						onClick={() => {
+							closeGenericModal();
+							history.push('/isifunctions');
+						}}
+					>
+						Exit
 					</Button>
 				</Modal.Footer>
 			</Modal>

@@ -9,8 +9,9 @@ import ISIManage from './pages/ISIManagement/ISIManage'
 import ISIReceive from './pages/ISIManagement/ISIReceive'
 import ISIReport from './pages/ISIManagement/ISIReport'
 import ISISignOut from './pages/ISIManagement/ISISignOut'
-import ISIReceiveReport from './pages/ISIManagement/reports/ISIReceiveReport.jsx'
-import ISISignOutReport from './pages/ISIManagement/reports/ISISignOutReport.jsx'
+import ISIReceiveReport from './pages/ISIManagement/reports/ISIReceiveReport'
+import ISISignOutReport from './pages/ISIManagement/reports/ISISignOutReport'
+import ISIStockInSafe from './pages/ISIManagement/reports/ISIStockInSafe'
 
 export default function App() {
 
@@ -52,11 +53,6 @@ export default function App() {
                         <ISIReceiveReport />
                     </Route>
 
-                    {/* Route for the ISI Report page */}
-                    <Route exact path='/isifunctions/isireport'>
-                        <ISIReport />
-                    </Route>
-
                     {/* Route for the ISI Sign Out page */}
                     <Route exact path='/isifunctions/isisignout'>
                         <ISISignOut />
@@ -64,6 +60,16 @@ export default function App() {
 
                     <Route exact path='/isifunctions/isisignout/isireceivereport'>
                         <ISISignOutReport />
+                    </Route>
+
+                    {/* Route for the ISI Report page */}
+                    <Route exact path='/isifunctions/isireport'>
+                        <ISIReport />
+                    </Route>
+
+                    {/* Route for ISI Stock In Safe Report */}
+                    <Route exact path='/isifunctions/isireport/stockinsafe'>
+                        <ISIStockInSafe />
                     </Route>
 
 
