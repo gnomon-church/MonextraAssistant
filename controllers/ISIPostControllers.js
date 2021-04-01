@@ -87,15 +87,12 @@ const receiveShipment = (req, res, next) => {
 
 const signOutBooks = (req, res, next) => {
     let dataArr = [];
-    console.log(req.body)
 
     let date = req.query.sign_out_date.replace(/-/g, '/'); 
 
     for (let i = 0; i < req.body.length; i++) {
         dataArr[i] = [req.body[i].game_id, req.body[i].book_number];
     }
-
-    console.log(dataArr)
 
     let sqlQuery = pgFormat("UPDATE isi_books SET sign_out_date = '%s' WHERE (game_id, book_number) IN (%L)", date, dataArr);
 

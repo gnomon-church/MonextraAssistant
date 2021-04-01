@@ -57,7 +57,25 @@ const gameDetails = (req, res, next) => {
                 res.status(404).json({ err_type: 'not_exists' })
             }
         })
-        .then(() => client.end())
+        .then(() => client.end());
+}
+
+const booksDownload = (req, res, next) => {
+    const client = new Client({
+        connectionString: connectionConfig.db_url,
+        ssl: {
+            rejectUnauthorized: false
+        }
+    });
+
+    client.connect();
+    
+    client
+        .query("SELECT * FROM isi_books WHERE sign_out_date is null ORDER BY game_id ASC")
+        .then((rows) => {
+            res.status(200).json(rows)
+        })
+        .then(() => client.end());
 }
 
 
@@ -65,3 +83,4 @@ const gameDetails = (req, res, next) => {
 module.exports.gameDelete = gameDelete;
 module.exports.gameTypeDownload = gameTypeDownload;
 module.exports.gameDetails = gameDetails;
+module.exports.booksDownload = booksDownload;

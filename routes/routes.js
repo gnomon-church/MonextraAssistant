@@ -8,26 +8,28 @@ const ISIPostControllers = require('../controllers/ISIPostControllers');
 
 
 // Router for getting eod figures by date and store from the api
-router.get('/figures-download/:Store/:Date', EODGetControllers.figuresDownload)
+router.get('/figures-download/:Store/:Date', EODGetControllers.figuresDownload);
 // Router for sending eod figures to the api
-router.post('/figures-upload', EODPostControllers.figuresUpload)
+router.post('/figures-upload', EODPostControllers.figuresUpload);
 
 
 // Router for getting isi game types from the api
-router.get('/isi-game-types-download', ISIGetControllers.gameTypeDownload)
+router.get('/isi-game-types-download', ISIGetControllers.gameTypeDownload);
+// Router for getting all non-signed out ISI books from the api
+router.get('/isi-books-download', ISIGetControllers.booksDownload);
 // Router for deleting an isi game
-router.get('/isi-game-delete/:GAMEID', ISIGetControllers.gameDelete)
+router.get('/isi-game-delete/:GAMEID', ISIGetControllers.gameDelete);
 //Router for getting information on an isi game type
-router.get('/isi-game-details/:GAMEID', ISIGetControllers.gameDetails)
+router.get('/isi-game-details/:GAMEID', ISIGetControllers.gameDetails);
 
 // Router for sending new isi game types to the api
-router.post('/isi-game-types-upload', ISIPostControllers.gameTypeUpload)
+router.post('/isi-game-types-upload', ISIPostControllers.gameTypeUpload);
 // Router for sending new shipment details to the api
-router.post('/shipment-details-upload', ISIPostControllers.shipmentDetailsUpload)
+router.post('/shipment-details-upload', ISIPostControllers.shipmentDetailsUpload);
 // Router for receiving an isi shipment 
-router.post('/receive-isi-shipment/', ISIPostControllers.receiveShipment)
+router.post('/receive-isi-shipment/', ISIPostControllers.receiveShipment);
 // Router for signing out isi books
-router.post('/sign-out-isi', ISIPostControllers.signOutBooks)
+router.post('/sign-out-isi', ISIPostControllers.signOutBooks);
 
 
 module.exports = router;
