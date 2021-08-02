@@ -2,7 +2,7 @@ package shipments
 
 import (
 	"database/sql"
-	"log"
+	"errors"
 
 	database "github.com/gnomon-church/mona-api/internal/db/postgre"
 )
@@ -12,26 +12,27 @@ type Shipment struct {
 	DateReceived string
 }
 
-func (shipment Shipment) AddShipment() {
+func (shipment Shipment) AddShipment() error {
 	stmt, err := database.Db.Prepare("INSERT INTO Shipments(shipment_id,date_received) VALUES($1,$2)")
 	if err != nil {
-		log.Fatal(err)
+		return errors.New("unknown error (1)")
 	}
 
 	res, err := stmt.Exec(shipment.ShipmentID, shipment.DateReceived)
 	if err != nil {
-		log.Fatal(err)
+		return errors.New("unknown error (2)")
 	}
 
 	rows, err := res.RowsAffected()
 	if err != nil {
-		log.Fatal("Error: ", err.Error())
+		return errors.New("unknown error (3)")
 	}
 
-	log.Print("Database interaction complete: ", rows, " affected.")
+	_ = rows
+	return nil
 }
 
-func GetShipments(shipmentID *string, dateReceived *string) []Shipment {
+func GetShipments(shipmentID *string, dateReceived *string) ([]Shipment, error) {
 	var stmt *sql.Stmt
 	var err error
 	var rows *sql.Rows
@@ -39,25 +40,25 @@ func GetShipments(shipmentID *string, dateReceived *string) []Shipment {
 	if shipmentID != nil && dateReceived != nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM shipments WHERE shipment_id = $1 AND date_received = $2")
 		if err != nil {
-			log.Fatal(err)
+			return nil, errors.New("unknown error (1)")
 		}
 		rows, err = stmt.Query(shipmentID, dateReceived)
 	} else if shipmentID != nil && dateReceived == nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM shipments WHERE shipment_id = $1")
 		if err != nil {
-			log.Fatal(err)
+			return nil, errors.New("unknown error (1)")
 		}
 		rows, err = stmt.Query(shipmentID)
 	} else if shipmentID == nil && dateReceived != nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM shipments WHERE date_received = $1")
 		if err != nil {
-			log.Fatal(err)
+			return nil, errors.New("unknown error (1)")
 		}
 		rows, err = stmt.Query(dateReceived)
 	} else {
 		stmt, err = database.Db.Prepare("SELECT * FROM shipments")
 		if err != nil {
-			log.Fatal(err)
+			return nil, errors.New("unknown error (1)")
 		}
 		rows, err = stmt.Query()
 	}
@@ -65,7 +66,7 @@ func GetShipments(shipmentID *string, dateReceived *string) []Shipment {
 	defer stmt.Close()
 
 	if err != nil {
-		log.Fatal(err)
+		return nil, errors.New("unknown error (2)")
 	}
 	defer rows.Close()
 
@@ -75,14 +76,14 @@ func GetShipments(shipmentID *string, dateReceived *string) []Shipment {
 		var shipment Shipment
 		err := rows.Scan(&shipment.ShipmentID, &shipment.DateReceived)
 		if err != nil {
-			log.Fatal(err)
+			return nil, errors.New("unknown error (3)")
 		}
 		shipments = append(shipments, shipment)
 	}
 
 	if err = rows.Err(); err != nil {
-		log.Fatal(err)
+		return nil, errors.New("unknown error (4)")
 	}
 
-	return shipments
+	return shipments, nil
 }
