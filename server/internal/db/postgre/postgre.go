@@ -22,6 +22,7 @@ func InitConnection() {
 		"password=%s dbname=%s sslmode=require",
 		host, port, user, password, dbname)
 
+	// db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
