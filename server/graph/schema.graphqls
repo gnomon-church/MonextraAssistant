@@ -1,0 +1,86 @@
+# GraphQL schema
+#
+# https://gqlgen.com/getting-started/
+#
+# Command to regenerate files:
+# go run github.com/99designs/gqlgen generate
+
+# ISI Shipment #
+type Shipment {
+	shipment_id: String!
+	date_received: String!
+}
+
+input NewShipment {
+	shipment_id: String!
+	date_received: String!
+}
+
+# ISI Games #
+type GameType {
+	game_id: String!
+	ticket_value: String!
+	ticket_name: String!
+	book_value: String!
+	current_game: Boolean!
+}
+
+input UpdateGameType {
+	game_id: String!
+	ticket_value: String!
+	ticket_name: String!
+	book_value: String!
+	current_game: Boolean!
+}
+
+input RemoveGameType {
+	game_id: String!
+}
+
+# ISI Books #
+type GameBook {
+	game_id: String!
+	book_number: String!
+	shipment_id: String!
+	sign_out_date: String!
+}
+
+input AddGameBook {
+	game_id: String!
+	book_number: String!
+	shipment_id: String!
+}
+
+input SignOutGameBook {
+	game_id: String!
+	book_number: String!
+	sign_out_date: String!
+}
+
+
+type Query {
+	# ISI Shipment
+	shipments(shipment_id: String, date_received: String): [Shipment!]!
+
+	# ISI Games
+	gameTypes(game_id: String, current_game: Boolean): [GameType!]!
+
+	# ISI Books
+	gameBooks(game_id: String, book_number: String, shipment_id: String, sign_out_date: String): [GameBook!]!
+}
+
+type Mutation {
+	# ISI Shipment
+	createShipment(input: NewShipment!): Shipment!
+
+	# ISI Games
+	createGameType(input: UpdateGameType!): GameType!
+	modifyGameType(input: UpdateGameType!): GameType!
+	removeGameType(input: RemoveGameType!): GameType!
+
+	# ISI Books
+	addGameBook(input: [AddGameBook!]!): [GameBook!]!
+	signOutGameBook(input: [SignOutGameBook!]!): [GameBook!]!
+}
+
+
