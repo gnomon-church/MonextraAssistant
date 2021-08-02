@@ -35,7 +35,7 @@ export default function PDFReport() {
 			<Navbar bg='danger' className='justify-content-between' expand='lg'>
 				<Button
 					variant='dark'
-					onClick={() => history.push('/isifunctions/isireport')}
+					onClick={() => history.push('/isimenu/isireport')}
 				>
 					Back
 				</Button>
@@ -46,9 +46,7 @@ export default function PDFReport() {
 				</ButtonGroup>
 			</Navbar>
 
-			<div className='print-content'>
-				<DisplayBooks />
-			</div>
+			<div className='print-content'>{/* <DisplayBooks /> */}</div>
 		</div>
 	);
 }

@@ -13,13 +13,13 @@ export default function ISIReport() {
 
 	return (
 		<div>
-			<Navigation proceed='false' from='/isifunctions' />
+			<Navigation proceed='false' from='/isimenu' />
 
 			<div id='card-deck-set'>
 				<CardDeck>
 					<Card
 						onClick={() => {
-							history.push('/isifunctions/isireport/stockinsafe');
+							history.push('/isimenu/isireport/stockinsafe');
 						}}
 						className='card-list'
 						style={{ width: '18rem', cursor: 'pointer' }}

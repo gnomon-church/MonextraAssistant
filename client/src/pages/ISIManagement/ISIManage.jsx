@@ -1,20 +1,13 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Button, Modal, InputGroup, FormControl } from 'react-bootstrap';
-import { AgGridReact } from 'ag-grid-react';
-import axios from 'axios';
+import React, { useEffect, useState, useRef } from "react";
+import { Button, Modal, InputGroup, FormControl } from "react-bootstrap";
+import { AgGridReact } from "ag-grid-react";
+import axios from "axios";
+import * as AxiosRequests from "../../helpers/AxiosRequests";
 
-import 'ag-grid-community/dist/styles/ag-grid.css';
-import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
+import "ag-grid-community/dist/styles/ag-grid.css";
+import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 
-import Navigation from '../../components/Navigation';
-
-let new_book_data = {
-	game_id: '',
-	ticket_value: '',
-	ticket_name: '',
-	book_value: '',
-	current_game: true,
-};
+import Navigation from "../../components/Navigation";
 
 export default function ISIManage() {
 	const [rowData, setRowData] = useState([]);
@@ -22,6 +15,15 @@ export default function ISIManage() {
 	const [rowIndexToUse, setRowIndexToUse] = useState(null);
 	const [showAddDialog, setShowAddDialog] = useState(false);
 	const [showDelDialog, setShowDelDialog] = useState(false);
+
+	// State for new game
+	const [gameEditData, setGameEditData] = useState({
+		game_id: null,
+		ticket_value: null,
+		ticket_name: null,
+		book_value: null,
+		current_game: true,
+	});
 
 	const gridApi = useRef();
 
@@ -38,55 +40,55 @@ export default function ISIManage() {
 
 	const columnDefs = [
 		{
-			headerName: 'Game Number',
-			field: 'game_id',
-			cellStyle: { 'text-align': 'center' },
+			headerName: "Game Number",
+			field: "game_id",
+			cellStyle: { "text-align": "center" },
 			suppressMovable: true,
 			floatingFilter: true,
 			filter: true,
-			headerTooltip: 'ISI game Number',
+			headerTooltip: "ISI game Number",
 		},
 		{
-			headerName: 'Ticket Value',
-			field: 'ticket_value',
-			cellStyle: { 'text-align': 'center' },
+			headerName: "Ticket Value",
+			field: "ticket_value",
+			cellStyle: { "text-align": "center" },
 			suppressMovable: true,
-			headerTooltip: 'ISI ticket Value',
+			headerTooltip: "ISI ticket Value",
 		},
 		{
-			headerName: 'Ticket Name',
-			field: 'ticket_name',
-			cellStyle: { 'text-align': 'center' },
+			headerName: "Ticket Name",
+			field: "ticket_name",
+			cellStyle: { "text-align": "center" },
 			suppressMovable: true,
 			floatingFilter: true,
 			filter: true,
-			headerTooltip: 'ISI ticket name',
+			headerTooltip: "ISI ticket name",
 		},
 		{
-			headerName: 'Book Value',
-			field: 'book_value',
-			cellStyle: { 'text-align': 'center' },
+			headerName: "Book Value",
+			field: "book_value",
+			cellStyle: { "text-align": "center" },
 			suppressMovable: true,
-			headerTooltip: 'ISI book value',
+			headerTooltip: "ISI book value",
 		},
 		{
-			headerName: 'Current Game?',
-			field: 'current_game',
-			colId: 'params',
+			headerName: "Current Game?",
+			field: "current_game",
+			colId: "params",
 			cellRenderer: (params) => {
 				return `<input type='checkbox' disabled ${
-					params.value ? 'checked' : ''
+					params.value ? "checked" : ""
 				} />`;
 			},
-			cellStyle: { 'text-align': 'center' },
+			cellStyle: { "text-align": "center" },
 			suppressMovable: true,
-			headerTooltip: 'Is this a current ISI game?',
+			headerTooltip: "Is this a current ISI game?",
 		},
 		{
-			headerName: '',
-			field: 'button_field',
-			cellRenderer: 'cellControlButtons',
-			cellStyle: { 'text-align': 'right' },
+			headerName: "",
+			field: "button_field",
+			cellRenderer: "cellControlButtons",
+			cellStyle: { "text-align": "right" },
 			suppressMovable: true,
 		},
 	];
@@ -96,15 +98,14 @@ export default function ISIManage() {
 	};
 
 	useEffect(() => {
-		document.title = 'Manage ISI Types - Mona';
+		document.title = "Manage ISI Types - Mona";
 		fetchData();
 	}, []);
 
 	// Get data from the API and set it
 	function fetchData() {
-		axios
-			.get('/api/isi-game-types-download')
-			.then((res) => res.data.rows)
+		axios(AxiosRequests.allGameTypes())
+			.then((res) => res.data.data.gameTypes)
 			.then((rows) =>
 				rows.map((book) => {
 					return {
@@ -126,25 +127,26 @@ export default function ISIManage() {
 		return (
 			<span>
 				<Button
-					variant='outline-secondary'
-					size='sm'
+					variant="outline-secondary"
+					size="sm"
 					onClick={() => {
 						let data = gridApi.current.getDisplayedRowAtIndex(
 							props.node.rowIndex
 						).data;
-						new_book_data['game_id'] = data.game_id;
-						new_book_data['ticket_value'] = data.ticket_value;
-						new_book_data['book_value'] = data.book_value;
-						new_book_data['ticket_name'] = data.ticket_name;
-						new_book_data['current_game'] = data.current_game;
+						gameEditData.game_id = data.game_id;
+						gameEditData.ticket_value = data.ticket_value;
+						gameEditData.book_value = data.book_value;
+						gameEditData.ticket_name = data.ticket_name;
+						gameEditData.current_game = data.current_game;
+						setGameEditData({ ...gameEditData });
 						openAddDialog();
 					}}
 				>
 					Edit
-				</Button>{' '}
+				</Button>{" "}
 				<Button
-					variant='outline-secondary'
-					size='sm'
+					variant="outline-secondary"
+					size="sm"
 					onClick={() => {
 						setRowIndexToUse(props.node.rowIndex);
 						openDelDialog();
@@ -162,9 +164,8 @@ export default function ISIManage() {
 		gridApi.current.showLoadingOverlay();
 		axios
 			.get(
-				'/api/isi-game-delete/' +
-					gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data
-						.game_id
+				"/api/isi-game-delete/" +
+					gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data.game_id
 			)
 			.then(() => fetchData())
 			.then(() => setRowIndexToUse(null));
@@ -174,20 +175,18 @@ export default function ISIManage() {
 		closeAddDialog();
 		setAddIsLoading(true);
 		gridApi.current.showLoadingOverlay();
-		new_book_data['ticket_name'] =
-			new_book_data['ticket_name'].toUpperCase();
-		axios
-			.post('/api/isi-game-types-upload', new_book_data)
+		gameEditData.ticket_name = gameEditData.ticket_name.toUpperCase();
+		setGameEditData({ ...gameEditData });
+		axios(AxiosRequests.createGameType())
 			.then(() => fetchData())
-			.then(
-				(new_book_data = {
-					game_id: '',
-					ticket_value: '',
-					ticket_name: '',
-					book_value: '',
-					current_game: true,
-				})
-			);
+			.then(() => {
+				gameEditData.game_id = null;
+				gameEditData.ticket_value = null;
+				gameEditData.book_value = null;
+				gameEditData.ticket_name = null;
+				gameEditData.current_game = true;
+				setGameEditData({ ...gameEditData });
+			});
 	}
 
 	function numberValidator(event) {
@@ -196,18 +195,21 @@ export default function ISIManage() {
 
 		if (val !== null) {
 			event.target.value = val[0];
-			new_book_data[event.target.name] = event.target.value;
+			gameEditData[event.target.name] = event.target.value;
+			setGameEditData({ ...gameEditData });
 		} else {
-			event.target.value = new_book_data[event.target.name];
+			event.target.value = gameEditData[event.target.name];
 		}
 	}
 
 	function valueUpdater(event) {
-		new_book_data[event.target.name] = event.target.value;
+		gameEditData[event.target.name] = event.target.value;
+		setGameEditData({ ...gameEditData });
 	}
 
 	function toggleCurrentGame(event) {
-		new_book_data['current_game'] = event.target.checked;
+		gameEditData["current_game"] = event.target.checked;
+		setGameEditData({ ...gameEditData });
 	}
 
 	const GameData = () => {
@@ -216,21 +218,15 @@ export default function ISIManage() {
 				<span>
 					<i>
 						{
-							gridApi.current.getDisplayedRowAtIndex(
-								rowIndexToUse
-							).data.ticket_value
-						}{' '}
+							gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data
+								.ticket_value
+						}{" "}
 						{
-							gridApi.current.getDisplayedRowAtIndex(
-								rowIndexToUse
-							).data.ticket_name
-						}{' '}
+							gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data
+								.ticket_name
+						}{" "}
 						(
-						{
-							gridApi.current.getDisplayedRowAtIndex(
-								rowIndexToUse
-							).data.game_id
-						}
+						{gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data.game_id}
 						)
 					</i>
 				</span>
@@ -242,13 +238,13 @@ export default function ISIManage() {
 
 	return (
 		<div>
-			<Navigation proceed='false' from='/isifunctions' />
-			<div className='add-isi-button'>
+			<Navigation proceed="false" from="/isimenu" />
+			<div className="add-isi-button">
 				<Button
-					variant='outline-danger'
+					variant="outline-danger"
 					onClick={!addIsLoading ? openAddDialog : null}
 				>
-					{addIsLoading ? 'Loading...' : 'Add ISI Game'}
+					{addIsLoading ? "Loading..." : "Add ISI Game"}
 				</Button>
 			</div>
 
@@ -256,7 +252,7 @@ export default function ISIManage() {
 			<Modal
 				show={showAddDialog}
 				onHide={closeAddDialog}
-				backdrop='static'
+				backdrop="static"
 				keyboard={false}
 			>
 				<Modal.Header>
@@ -264,63 +260,63 @@ export default function ISIManage() {
 				</Modal.Header>
 
 				<Modal.Body>
-					<InputGroup className='mb-3'>
+					<InputGroup className="mb-3">
 						<InputGroup.Prepend>
 							<InputGroup.Text>Game Number</InputGroup.Text>
 						</InputGroup.Prepend>
 						<FormControl
-							type='text'
+							type="text"
 							onChange={numberValidator}
-							name='game_id'
-							placeholder={new_book_data.game_id}
+							name="game_id"
+							placeholder={gameEditData.game_id}
 						/>
 					</InputGroup>
 
-					<InputGroup className='mb-3'>
+					<InputGroup className="mb-3">
 						<InputGroup.Prepend>
 							<InputGroup.Text>Ticket Value</InputGroup.Text>
 							<InputGroup.Text>$</InputGroup.Text>
 						</InputGroup.Prepend>
 						<FormControl
-							type='text'
+							type="text"
 							onChange={numberValidator}
-							name='ticket_value'
-							defaultValue={new_book_data.ticket_value}
+							name="ticket_value"
+							defaultValue={gameEditData.ticket_value}
 						/>
 					</InputGroup>
 
-					<InputGroup className='mb-3'>
+					<InputGroup className="mb-3">
 						<InputGroup.Prepend>
 							<InputGroup.Text>Book Value</InputGroup.Text>
 							<InputGroup.Text>$</InputGroup.Text>
 						</InputGroup.Prepend>
 						<FormControl
-							type='text'
+							type="text"
 							onChange={numberValidator}
-							name='book_value'
-							defaultValue={new_book_data.book_value}
+							name="book_value"
+							defaultValue={gameEditData.book_value}
 						/>
 					</InputGroup>
 
-					<InputGroup className='mb-3'>
+					<InputGroup className="mb-3">
 						<InputGroup.Prepend>
 							<InputGroup.Text>Ticket Name</InputGroup.Text>
 						</InputGroup.Prepend>
 						<FormControl
-							type='text'
+							type="text"
 							onChange={valueUpdater}
-							name='ticket_name'
-							defaultValue={new_book_data.ticket_name}
+							name="ticket_name"
+							defaultValue={gameEditData.ticket_name}
 						/>
 					</InputGroup>
 
-					<InputGroup className='mb-3'>
+					<InputGroup className="mb-3">
 						<InputGroup.Prepend>
 							<InputGroup.Text>Current Game?</InputGroup.Text>
 						</InputGroup.Prepend>
 						<InputGroup.Append>
 							<InputGroup.Checkbox
-								defaultChecked={new_book_data.current_game}
+								defaultChecked={gameEditData.current_game}
 								onChange={(event) => toggleCurrentGame(event)}
 							></InputGroup.Checkbox>
 						</InputGroup.Append>
@@ -329,21 +325,20 @@ export default function ISIManage() {
 
 				<Modal.Footer>
 					<Button
-						variant='secondary'
+						variant="secondary"
 						onClick={() => {
-							new_book_data = {
-								game_id: '',
-								ticket_value: '',
-								ticket_name: '',
-								book_value: '',
-								current_game: true,
-							};
+							gameEditData.game_id = null;
+							gameEditData.ticket_value = null;
+							gameEditData.book_value = null;
+							gameEditData.ticket_name = null;
+							gameEditData.current_game = true;
+							setGameEditData({ ...gameEditData });
 							closeAddDialog();
 						}}
 					>
 						Close
 					</Button>
-					<Button variant='success' onClick={gameAdd}>
+					<Button variant="success" onClick={gameAdd}>
 						Save
 					</Button>
 				</Modal.Footer>
@@ -353,7 +348,7 @@ export default function ISIManage() {
 			<Modal
 				show={showDelDialog}
 				onHide={closeDelDialog}
-				backdrop='static'
+				backdrop="static"
 				keyboard={false}
 			>
 				<Modal.Header>
@@ -365,23 +360,23 @@ export default function ISIManage() {
 				</Modal.Body>
 
 				<Modal.Footer>
-					<Button variant='secondary' onClick={closeDelDialog}>
+					<Button variant="secondary" onClick={closeDelDialog}>
 						Cancel
 					</Button>
-					<Button variant='danger' onClick={gameDelete}>
+					<Button variant="danger" onClick={gameDelete}>
 						Delete
 					</Button>
 				</Modal.Footer>
 			</Modal>
 
 			<div
-				className='ag-theme-alpine'
+				className="ag-theme-alpine"
 				style={{
-					width: '100%',
+					width: "100%",
 				}}
 			>
 				<AgGridReact
-					domLayout={'autoHeight'}
+					domLayout={"autoHeight"}
 					columnDefs={columnDefs}
 					defaultColDef={{
 						sortable: true,

@@ -142,7 +142,7 @@ export default function ISIReceive() {
 				'shipmentBooks',
 				JSON.stringify(shipmentBooks)
 			);
-			history.push('/isifunctions/isireceive/isireceivereport');
+			history.push('/isimenu/isireceive/isireceivereport');
 		}
 	}
 
@@ -330,7 +330,7 @@ export default function ISIReceive() {
 							shipmentData = {};
 							shipmentBooks = [];
 							localStorage.clear();
-							history.push('/isifunctions');
+							history.push('/isimenu');
 						}}
 					>
 						Cancel
@@ -396,7 +396,7 @@ export default function ISIReceive() {
 						variant='danger'
 						onClick={() => {
 							closeGenericModal();
-							history.push('/isifunctions');
+							history.push('/isimenu');
 						}}
 					>
 						Exit

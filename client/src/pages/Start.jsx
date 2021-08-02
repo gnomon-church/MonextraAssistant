@@ -1,20 +1,20 @@
 import React, { useEffect } from 'react';
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import { Card, CardDeck } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/style.css';
 
 export default function Start() {
-    useEffect(() => {
-        document.title = 'Home - Mona';
-    }, []);
+	useEffect(() => {
+		document.title = 'Home - Mona';
+	}, []);
 
-    let history = useHistory();
+	let history = useHistory();
 
-    return (
-        <div id='card-deck-set'>
-            {/* <CardDeck>
+	return (
+		<div id='card-deck-set'>
+			{/* <CardDeck>
                     <Card as='a' href='/eodform' className='card-list' style={{ width: '18rem' }}>
                         <Card.Body>
                             <Card.Title>End of Day Form</Card.Title>
@@ -36,18 +36,20 @@ export default function Start() {
 
                 <br /> */}
 
-            <CardDeck>
-                <Card onClick={() => {history.push('/isifunctions')}} className='card-list' style={{ width: '18rem' }}>
-                    <Card.Body>
-                        <Card.Title>ISI Management</Card.Title>
-                        <Card.Text>
-                            Manage the ISI stock.
-                        </Card.Text>
-                    </Card.Body>
-                </Card>
-            </CardDeck>
-
-
-        </div>
-    );
+			<CardDeck>
+				<Card
+					onClick={() => {
+						history.push('/isimenu');
+					}}
+					className='card-list'
+					style={{ width: '18rem' }}
+				>
+					<Card.Body>
+						<Card.Title>ISI Management</Card.Title>
+						<Card.Text>Manage the ISI stock.</Card.Text>
+					</Card.Body>
+				</Card>
+			</CardDeck>
+		</div>
+	);
 }

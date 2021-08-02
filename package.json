@@ -4,11 +4,10 @@
   "description": "Assists in common procedures at Nextra Morayfield News",
   "main": "server.js",
   "scripts": {
-    "client": "cd client && npm start",
-    "server": "nodemon server.js",
+    "client": "cd client && npm run start",
+    "server": "cd server && go run server.go",
     "dev": "concurrently --kill-others-on-fail \"npm run client\" \"npm run server\"",
-    "debug": "concurrently --kill-others-on-fail \"npm run client\" \"npm run server\"",
-    "client:build": "cd client && npm run build"
+    "client:build": "cd client && next build"
   },
   "author": "Connor McHugh",
   "license": "ISC",
@@ -17,14 +16,22 @@
     "ag-grid-react": "^24.1.1",
     "body-parser": "^1.19.0",
     "concurrently": "^5.3.0",
+    "core-js": "^3.15.2",
     "cors": "^2.8.5",
-    "eslint": "^7.18.0",
+    "create-next-app": "^11.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
     "express": "^4.17.1",
     "nodemon": "^2.0.6",
     "pg": "^8.5.1",
     "pg-format": "^1.0.4",
+    "prettier": "^2.3.2",
     "react": "^17.0.1",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.24.0"
   }
 }

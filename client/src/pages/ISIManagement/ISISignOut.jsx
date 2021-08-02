@@ -112,7 +112,7 @@ export default function ISIReceive() {
 			openGenericModal();
 		} else {
 			localStorage.setItem('signOutBooks', JSON.stringify(signOutBooks));
-			history.push('/isifunctions/isisignout/isireceivereport');
+			history.push('/isimenu/isisignout/isireceivereport');
 		}
 	}
 
@@ -239,7 +239,7 @@ export default function ISIReceive() {
 						variant='danger'
 						onClick={() => {
 							closeGenericModal();
-							history.push('/isifunctions');
+							history.push('/isimenu');
 						}}
 					>
 						Exit

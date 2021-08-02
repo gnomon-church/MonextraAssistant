@@ -78,7 +78,7 @@ export default function PDFReport() {
 			<Navbar bg='danger' className='justify-content-between' expand='lg'>
 				<Button
 					variant='dark'
-					onClick={() => history.push('/isifunctions/isireceive')}
+					onClick={() => history.push('/isimenu/isireceive')}
 				>
 					Back
 				</Button>
@@ -110,7 +110,7 @@ export default function PDFReport() {
 						onClick={() => {
 							closeSuccessDialog();
 							localStorage.clear();
-							history.push('/isifunctions');
+							history.push('/isimenu');
 						}}
 					>
 						Okay
