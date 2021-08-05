@@ -105,7 +105,11 @@ export default function ISIManage() {
 	// Get data from the API and set it
 	function fetchData() {
 		axios(AxiosRequests.allGameTypes())
-			.then((res) => res.data.data.gameTypes)
+			.then((res) => {
+				if (res.data.data != null) {
+					console.log("not null");
+				}
+			})
 			.then((rows) =>
 				rows.map((book) => {
 					return {
@@ -177,7 +181,7 @@ export default function ISIManage() {
 		gridApi.current.showLoadingOverlay();
 		gameEditData.ticket_name = gameEditData.ticket_name.toUpperCase();
 		setGameEditData({ ...gameEditData });
-		axios(AxiosRequests.createGameType())
+		axios(AxiosRequests.createGameType(gameEditData))
 			.then(() => fetchData())
 			.then(() => {
 				gameEditData.game_id = null;

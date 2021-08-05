@@ -17,19 +17,14 @@ export function allGameTypes() {
 	};
 }
 
-export function createGameType(
-	game_id,
-	ticket_name,
-	ticket_value,
-	book_value,
-	current_game
-) {
+export function createGameType(newGameObj) {
+	console.log(newGameObj)
 	return {
 		url: '/query',
 		method: 'post',
 		data: {
 			mutation: `mutation {
-  						createGameType(input: {game_id: ${game_id}, ticket_name: ${ticket_name}, ticket_value: ${ticket_value}, book_value: ${book_value}, current_game: ${current_game}}) {
+  						createGameType(input: {game_id: ${newGameObj.game_id}, ticket_name: ${newGameObj.ticket_name}, ticket_value: ${newGameObj.ticket_value}, book_value: ${newGameObj.book_value}, current_game: ${newGameObj.current_game}}) {
     						game_id
   						}
 			}`,
