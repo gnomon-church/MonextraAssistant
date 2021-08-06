@@ -60,51 +60,51 @@ func GetBooks(gameID *string, bookNumber *string, shipmentID *string, signOutDat
 	var rows *sql.Rows
 
 	if gameID == nil && bookNumber != nil {
-		return nil, errors.New("cannot take book_number argument without game_id")
+		return nil, errors.New("ERRNEEDSGAMEID")
 	} else if gameID != nil && bookNumber == nil && shipmentID == nil && signOutDate == nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM game_books WHERE game_id = $1")
 		if err != nil {
-			return nil, errors.New("unknown error (1)")
+			return nil, errors.New("ERRQUERYISSUE")
 		}
 		rows, err = stmt.Query(gameID)
 	} else if gameID != nil && bookNumber != nil && shipmentID == nil && signOutDate == nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM game_books WHERE game_id = $1 AND book_number = $2")
 		if err != nil {
-			return nil, errors.New("unknown error (1)")
+			return nil, errors.New("ERRQUERYISSUE")
 		}
 		rows, err = stmt.Query(gameID, bookNumber)
 	} else if gameID == nil && bookNumber == nil && shipmentID != nil && signOutDate != nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM game_books WHERE shipment_id = $1 AND sign_out_date = $2")
 		if err != nil {
-			return nil, errors.New("unknown error (1)")
+			return nil, errors.New("ERRQUERYISSUE")
 		}
 		rows, err = stmt.Query(shipmentID, signOutDate)
 	} else if gameID == nil && bookNumber == nil && shipmentID != nil && signOutDate == nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM game_books WHERE shipment_id = $1")
 		if err != nil {
-			return nil, errors.New("unknown error (1)")
+			return nil, errors.New("ERRQUERYISSUE")
 		}
 		rows, err = stmt.Query(shipmentID)
 	} else if gameID == nil && bookNumber == nil && shipmentID == nil && signOutDate != nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM game_books WHERE sign_out_date = $1")
 		if err != nil {
-			return nil, errors.New("unknown error (1)")
+			return nil, errors.New("ERRQUERYISSUE")
 		}
 		rows, err = stmt.Query(signOutDate)
 	} else if gameID == nil && bookNumber == nil && shipmentID == nil && signOutDate == nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM game_books")
 		if err != nil {
-			return nil, errors.New("unknown error (1)")
+			return nil, errors.New("ERRQUERYISSUE")
 		}
 		rows, err = stmt.Query()
 	} else {
-		return nil, errors.New("invalid combination of arguments")
+		return nil, errors.New("ERRINVALIDARGS")
 	}
 
 	defer stmt.Close()
 
 	if err != nil {
-		return nil, errors.New("unknown error (2)")
+		return nil, errors.New("ERRUNKNOWN")
 	}
 	defer rows.Close()
 
@@ -114,13 +114,13 @@ func GetBooks(gameID *string, bookNumber *string, shipmentID *string, signOutDat
 		var gameBook GameBook
 		err := rows.Scan(&gameBook.GameID, &gameBook.BookNumber, &gameBook.ShipmentID, &gameBook.SignOutDate)
 		if err != nil {
-			return nil, errors.New("unknown error (3)")
+			return nil, errors.New("ERRUNKNOWN")
 		}
 		gameBooks = append(gameBooks, gameBook)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, errors.New("unknown error (4)")
+		return nil, errors.New("ERRUNKNOWN")
 	}
 
 	return gameBooks, nil
