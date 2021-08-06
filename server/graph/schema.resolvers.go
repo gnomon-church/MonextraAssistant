@@ -86,11 +86,12 @@ func (r *mutationResolver) SignOutGameBook(ctx context.Context, input []*model.S
 
 func (r *queryResolver) Shipments(ctx context.Context, shipmentID *string, dateReceived *string) ([]*model.Shipment, error) {
 	var resultShipments []*model.Shipment
-	var dbShipments []shipments.Shipment = shipments.GetShipments(shipmentID, dateReceived)
+	var dbShipments []shipments.Shipment
+	dbShipments, err := shipments.GetShipments(shipmentID, dateReceived)
 	for _, shipment := range dbShipments {
 		resultShipments = append(resultShipments, &model.Shipment{ShipmentID: shipment.ShipmentID, DateReceived: shipment.DateReceived})
 	}
-	return resultShipments, nil
+	return resultShipments, err
 }
 
 func (r *queryResolver) GameTypes(ctx context.Context, gameID *string, currentGame *bool) ([]*model.GameType, error) {
