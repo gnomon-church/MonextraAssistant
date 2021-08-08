@@ -15,17 +15,17 @@ type Shipment struct {
 func (shipment Shipment) AddShipment() error {
 	stmt, err := database.Db.Prepare("INSERT INTO Shipments(shipment_id,date_received) VALUES($1,$2)")
 	if err != nil {
-		return errors.New("unknown error (1)")
+		return errors.New("ERRQUERYPREP")
 	}
 
 	res, err := stmt.Exec(shipment.ShipmentID, shipment.DateReceived)
 	if err != nil {
-		return errors.New("unknown error (2)")
+		return errors.New("ERRQUERYEXEC")
 	}
 
 	rows, err := res.RowsAffected()
 	if err != nil {
-		return errors.New("unknown error (3)")
+		return errors.New("ERRUNKNOWN")
 	}
 
 	_ = rows
@@ -40,25 +40,25 @@ func GetShipments(shipmentID *string, dateReceived *string) ([]Shipment, error) 
 	if shipmentID != nil && dateReceived != nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM shipments WHERE shipment_id = $1 AND date_received = $2")
 		if err != nil {
-			return nil, errors.New("unknown error (1)")
+			return nil, errors.New("ERRQUERYPREP")
 		}
 		rows, err = stmt.Query(shipmentID, dateReceived)
 	} else if shipmentID != nil && dateReceived == nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM shipments WHERE shipment_id = $1")
 		if err != nil {
-			return nil, errors.New("unknown error (1)")
+			return nil, errors.New("ERRQUERYPREP")
 		}
 		rows, err = stmt.Query(shipmentID)
 	} else if shipmentID == nil && dateReceived != nil {
 		stmt, err = database.Db.Prepare("SELECT * FROM shipments WHERE date_received = $1")
 		if err != nil {
-			return nil, errors.New("unknown error (1)")
+			return nil, errors.New("ERRQUERYPREP")
 		}
 		rows, err = stmt.Query(dateReceived)
 	} else {
 		stmt, err = database.Db.Prepare("SELECT * FROM shipments")
 		if err != nil {
-			return nil, errors.New("unknown error (1)")
+			return nil, errors.New("ERRQUERYPREP")
 		}
 		rows, err = stmt.Query()
 	}
@@ -66,7 +66,7 @@ func GetShipments(shipmentID *string, dateReceived *string) ([]Shipment, error) 
 	defer stmt.Close()
 
 	if err != nil {
-		return nil, errors.New("unknown error (2)")
+		return nil, errors.New("ERRQUERYEXEC")
 	}
 	defer rows.Close()
 
@@ -76,13 +76,13 @@ func GetShipments(shipmentID *string, dateReceived *string) ([]Shipment, error) 
 		var shipment Shipment
 		err := rows.Scan(&shipment.ShipmentID, &shipment.DateReceived)
 		if err != nil {
-			return nil, errors.New("unknown error (3)")
+			return nil, errors.New("ERRSCANISSUE")
 		}
 		shipments = append(shipments, shipment)
 	}
 
 	if err = rows.Err(); err != nil {
-		return nil, errors.New("unknown error (4)")
+		return nil, errors.New("ERRUNKNOWN")
 	}
 
 	return shipments, nil
