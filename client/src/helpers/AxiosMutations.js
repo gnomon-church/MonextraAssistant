@@ -1,5 +1,6 @@
 // Creates a new ISI game
 export function createGameType(newGameObj) {
+	// Return the Axios request
 	return {
 		url: "/request",
 		method: "post",
@@ -15,6 +16,10 @@ export function createGameType(newGameObj) {
 
 // Deletes an existing ISI game
 export function removeGameType(gameId) {
+	// Ensure that gameId is a string as GraphQL is expexting
+	gameId = gameId.toString();
+
+	// Return the Axios request
 	return {
 		url: "/request",
 		method: "post",

@@ -2,7 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { Button, Modal, InputGroup, FormControl } from "react-bootstrap";
 import { AgGridReact } from "ag-grid-react";
 import axios from "axios";
-import * as AxiosRequests from "../../helpers/AxiosRequests";
+import * as AxiosMutations from "../../helpers/AxiosMutations";
+import * as AxiosQueries from "../../helpers/AxiosQueries";
 
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
@@ -38,6 +39,7 @@ export default function ISIManage() {
 		gridApi.current.sizeColumnsToFit();
 	};
 
+	// Define the columns for the ag-grid
 	const columnDefs = [
 		{
 			headerName: "Game Number",
@@ -104,7 +106,7 @@ export default function ISIManage() {
 
 	// Get data from the API and set it
 	function fetchData() {
-		axios(AxiosRequests.allGameTypes())
+		axios(AxiosQueries.allGameTypes())
 			.then((res) => res.data)
 			.then((rows) => {
 				if (rows.data === null) {
@@ -162,26 +164,37 @@ export default function ISIManage() {
 		);
 	}
 
+	// Delete an existing game type
 	function gameDelete() {
 		closeDelDialog();
 		setAddIsLoading(true);
 		gridApi.current.showLoadingOverlay();
-		axios
-			.get(
-				"/api/isi-game-delete/" +
-					gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data.game_id
+		axios(
+			AxiosMutations.removeGameType(
+				gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data.game_id
 			)
+		)
+			.then((res) => res.data)
+			.then((rows) => {
+				if (rows.data === null) {
+					console.log(rows.errors);
+					console.log("Here :/");
+				} else {
+					console.log("Success!");
+				}
+			})
 			.then(() => fetchData())
 			.then(() => setRowIndexToUse(null));
 	}
 
+	// Add a new game type
 	function gameAdd() {
 		closeAddDialog();
 		setAddIsLoading(true);
 		gridApi.current.showLoadingOverlay();
 		gameEditData.ticket_name = gameEditData.ticket_name.toUpperCase();
 		setGameEditData({ ...gameEditData });
-		axios(AxiosRequests.createGameType(gameEditData))
+		axios(AxiosMutations.createGameType(gameEditData))
 			.then(() => fetchData())
 			.then(() => {
 				gameEditData.game_id = null;
@@ -193,6 +206,7 @@ export default function ISIManage() {
 			});
 	}
 
+	// Check in real-time that data entered is numeric only
 	function numberValidator(event) {
 		let re = /^[0-9]*$/;
 		let val = re.exec(event.target.value);
