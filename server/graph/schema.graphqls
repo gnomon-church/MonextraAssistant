@@ -19,17 +19,17 @@ input NewShipment {
 # ISI Games #
 type GameType {
 	game_id: String!
-	ticket_value: String!
+	ticket_value: Int!
 	ticket_name: String!
-	book_value: String!
+	book_value: Int!
 	current_game: Boolean!
 }
 
 input UpdateGameType {
 	game_id: String!
-	ticket_value: String!
+	ticket_value: Int!
 	ticket_name: String!
-	book_value: String!
+	book_value: Int!
 	current_game: Boolean!
 }
 

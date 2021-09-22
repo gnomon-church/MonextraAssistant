@@ -9,9 +9,9 @@ import (
 
 type GameType struct {
 	GameID      string
-	TicketValue string
+	TicketValue int
 	TicketName  string
-	BookValue   string
+	BookValue   int
 	CurrentGame bool
 }
 

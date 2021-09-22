@@ -178,7 +178,6 @@ export default function ISIManage() {
 			.then((rows) => {
 				if (rows.data === null) {
 					console.log(rows.errors);
-					console.log("Here :/");
 				} else {
 					console.log("Success!");
 				}

@@ -378,17 +378,17 @@ input NewShipment {
 # ISI Games #
 type GameType {
 	game_id: String!
-	ticket_value: String!
+	ticket_value: Int!
 	ticket_name: String!
-	book_value: String!
+	book_value: Int!
 	current_game: Boolean!
 }
 
 input UpdateGameType {
 	game_id: String!
-	ticket_value: String!
+	ticket_value: Int!
 	ticket_name: String!
-	book_value: String!
+	book_value: Int!
 	current_game: Boolean!
 }
 
@@ -889,9 +889,9 @@ func (ec *executionContext) _GameType_ticket_value(ctx context.Context, field gr
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _GameType_ticket_name(ctx context.Context, field graphql.CollectedField, obj *model.GameType) (ret graphql.Marshaler) {
@@ -959,9 +959,9 @@ func (ec *executionContext) _GameType_book_value(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _GameType_current_game(ctx context.Context, field graphql.CollectedField, obj *model.GameType) (ret graphql.Marshaler) {
@@ -2743,7 +2743,7 @@ func (ec *executionContext) unmarshalInputUpdateGameType(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ticket_value"))
-			it.TicketValue, err = ec.unmarshalNString2string(ctx, v)
+			it.TicketValue, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2759,7 +2759,7 @@ func (ec *executionContext) unmarshalInputUpdateGameType(ctx context.Context, ob
 			var err error
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("book_value"))
-			it.BookValue, err = ec.unmarshalNString2string(ctx, v)
+			it.BookValue, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -3416,6 +3416,21 @@ func (ec *executionContext) marshalNGameType2ᚖgithubᚗcomᚋgnomonᚑchurch�
 		return graphql.Null
 	}
 	return ec._GameType(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNInt2int(ctx context.Context, v interface{}) (int, error) {
+	res, err := graphql.UnmarshalInt(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.SelectionSet, v int) graphql.Marshaler {
+	res := graphql.MarshalInt(v)
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNNewShipment2githubᚗcomᚋgnomonᚑchurchᚋmonaᚑapiᚋgraphᚋmodelᚐNewShipment(ctx context.Context, v interface{}) (model.NewShipment, error) {

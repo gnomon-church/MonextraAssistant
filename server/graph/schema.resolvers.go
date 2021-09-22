@@ -5,7 +5,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/gnomon-church/mona-api/graph/generated"
 	"github.com/gnomon-church/mona-api/graph/model"
@@ -48,7 +47,6 @@ func (r *mutationResolver) RemoveGameType(ctx context.Context, input model.Remov
 	var game games.GameType
 	game.GameID = input.GameID
 	err := game.RemoveGame()
-	fmt.Print("Error: ", err)
 	return &model.GameType{GameID: game.GameID}, err
 }
 
