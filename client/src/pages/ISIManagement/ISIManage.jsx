@@ -4,6 +4,7 @@ import { AgGridReact } from "ag-grid-react";
 import axios from "axios";
 import * as AxiosMutations from "../../helpers/AxiosMutations";
 import * as AxiosQueries from "../../helpers/AxiosQueries";
+import * as ECs from "../../helpers/ErrorCodes";
 
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
@@ -110,7 +111,7 @@ export default function ISIManage() {
 			.then((res) => res.data)
 			.then((rows) => {
 				if (rows.data === null) {
-					console.log(rows.errors);
+					alert(ECs.Errors[rows.errors[0].message]);
 				} else {
 					return rows.data.gameTypes.map((book) => {
 						return {
@@ -177,7 +178,7 @@ export default function ISIManage() {
 			.then((res) => res.data)
 			.then((rows) => {
 				if (rows.data === null) {
-					console.log(rows.errors);
+					alert(ECs.Errors[rows.errors[0].message]);
 				} else {
 					console.log("Success!");
 				}
