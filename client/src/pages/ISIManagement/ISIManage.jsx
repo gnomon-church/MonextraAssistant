@@ -10,13 +10,12 @@ import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 
 import Navigation from "../../components/Navigation";
+import UpdateGameModal from "../../components/UpdateGameModal";
 
 export default function ISIManage() {
 	const [rowData, setRowData] = useState([]);
 	const [addIsLoading, setAddIsLoading] = useState(true);
 	const [rowIndexToUse, setRowIndexToUse] = useState(null);
-	const [showAddDialog, setShowAddDialog] = useState(false);
-	const [showDelDialog, setShowDelDialog] = useState(false);
 
 	// State for new game
 	const [gameEditData, setGameEditData] = useState({
@@ -28,12 +27,6 @@ export default function ISIManage() {
 	});
 
 	const gridApi = useRef();
-
-	const closeAddDialog = () => setShowAddDialog(false);
-	const openAddDialog = () => setShowAddDialog(true);
-
-	const closeDelDialog = () => setShowDelDialog(false);
-	const openDelDialog = () => setShowDelDialog(true);
 
 	const onGridReady = (params) => {
 		gridApi.current = params.api;
@@ -49,30 +42,26 @@ export default function ISIManage() {
 			suppressMovable: true,
 			floatingFilter: true,
 			filter: true,
-			headerTooltip: "ISI game Number",
+			headerTooltip: "ISI game number",
 		},
 		{
 			headerName: "Ticket Value",
 			field: "ticket_value",
 			cellStyle: { "text-align": "center" },
 			suppressMovable: true,
-			headerTooltip: "ISI ticket Value",
+			headerTooltip: "ISI ticket value",
+			valueFormatter: (params) => {
+				return "$" + params.value;
+			},
 		},
 		{
-			headerName: "Ticket Name",
-			field: "ticket_name",
+			headerName: "Game Name",
+			field: "game_name",
 			cellStyle: { "text-align": "center" },
 			suppressMovable: true,
 			floatingFilter: true,
 			filter: true,
 			headerTooltip: "ISI ticket name",
-		},
-		{
-			headerName: "Book Value",
-			field: "book_value",
-			cellStyle: { "text-align": "center" },
-			suppressMovable: true,
-			headerTooltip: "ISI book value",
 		},
 		{
 			headerName: "Current Game?",
@@ -86,6 +75,19 @@ export default function ISIManage() {
 			cellStyle: { "text-align": "center" },
 			suppressMovable: true,
 			headerTooltip: "Is this a current ISI game?",
+		},
+		{
+			headerName: "Promo Game?",
+			field: "promo_game",
+			colId: "params",
+			cellRenderer: (params) => {
+				return `<input type='checkbox' disabled ${
+					params.value ? "checked" : ""
+				} />`;
+			},
+			cellStyle: { "text-align": "center" },
+			suppressMovable: true,
+			headerTooltip: "Is this a promotional ISI game?",
 		},
 		{
 			headerName: "",
@@ -117,9 +119,9 @@ export default function ISIManage() {
 						return {
 							game_id: book.game_id,
 							ticket_value: book.ticket_value,
-							ticket_name: book.ticket_name,
-							book_value: book.book_value,
+							game_name: book.game_name,
 							current_game: book.current_game,
+							promo_game: book.promo_game,
 						};
 					});
 				}
@@ -146,7 +148,6 @@ export default function ISIManage() {
 						gameEditData.ticket_name = data.ticket_name;
 						gameEditData.current_game = data.current_game;
 						setGameEditData({ ...gameEditData });
-						openAddDialog();
 					}}
 				>
 					Edit
@@ -156,78 +157,12 @@ export default function ISIManage() {
 					size="sm"
 					onClick={() => {
 						setRowIndexToUse(props.node.rowIndex);
-						openDelDialog();
 					}}
 				>
 					Delete
 				</Button>
 			</span>
 		);
-	}
-
-	// Delete an existing game type
-	function gameDelete() {
-		closeDelDialog();
-		setAddIsLoading(true);
-		gridApi.current.showLoadingOverlay();
-		axios(
-			AxiosMutations.removeGameType(
-				gridApi.current.getDisplayedRowAtIndex(rowIndexToUse).data.game_id
-			)
-		)
-			.then((res) => res.data)
-			.then((rows) => {
-				if (rows.data === null) {
-					alert(ECs.Errors[rows.errors[0].message]);
-				} else {
-					console.log("Success!");
-				}
-			})
-			.then(() => fetchData())
-			.then(() => setRowIndexToUse(null));
-	}
-
-	// Add a new game type
-	function gameAdd() {
-		closeAddDialog();
-		setAddIsLoading(true);
-		gridApi.current.showLoadingOverlay();
-		gameEditData.ticket_name = gameEditData.ticket_name.toUpperCase();
-		setGameEditData({ ...gameEditData });
-		axios(AxiosMutations.createGameType(gameEditData))
-			.then(() => fetchData())
-			.then(() => {
-				gameEditData.game_id = null;
-				gameEditData.ticket_value = null;
-				gameEditData.book_value = null;
-				gameEditData.ticket_name = null;
-				gameEditData.current_game = true;
-				setGameEditData({ ...gameEditData });
-			});
-	}
-
-	// Check in real-time that data entered is numeric only
-	function numberValidator(event) {
-		let re = /^[0-9]*$/;
-		let val = re.exec(event.target.value);
-
-		if (val !== null) {
-			event.target.value = val[0];
-			gameEditData[event.target.name] = event.target.value;
-			setGameEditData({ ...gameEditData });
-		} else {
-			event.target.value = gameEditData[event.target.name];
-		}
-	}
-
-	function valueUpdater(event) {
-		gameEditData[event.target.name] = event.target.value;
-		setGameEditData({ ...gameEditData });
-	}
-
-	function toggleCurrentGame(event) {
-		gameEditData["current_game"] = event.target.checked;
-		setGameEditData({ ...gameEditData });
 	}
 
 	const GameData = () => {
@@ -256,137 +191,18 @@ export default function ISIManage() {
 
 	return (
 		<div>
+			{/* Page navigation bar */}
 			<Navigation proceed="false" from="/isimenu" />
 			<div className="add-isi-button">
 				<Button
 					variant="outline-danger"
-					onClick={!addIsLoading ? openAddDialog : null}
+					// onClick={!addIsLoading ? openAddDialog : null}
 				>
 					{addIsLoading ? "Loading..." : "Add ISI Game"}
 				</Button>
 			</div>
 
-			{/* Modal for adding ISI books */}
-			<Modal
-				show={showAddDialog}
-				onHide={closeAddDialog}
-				backdrop="static"
-				keyboard={false}
-			>
-				<Modal.Header>
-					<Modal.Title>ISI Game Details</Modal.Title>
-				</Modal.Header>
-
-				<Modal.Body>
-					<InputGroup className="mb-3">
-						<InputGroup.Prepend>
-							<InputGroup.Text>Game Number</InputGroup.Text>
-						</InputGroup.Prepend>
-						<FormControl
-							type="text"
-							onChange={numberValidator}
-							name="game_id"
-							placeholder={gameEditData.game_id}
-						/>
-					</InputGroup>
-
-					<InputGroup className="mb-3">
-						<InputGroup.Prepend>
-							<InputGroup.Text>Ticket Value</InputGroup.Text>
-							<InputGroup.Text>$</InputGroup.Text>
-						</InputGroup.Prepend>
-						<FormControl
-							type="text"
-							onChange={numberValidator}
-							name="ticket_value"
-							defaultValue={gameEditData.ticket_value}
-						/>
-					</InputGroup>
-
-					<InputGroup className="mb-3">
-						<InputGroup.Prepend>
-							<InputGroup.Text>Book Value</InputGroup.Text>
-							<InputGroup.Text>$</InputGroup.Text>
-						</InputGroup.Prepend>
-						<FormControl
-							type="text"
-							onChange={numberValidator}
-							name="book_value"
-							defaultValue={gameEditData.book_value}
-						/>
-					</InputGroup>
-
-					<InputGroup className="mb-3">
-						<InputGroup.Prepend>
-							<InputGroup.Text>Ticket Name</InputGroup.Text>
-						</InputGroup.Prepend>
-						<FormControl
-							type="text"
-							onChange={valueUpdater}
-							name="ticket_name"
-							defaultValue={gameEditData.ticket_name}
-						/>
-					</InputGroup>
-
-					<InputGroup className="mb-3">
-						<InputGroup.Prepend>
-							<InputGroup.Text>Current Game?</InputGroup.Text>
-						</InputGroup.Prepend>
-						<InputGroup.Append>
-							<InputGroup.Checkbox
-								defaultChecked={gameEditData.current_game}
-								onChange={(event) => toggleCurrentGame(event)}
-							></InputGroup.Checkbox>
-						</InputGroup.Append>
-					</InputGroup>
-				</Modal.Body>
-
-				<Modal.Footer>
-					<Button
-						variant="secondary"
-						onClick={() => {
-							gameEditData.game_id = null;
-							gameEditData.ticket_value = null;
-							gameEditData.book_value = null;
-							gameEditData.ticket_name = null;
-							gameEditData.current_game = true;
-							setGameEditData({ ...gameEditData });
-							closeAddDialog();
-						}}
-					>
-						Close
-					</Button>
-					<Button variant="success" onClick={gameAdd}>
-						Save
-					</Button>
-				</Modal.Footer>
-			</Modal>
-
-			{/* Modal for deleting ISI books */}
-			<Modal
-				show={showDelDialog}
-				onHide={closeDelDialog}
-				backdrop="static"
-				keyboard={false}
-			>
-				<Modal.Header>
-					<Modal.Title>Delete Game?</Modal.Title>
-				</Modal.Header>
-
-				<Modal.Body>
-					Are you sure you want to delete the <GameData /> game?
-				</Modal.Body>
-
-				<Modal.Footer>
-					<Button variant="secondary" onClick={closeDelDialog}>
-						Cancel
-					</Button>
-					<Button variant="danger" onClick={gameDelete}>
-						Delete
-					</Button>
-				</Modal.Footer>
-			</Modal>
-
+			{/* AG Grid */}
 			<div
 				className="ag-theme-alpine"
 				style={{

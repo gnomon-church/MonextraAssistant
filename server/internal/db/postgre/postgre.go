@@ -10,16 +10,16 @@ import (
 var Db *sql.DB
 
 const (
-	host     = "ec2-54-161-150-170.compute-1.amazonaws.com"
+	host     = "127.0.0.1"
 	port     = 5432
-	user     = "szjzhfjgzxubrz"
-	password = "a91920638868ef1c941ef53fe55e6664afcbfcf196fca4dec630cf4cb4b11a90"
-	dbname   = "ddhl6c9kg91vhh"
+	user     = "postgres"
+	password = "postgres"
+	dbname   = "monextra-assistant-dev"
 )
 
 func InitConnection() {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
-		"password=%s dbname=%s sslmode=require",
+		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
 	// db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))

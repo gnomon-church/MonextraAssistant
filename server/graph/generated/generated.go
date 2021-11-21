@@ -51,10 +51,11 @@ type ComplexityRoot struct {
 	}
 
 	GameType struct {
-		BookValue   func(childComplexity int) int
 		CurrentGame func(childComplexity int) int
 		GameID      func(childComplexity int) int
-		TicketName  func(childComplexity int) int
+		GameName    func(childComplexity int) int
+		PromoGame   func(childComplexity int) int
+		TicketCount func(childComplexity int) int
 		TicketValue func(childComplexity int) int
 	}
 
@@ -136,13 +137,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.GameBook.SignOutDate(childComplexity), true
 
-	case "GameType.book_value":
-		if e.complexity.GameType.BookValue == nil {
-			break
-		}
-
-		return e.complexity.GameType.BookValue(childComplexity), true
-
 	case "GameType.current_game":
 		if e.complexity.GameType.CurrentGame == nil {
 			break
@@ -157,12 +151,26 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.GameType.GameID(childComplexity), true
 
-	case "GameType.ticket_name":
-		if e.complexity.GameType.TicketName == nil {
+	case "GameType.game_name":
+		if e.complexity.GameType.GameName == nil {
 			break
 		}
 
-		return e.complexity.GameType.TicketName(childComplexity), true
+		return e.complexity.GameType.GameName(childComplexity), true
+
+	case "GameType.promo_game":
+		if e.complexity.GameType.PromoGame == nil {
+			break
+		}
+
+		return e.complexity.GameType.PromoGame(childComplexity), true
+
+	case "GameType.ticket_count":
+		if e.complexity.GameType.TicketCount == nil {
+			break
+		}
+
+		return e.complexity.GameType.TicketCount(childComplexity), true
 
 	case "GameType.ticket_value":
 		if e.complexity.GameType.TicketValue == nil {
@@ -378,18 +386,20 @@ input NewShipment {
 # ISI Games #
 type GameType {
 	game_id: String!
+	game_name: String!
 	ticket_value: Int!
-	ticket_name: String!
-	book_value: Int!
+	ticket_count: Int!
 	current_game: Boolean!
+	promo_game: Boolean!
 }
 
 input UpdateGameType {
 	game_id: String!
+	game_name: String!
 	ticket_value: Int!
-	ticket_name: String!
-	book_value: Int!
+	ticket_count: Int!
 	current_game: Boolean!
+	promo_game: Boolean!
 }
 
 input RemoveGameType {
@@ -859,6 +869,41 @@ func (ec *executionContext) _GameType_game_id(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
+func (ec *executionContext) _GameType_game_name(ctx context.Context, field graphql.CollectedField, obj *model.GameType) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "GameType",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.GameName, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
 func (ec *executionContext) _GameType_ticket_value(ctx context.Context, field graphql.CollectedField, obj *model.GameType) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -894,7 +939,7 @@ func (ec *executionContext) _GameType_ticket_value(ctx context.Context, field gr
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _GameType_ticket_name(ctx context.Context, field graphql.CollectedField, obj *model.GameType) (ret graphql.Marshaler) {
+func (ec *executionContext) _GameType_ticket_count(ctx context.Context, field graphql.CollectedField, obj *model.GameType) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -912,42 +957,7 @@ func (ec *executionContext) _GameType_ticket_name(ctx context.Context, field gra
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.TicketName, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) _GameType_book_value(ctx context.Context, field graphql.CollectedField, obj *model.GameType) (ret graphql.Marshaler) {
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	fc := &graphql.FieldContext{
-		Object:     "GameType",
-		Field:      field,
-		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
-	}
-
-	ctx = graphql.WithFieldContext(ctx, fc)
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.BookValue, nil
+		return obj.TicketCount, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -983,6 +993,41 @@ func (ec *executionContext) _GameType_current_game(ctx context.Context, field gr
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
 		return obj.CurrentGame, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _GameType_promo_game(ctx context.Context, field graphql.CollectedField, obj *model.GameType) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "GameType",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   false,
+		IsResolver: false,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.PromoGame, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2739,6 +2784,14 @@ func (ec *executionContext) unmarshalInputUpdateGameType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
+		case "game_name":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("game_name"))
+			it.GameName, err = ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
 		case "ticket_value":
 			var err error
 
@@ -2747,19 +2800,11 @@ func (ec *executionContext) unmarshalInputUpdateGameType(ctx context.Context, ob
 			if err != nil {
 				return it, err
 			}
-		case "ticket_name":
+		case "ticket_count":
 			var err error
 
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ticket_name"))
-			it.TicketName, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "book_value":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("book_value"))
-			it.BookValue, err = ec.unmarshalNInt2int(ctx, v)
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ticket_count"))
+			it.TicketCount, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2768,6 +2813,14 @@ func (ec *executionContext) unmarshalInputUpdateGameType(ctx context.Context, ob
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("current_game"))
 			it.CurrentGame, err = ec.unmarshalNBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+		case "promo_game":
+			var err error
+
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("promo_game"))
+			it.PromoGame, err = ec.unmarshalNBoolean2bool(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -2843,23 +2896,28 @@ func (ec *executionContext) _GameType(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "game_name":
+			out.Values[i] = ec._GameType_game_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		case "ticket_value":
 			out.Values[i] = ec._GameType_ticket_value(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
-		case "ticket_name":
-			out.Values[i] = ec._GameType_ticket_name(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
-		case "book_value":
-			out.Values[i] = ec._GameType_book_value(ctx, field, obj)
+		case "ticket_count":
+			out.Values[i] = ec._GameType_ticket_count(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
 		case "current_game":
 			out.Values[i] = ec._GameType_current_game(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
+		case "promo_game":
+			out.Values[i] = ec._GameType_promo_game(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}

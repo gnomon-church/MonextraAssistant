@@ -9,10 +9,11 @@ import (
 
 type GameType struct {
 	GameID      string
-	TicketValue int
-	TicketName  string
-	BookValue   int
+	GameName 	string
+	TicketValue	int
+	TicketCount int
 	CurrentGame bool
+	PromoGame	bool
 }
 
 func (gameType GameType) CreateGame() error {
@@ -21,7 +22,7 @@ func (gameType GameType) CreateGame() error {
 		return errors.New("ERRQUERYPREP")
 	}
 
-	res, err := stmt.Exec(gameType.GameID, gameType.TicketValue, gameType.TicketName, gameType.BookValue, gameType.CurrentGame)
+	res, err := stmt.Exec(gameType.GameID, gameType.GameName, gameType.TicketValue, gameType.TicketCount, gameType.CurrentGame, gameType.PromoGame)
 	if err != nil {
 		if err.Error() == "pq: duplicate key value violates unique constraint \"game_types_pk\"" {
 			return errors.New("ERRGAMEXISTS")
@@ -45,7 +46,7 @@ func (gameType GameType) ModifyGame() error {
 		return errors.New("ERRQUERYPREP")
 	}
 
-	res, err := stmt.Exec(gameType.GameID, gameType.TicketValue, gameType.TicketName, gameType.BookValue, gameType.CurrentGame)
+	res, err := stmt.Exec(gameType.GameID, gameType.GameName, gameType.TicketValue, gameType.TicketCount, gameType.CurrentGame, gameType.PromoGame)
 	if err != nil {
 		return errors.New("ERRQUERYEXEC")
 	}
@@ -121,7 +122,7 @@ func GetGames(gameID *string, currentGame *bool) ([]GameType, error) {
 
 	for rows.Next() {
 		var gameType GameType
-		err := rows.Scan(&gameType.GameID, &gameType.TicketValue, &gameType.TicketName, &gameType.BookValue, &gameType.CurrentGame)
+		err := rows.Scan(&gameType.GameID, &gameType.GameName, &gameType.TicketValue, &gameType.TicketCount, &gameType.CurrentGame, &gameType.PromoGame)
 		if err != nil {
 			return nil, errors.New("ERRSCANISSUE")
 		}

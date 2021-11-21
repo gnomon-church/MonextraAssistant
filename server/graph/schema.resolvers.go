@@ -24,23 +24,25 @@ func (r *mutationResolver) CreateShipment(ctx context.Context, input model.NewSh
 func (r *mutationResolver) CreateGameType(ctx context.Context, input model.UpdateGameType) (*model.GameType, error) {
 	var game games.GameType
 	game.GameID = input.GameID
+	game.GameName = input.GameName
 	game.TicketValue = input.TicketValue
-	game.TicketName = input.TicketName
-	game.BookValue = input.BookValue
+	game.TicketCount = input.TicketCount
 	game.CurrentGame = input.CurrentGame
+	game.PromoGame = input.PromoGame
 	err := game.CreateGame()
-	return &model.GameType{GameID: game.GameID, TicketValue: game.TicketValue, TicketName: game.TicketName, BookValue: game.BookValue, CurrentGame: game.CurrentGame}, err
+	return &model.GameType{GameID: game.GameID, GameName: game.GameName, TicketValue: game.TicketValue, TicketCount: game.TicketCount, CurrentGame: game.CurrentGame, PromoGame: game.PromoGame}, err
 }
 
 func (r *mutationResolver) ModifyGameType(ctx context.Context, input model.UpdateGameType) (*model.GameType, error) {
 	var game games.GameType
 	game.GameID = input.GameID
+	game.GameName = input.GameName
 	game.TicketValue = input.TicketValue
-	game.TicketName = input.TicketName
-	game.BookValue = input.BookValue
+	game.TicketCount = input.TicketCount
 	game.CurrentGame = input.CurrentGame
+	game.PromoGame = input.PromoGame
 	err := game.ModifyGame()
-	return &model.GameType{GameID: game.GameID, TicketValue: game.TicketValue, TicketName: game.TicketName, BookValue: game.BookValue, CurrentGame: game.CurrentGame}, err
+	return &model.GameType{GameID: game.GameID, GameName: game.GameName, TicketValue: game.TicketValue, TicketCount: game.TicketCount, CurrentGame: game.CurrentGame, PromoGame: game.PromoGame}, err
 }
 
 func (r *mutationResolver) RemoveGameType(ctx context.Context, input model.RemoveGameType) (*model.GameType, error) {
@@ -99,7 +101,7 @@ func (r *queryResolver) GameTypes(ctx context.Context, gameID *string, currentGa
 	var dbGameTypes []games.GameType
 	dbGameTypes, err := games.GetGames(gameID, currentGame)
 	for _, game := range dbGameTypes {
-		resultGameTypes = append(resultGameTypes, &model.GameType{GameID: game.GameID, TicketValue: game.TicketValue, TicketName: game.TicketName, BookValue: game.BookValue, CurrentGame: game.CurrentGame})
+		resultGameTypes = append(resultGameTypes, &model.GameType{GameID: game.GameID, GameName: game.GameName, TicketValue: game.TicketValue,  TicketCount: game.TicketCount, CurrentGame: game.CurrentGame, PromoGame: game.PromoGame})
 	}
 	return resultGameTypes, err
 }

@@ -17,10 +17,11 @@ type GameBook struct {
 
 type GameType struct {
 	GameID      string `json:"game_id"`
+	GameName    string `json:"game_name"`
 	TicketValue int    `json:"ticket_value"`
-	TicketName  string `json:"ticket_name"`
-	BookValue   int    `json:"book_value"`
+	TicketCount int    `json:"ticket_count"`
 	CurrentGame bool   `json:"current_game"`
+	PromoGame   bool   `json:"promo_game"`
 }
 
 type NewShipment struct {
@@ -45,8 +46,9 @@ type SignOutGameBook struct {
 
 type UpdateGameType struct {
 	GameID      string `json:"game_id"`
+	GameName    string `json:"game_name"`
 	TicketValue int    `json:"ticket_value"`
-	TicketName  string `json:"ticket_name"`
-	BookValue   int    `json:"book_value"`
+	TicketCount int    `json:"ticket_count"`
 	CurrentGame bool   `json:"current_game"`
+	PromoGame   bool   `json:"promo_game"`
 }
